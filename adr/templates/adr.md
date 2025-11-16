@@ -1,7 +1,7 @@
-# <NUMBER>: <DESCRIPTION>
+# <ID>: <TITLE>
 
 - Status: <STATUS>
-- Date: <DATE>
+- Date: <YYYY-MM-DD>
 
 ## Context
 
