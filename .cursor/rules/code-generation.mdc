@@ -1,0 +1,15 @@
+---
+description: Use context7 to verify that we're generating the correct code when using external APIs
+alwaysApply: false
+---
+When you're not clear about an API (frontend or backend), use context7 to verify that you're using the API correctly.
+
+To do this, append `use context7` to your request so the related MCP is included and the actual library documentation can be consulted.
+
+Possible scenarios where you might need this:
+
+<scenarios>
+- fixing linting errors related to a library API
+- fixing tests that fail due to incorrect API usage
+- generating new code for a library previously not used in the codebase
+</scenarios>
