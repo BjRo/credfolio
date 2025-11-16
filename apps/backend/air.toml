@@ -1,0 +1,20 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "tmp/server"
+  cmd = "go build -o tmp/server ."
+  delay = 1000
+  exclude_dir = ["tmp", "node_modules"]
+  include_ext = ["go"]
+
+[log]
+  time = true
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+
