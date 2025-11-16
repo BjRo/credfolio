@@ -1,3 +1,35 @@
+# Node/PNPM
+node_modules/
+.pnpm-store/
+.turbo/
+
+# Build outputs
+dist/
+build/
+.next/
+coverage/
+reports/
+
+# Env files
+.env
+.env.*.local
+apps/*/.env
+infra/.env
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Go
+**/*.test
+bin/
+tmp/
+
+# Docker
+infra/postgres-data/
+
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #

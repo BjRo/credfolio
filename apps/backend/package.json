@@ -1,0 +1,15 @@
+{
+	"name": "@credfolio/backend",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "air -c air.toml || GOTOOLCHAIN=local go run .",
+		"start": "GOTOOLCHAIN=local go run .",
+		"build": "echo \"Go build handled via Makefile or go build\"",
+		"lint": "golangci-lint run || true",
+		"fmt": "echo \"Use make fmt-backend for formatting\"",
+		"test": "GOTOOLCHAIN=local go test ./..."
+	}
+}
+

@@ -1,0 +1,14 @@
+version: 2
+run:
+  go: "1.24"
+  timeout: 3m
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+issues:
+  exclude-use-default: false
+
+
