@@ -1,0 +1,20 @@
+---
+description: Create architecture decision record (ADR)
+alwaysApply: false
+---
+When creating an Architecture Decision Record (ADR), use the template you find in the [adr directory](../../adr/templates/).
+
+Our goal is to document all technical decisions that have a long-term, cross-cutting impact on the system in ADRs, so that we can later easily understand why they were made.
+
+<scenarios>
+- New libraries or tools are introduced
+- Previous libraries or tools are phased out and removed
+- New patterns are introduced
+- Old patterns are phased out and removed
+</scenarios>
+
+<desired_outcome>
+- A new ADR file has been created, incrementing the running number
+- All placeholders in the template are filled out
+- The new ADR has been added to the [ADR index](../../adr/index.md)
+</desired_outcome>
