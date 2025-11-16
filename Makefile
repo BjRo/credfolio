@@ -1,5 +1,5 @@
 SHELL := /bin/zsh
-.PHONY: setup dev build start test lint fmt typecheck db-up db-down
+.PHONY: setup dev build start test test-backend test-frontend lint lint-backend lint-frontend fmt fmt-backend fmt-frontend typecheck db-up db-down
 
 ## Tools
 PNPM := pnpm
@@ -41,14 +41,32 @@ start:
 typecheck:
 	$(TURBO) run typecheck
 
+test-backend:
+	(cd apps/backend && GOTOOLCHAIN=local go test ./...)
+
+test-frontend:
+	$(TURBO) run test --filter=@credfolio/frontend
+
 test:
-	$(TURBO) run test && (cd apps/backend && GOTOOLCHAIN=local go test ./...)
+	$(MAKE) test-backend && $(MAKE) test-frontend
+
+lint-backend:
+	(cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
+
+lint-frontend:
+	$(TURBO) run lint --filter=@credfolio/frontend
 
 lint:
-	$(TURBO) run lint && (cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
+	$(MAKE) lint-backend && $(MAKE) lint-frontend
+
+fmt-backend:
+	(cd apps/backend && gofmt -s -w . && test -n "$$(command -v goimports)" && goimports -w . || true)
+
+fmt-frontend:
+	$(TURBO) run fmt --filter=@credfolio/frontend
 
 fmt:
-	$(TURBO) run fmt && (cd apps/backend && gofmt -s -w . && test -n "$$(command -v goimports)" && goimports -w . || true)
+	$(MAKE) fmt-backend && $(MAKE) fmt-frontend
 
 db-up:
 	$(DOCKER_COMPOSE) up -d
