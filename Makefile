@@ -4,7 +4,11 @@ SHELL := /bin/zsh
 ## Tools
 PNPM := pnpm
 TURBO := $(PNPM) turbo
-GOLANGCI := golangci-lint
+GO := go
+GOPATH := $(shell $(GO) env GOPATH 2>/dev/null)
+GOBIN := $(shell $(GO) env GOBIN 2>/dev/null)
+BIN_DIR := $(if $(GOBIN),$(GOBIN),$(GOPATH)/bin)
+GOLANGCI := $(BIN_DIR)/golangci-lint
 DOCKER_COMPOSE := docker compose -f infra/docker-compose.yml --env-file infra/.env
 
 setup:
@@ -17,17 +21,8 @@ setup:
 	$(PNPM) install
 	# Go tools (best-effort, only if Go is available)
 	@if command -v go >/dev/null 2>&1; then \
-		if ! command -v $(GOLANGCI) >/dev/null 2>&1; then \
-			echo "Installing golangci-lint..."; \
-			if command -v curl >/dev/null 2>&1; then \
-				BIN_DIR="$$(go env GOPATH 2>/dev/null)/bin"; \
-				[ -n "$$BIN_DIR" ] || BIN_DIR="$$HOME/go/bin"; \
-				mkdir -p "$$BIN_DIR"; \
-				curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$$BIN_DIR" v1.61.0; \
-			else \
-				echo "curl not found; skipping golangci-lint install"; \
-			fi; \
-		fi; \
+		echo "Ensuring golangci-lint is installed with local Go toolchain..."; \
+		GOTOOLCHAIN=local $(GO) install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; \
 		command -v air >/dev/null 2>&1 || (echo "Installing air..." && go install github.com/air-verse/air@latest); \
 	else \
 		echo "Go not found; skipping Go tool installs (golangci-lint, air)."; \
@@ -47,10 +42,10 @@ typecheck:
 	$(TURBO) run typecheck
 
 test:
-	$(TURBO) run test && (cd apps/backend && go test ./...)
+	$(TURBO) run test && (cd apps/backend && GOTOOLCHAIN=local go test ./...)
 
 lint:
-	$(TURBO) run lint && (cd apps/backend && $(GOLANGCI) run)
+	$(TURBO) run lint && (cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
 
 fmt:
 	$(TURBO) run fmt && (cd apps/backend && gofmt -s -w . && test -n "$$(command -v goimports)" && goimports -w . || true)
