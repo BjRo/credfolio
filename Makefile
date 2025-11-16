@@ -29,8 +29,11 @@ setup:
 	fi
 
 dev:
-	$(MAKE) db-up
 	$(TURBO) run dev --parallel
+
+dev-db:
+	$(MAKE) db-up
+	$(MAKE) dev
 
 build:
 	$(TURBO) run build
