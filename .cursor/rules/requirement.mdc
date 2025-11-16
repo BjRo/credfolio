@@ -1,0 +1,13 @@
+---
+description: Create a requirement
+alwaysApply: false
+---
+When creating an requirement document, use the template you find in the [requirements directory](../../requirements/templates/).
+
+Our goal is to be as specific as possible so that an agent can then implement the necessary features end to end.
+
+<desired_outcome>
+- A new requirements file has been created, incrementing the running number
+- All placeholders in the template are filled out
+- The new entry referencing that file has been added to the [Requirements index](../../requirements/index.md)
+</desired_outcome>

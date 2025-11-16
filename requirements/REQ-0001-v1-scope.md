@@ -1,7 +1,6 @@
 # REQ-0001: Credfolio v1 Scope
 
 - Status: planned
-- Owner: TBD
 - Last Updated: 2025-11-16
 
 ## Context

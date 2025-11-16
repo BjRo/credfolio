@@ -1,4 +1,4 @@
-SHELL := /bin/zsh
+SHELL := /bin/bash
 .PHONY: setup dev build start test test-backend test-frontend lint lint-backend lint-frontend fmt fmt-backend fmt-frontend typecheck db-up db-down
 
 ## Tools
@@ -55,6 +55,9 @@ test:
 
 lint-backend:
 	(cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
+
+lint-backend-ci:
+	(cd apps/backend && GOTOOLCHAIN=local $(GOLANGCI) run)
 
 lint-frontend:
 	$(TURBO) run lint --filter=@credfolio/frontend

@@ -1,0 +1,88 @@
+name: PRs
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  # pull-requests can remain read; elevate only if we later need to post annotations/comments
+  pull-requests: read
+
+jobs:
+  backend:
+    name: Backend Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.x
+          cache: true
+
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
+
+      - name: Install workspace dependencies and Go tools
+        run: make setup
+
+      - name: Backend tests
+        run: make test-backend
+
+      - name: Backend lint
+        run: make lint-backend-ci
+
+      - name: Backend formatting check
+        run: |
+          make fmt-backend
+          # Fail if formatting produced changes
+          if ! git diff --quiet; then
+            echo "Backend formatting changes detected. Please run 'make fmt-backend' locally and commit the results."
+            git --no-pager diff
+            exit 1
+          fi
+
+  frontend:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Install pnpm and workspace dependencies
+        run: |
+          pnpm install
+
+      - name: Frontend tests
+        run: make test-frontend
+
+      - name: Frontend lint
+        run: make lint-frontend
+
+      - name: Frontend formatting check
+        run: |
+          make fmt-frontend
+          # Fail if formatting produced changes
+          if ! git diff --quiet; then
+            echo "Frontend formatting changes detected. Please run 'make fmt-frontend' locally and commit the results."
+            git --no-pager diff
+            exit 1
+          fi
+
+
