@@ -62,10 +62,13 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
       - name: Install pnpm and workspace dependencies
         run: |
-          corepack enable
-          pnpm -v || corepack prepare pnpm@9.12.0 --activate
           pnpm install
 
       - name: Frontend tests
