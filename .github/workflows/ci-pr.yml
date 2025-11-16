@@ -25,6 +25,9 @@ jobs:
           go-version-file: apps/backend/go.mod
           cache: true
 
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+
       - name: Install workspace dependencies and Go tools
         run: make setup
 
