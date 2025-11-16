@@ -24,5 +24,6 @@ await build({
 	logLevel: "silent",
 });
 
-console.log("[prepare-next-config] generated next.config.mjs from next.config.ts");
-
+console.log(
+	"[prepare-next-config] generated next.config.mjs from next.config.ts",
+);

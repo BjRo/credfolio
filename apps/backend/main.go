@@ -8,12 +8,17 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
 
 func main() {
 	// Configure logger: timestamps with microseconds and short file info
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
+
+	// Load environment from .env files in development if present
+	_ = godotenv.Load()
+	_ = godotenv.Load(".env.development")
 
 	port := getEnv("PORT", "8080")
 	log.Printf("starting backend (pid=%d) on port %s", os.Getpid(), port)
