@@ -12,15 +12,22 @@ import (
 )
 
 func main() {
+	// Configure logger: timestamps with microseconds and short file info
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
+
 	port := getEnv("PORT", "8080")
+	log.Printf("starting backend (pid=%d) on port %s", os.Getpid(), port)
+
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
+	// Custom concise request logger with latency and status code
+	r.Use(requestLogger)
 	r.Use(middleware.Recoverer)
 	r.Use(cors.AllowAll().Handler)
 
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("healthz check from %s %s %s", r.RemoteAddr, r.Method, r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
@@ -45,4 +52,27 @@ func getEnv(key, def string) string {
 		return def
 	}
 	return v
+}
+
+// statusRecorder wraps http.ResponseWriter to capture the status code for logging.
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.status = code
+	r.ResponseWriter.WriteHeader(code)
+}
+
+// requestLogger logs method, path, status and latency for each request.
+func requestLogger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+		next.ServeHTTP(rec, r)
+		latency := time.Since(start)
+		log.Printf("%s %s -> %d (%s) ip=%s ua=%q",
+			r.Method, r.URL.Path, rec.status, latency, r.RemoteAddr, r.UserAgent())
+	})
 }

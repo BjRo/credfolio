@@ -12,6 +12,8 @@ importers:
         specifier: ^2.0.6
         version: 2.6.1
 
+  apps/backend: {}
+
   apps/frontend:
     dependencies:
       next:
