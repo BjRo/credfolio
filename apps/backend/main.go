@@ -47,5 +47,3 @@ func getEnv(key, def string) string {
 	}
 	return v
 }
-
-
