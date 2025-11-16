@@ -4,14 +4,15 @@
 	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
-		"dev": "next dev",
-		"build": "pnpm run typecheck && next build",
+		"dev": "pnpm run prepare:config && next dev",
+		"build": "pnpm run prepare:config && pnpm run typecheck && next build",
 		"start": "next start",
 		"lint": "biome lint .",
 		"fmt": "biome format --write .",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"typecheck": "tsgo --noEmit --build",
+		"prepare:config": "node ./scripts/prepare-next-config.mjs",
+		"typecheck": "tsgo --build --noEmit",
 		"typecheck:tsc": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -26,6 +27,7 @@
 		"@types/react": "^18.3.5",
 		"@types/react-dom": "^18.3.0",
 		"jsdom": "^24.1.0",
+		"esbuild": "^0.24.0",
 		"@typescript/native-preview": "7.0.0-dev.20251116.1",
 		"autoprefixer": "^10.4.20",
 		"@biomejs/biome": "^1.9.4",
