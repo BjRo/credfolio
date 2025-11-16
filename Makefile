@@ -56,6 +56,9 @@ test:
 lint-backend:
 	(cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
 
+lint-backend-ci:
+	(cd apps/backend && GOTOOLCHAIN=local $(GOLANGCI) run)
+
 lint-frontend:
 	$(TURBO) run lint --filter=@credfolio/frontend
 
