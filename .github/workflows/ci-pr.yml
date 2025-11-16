@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   backend:
-    name: Backend (tests, lint, fmt-check)
+    name: Backend Checks
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +45,7 @@ jobs:
           fi
 
   frontend:
-    name: Frontend (tests, lint, fmt-check)
+    name: Frontend Checks
     runs-on: ubuntu-latest
 
     steps:
