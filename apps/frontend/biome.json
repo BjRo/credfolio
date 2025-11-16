@@ -1,5 +1,15 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"ignore": [
+			"next.config.mjs",
+			".next/**",
+			"node_modules/**",
+			"coverage/**",
+			"dist/**",
+			"build/**"
+		]
+	},
 	"organizeImports": {
 		"enabled": true
 	},
