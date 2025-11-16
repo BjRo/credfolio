@@ -27,7 +27,6 @@ func main() {
 	r.Use(cors.AllowAll().Handler)
 
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("healthz check from %s %s %s", r.RemoteAddr, r.Method, r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
