@@ -21,4 +21,9 @@ Then run:
 make db-up
 ```
 
+Ports:
+
+- Postgres is exposed on host port `55432` (container `5432`)
+- pgAdmin is exposed on host port `8081` (container `80`)
+
 
