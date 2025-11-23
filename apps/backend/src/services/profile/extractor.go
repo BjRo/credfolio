@@ -66,4 +66,3 @@ func (s *Extractor) Extract(ctx context.Context, file io.ReaderAt, size int64) (
 
 	return &data, nil
 }
-

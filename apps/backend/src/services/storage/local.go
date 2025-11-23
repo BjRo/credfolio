@@ -26,7 +26,7 @@ func (s *LocalStorage) Save(filename string, content io.Reader) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	if _, err := io.Copy(f, content); err != nil {
 		return "", err
@@ -40,4 +40,3 @@ func (s *LocalStorage) Get(filename string) (io.Reader, error) {
 	path := filepath.Join(s.BaseDir, cleanName)
 	return os.Open(path)
 }
-

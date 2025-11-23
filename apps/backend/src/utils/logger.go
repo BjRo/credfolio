@@ -19,4 +19,3 @@ func SetupLogger() *slog.Logger {
 
 	return logger
 }
-

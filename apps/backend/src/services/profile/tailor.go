@@ -41,4 +41,3 @@ func (s *Service) TailorProfile(ctx context.Context, userID uuid.UUID, jobDescri
 
 	return &result, nil
 }
-

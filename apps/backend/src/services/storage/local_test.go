@@ -42,7 +42,6 @@ func TestLocalStorage(t *testing.T) {
 		t.Fatalf("Get failed: %v", err)
 	}
 	if c, ok := r.(io.Closer); ok {
-		defer c.Close()
+		defer func() { _ = c.Close() }()
 	}
 }
-

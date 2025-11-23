@@ -29,7 +29,7 @@ func (h *UploadHandler) HandleUpload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "missing file", http.StatusBadRequest)
 		return
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Dummy User ID for MVP
 	userID := uuid.New()

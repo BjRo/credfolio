@@ -54,7 +54,7 @@ func (s *Service) ProcessUpload(ctx context.Context, userID uuid.UUID, filename 
 	if err != nil {
 		return fmt.Errorf("failed to open saved file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	stat, _ := file.Stat()
 	fmt.Printf("DEBUG: Processing file %s, size: %d bytes\n", path, stat.Size())
@@ -136,4 +136,3 @@ func parseDatePtr(d *string) *time.Time {
 	t := parseDate(*d)
 	return &t
 }
-

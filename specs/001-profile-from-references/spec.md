@@ -30,6 +30,9 @@ Credfolio = Portfolio + Credibility"
 - Q: How to handle name mismatches between reference and user profile? → A: Strict Check & Flag; System alerts the user to the mismatch but allows them to proceed by confirming "This is me" (handling marriage, gender changes). The event is logged/flagged for potential future moderation.
 - Q: How to handle overlapping data from multiple letters for the same company? → A: Merge by Company; System groups multiple references for the same company (fuzzy match) into a single "Company" entry with aggregated roles/dates to avoid duplication.
 - Q: How to handle multiple roles mentioned in a single reference letter? → A: Multi-Role Support; System extracts and stores multiple distinct roles (with separate dates/titles) linked to a single "Company" parent entity to reflect career progression.
+- Q: What is the input format for reference letters? → A: Free-form Markdown; Users input the raw content of the letter as unstructured Markdown. The system is responsible for entity extraction (Company, Dates, etc.) from the prose.
+- Q: Does editing extracted data affect the "Verified" status? → A: Trust User; The "Verified" status is retained even if the user edits the extracted fields (to correct parsing errors). The system assumes good intent to maintain UX fluidity.
+- Q: How are Markdown documents input into the system? → A: Paste Input; The UI provides a text area for the user to paste the Markdown content of a reference letter directly, processing one letter at a time.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -48,18 +51,18 @@ Credfolio = Portfolio + Credibility"
 
 ### User Story 1 - Create Profile from References (Priority: P1)
 
-As a job seeker, I want to upload my past reference letters so that my professional profile is automatically created without manual data entry.
+As a job seeker, I want to paste the text of my past reference letters so that my professional profile is automatically created without manual data entry.
 
 **Why this priority**: This is the core value proposition and entry point. Without this, there is no "Credfolio".
 
-**Independent Test**: Can be tested by uploading a sample reference letter (PDF/DOCX,TXT) and verifying that a profile is created with extracted data.
+**Independent Test**: Can be tested by pasting the text of a sample reference letter and verifying that a profile is created with extracted data.
 
 **Acceptance Scenarios**:
 
-1. **Given** a new user with no profile, **When** they upload a valid reference letter (PDF/DOCX,TXT), **Then** the system parses the file and creates a profile with extracted Name, Role, Company, and Skills.
-2. **Given** a user uploading a file, **When** the file format is unsupported (e.g., PNG), **Then** the system shows an error message.
-3. **Given** multiple reference letters, **When** uploaded together or sequentially, **Then** the system aggregates the data into a single chronological profile.
-4. **Given** a reference letter with a name different from the user's profile name, **When** uploaded, **Then** the system prompts the user to confirm identity before processing, and logs the mismatch flag.
+1. **Given** a new user with no profile, **When** they paste a valid reference letter text, **Then** the system parses the text and creates a profile with extracted Name, Role, Company, and Skills.
+2. **Given** a user pasting text, **When** the text is too short or meaningless, **Then** the system shows an error message.
+3. **Given** multiple reference letters, **When** pasted sequentially, **Then** the system aggregates the data into a single chronological profile.
+4. **Given** a reference letter with a name different from the user's profile name, **When** pasted, **Then** the system prompts the user to confirm identity before processing, and logs the mismatch flag.
 5. **Given** a single reference letter detailing multiple roles (e.g., "started as Junior Dev, promoted to Senior"), **When** processed, **Then** the system creates one Company entry with multiple distinct Role sub-entries.
 
 ---
@@ -119,7 +122,7 @@ As a job seeker, I want to customize my profile and CV for a specific job descri
   Fill them out with the right edge cases.
 -->
 
-- What happens when a reference letter is handwritten or scanned (image-based PDF)? (Assume OCR is out of scope for MVP unless specified, or handled by library). -> *System should handle text-based PDFs; scanned images might error or require OCR service (Assume text-based for MVP).*
+- What happens when the pasted text is non-Markdown or poorly formatted? -> *System attempts to extract entities from plain text as best effort.*
 - What happens when conflicting dates or roles are found in different letters? -> *System should present both or use the most recent/detailed one (Needs strategy, assume mostly additive).*
 - How does the system handle languages other than English in reference letters? -> *Assume MVP is English-first.*
 - What happens if no skills can be extracted? -> *Profile is created with empty skills section.*
@@ -137,8 +140,8 @@ As a job seeker, I want to customize my profile and CV for a specific job descri
 
 ### Functional Requirements
 
-- **FR-001**: System MUST allow users to upload reference letters in PDF and DOCX formats.
-- **FR-002**: System MUST extract structured data from reference letters: Company Name, Job Title, Employment Dates, Candidate Name.
+- **FR-001**: System MUST allow users to input reference letters by pasting Markdown text into a dedicated text area.
+- **FR-002**: System MUST extract structured data from reference text: Company Name, Job Title, Employment Dates, Candidate Name.
 - **FR-003**: System MUST extract "Skills" and "Technologies" keywords from the reference text.
 - **FR-004**: System MUST extract subjective "Employer Feedback" (e.g., positive quotes, assessment of strengths) from the reference text.
 - **FR-005**: System MUST generate a web-based profile view displaying Experience, Skills, and Credibility/Feedback.

@@ -33,4 +33,3 @@ func TestTailorProfile(t *testing.T) {
 		t.Errorf("expected score 90, got %d", res.MatchScore)
 	}
 }
-

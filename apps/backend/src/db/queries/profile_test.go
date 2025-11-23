@@ -49,4 +49,3 @@ func TestUpsertCompany(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
-
