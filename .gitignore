@@ -12,6 +12,7 @@ reports/
 
 # Env files
 .env
+.env.development
 .env.*.local
 apps/*/.env
 infra/.env

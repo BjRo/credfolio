@@ -1,40 +1,69 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/credfolio/apps/backend/src/api"
+	"github.com/credfolio/apps/backend/src/api/handlers"
+	"github.com/credfolio/apps/backend/src/db"
+	"github.com/credfolio/apps/backend/src/db/queries"
+	"github.com/credfolio/apps/backend/src/services/extractor"
+	"github.com/credfolio/apps/backend/src/services/generator"
+	"github.com/credfolio/apps/backend/src/services/llm"
+	"github.com/credfolio/apps/backend/src/services/profile"
+	"github.com/credfolio/apps/backend/src/services/storage"
+	"github.com/credfolio/apps/backend/src/utils"
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 )
 
 func main() {
-	// Configure logger: timestamps with microseconds and short file info
-	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
+	// Configure logger
+	logger := utils.SetupLogger()
 
 	// Load environment from .env files in development if present
 	_ = godotenv.Load()
 	_ = godotenv.Load(".env.development")
 
 	port := getEnv("PORT", "8080")
-	log.Printf("starting backend (pid=%d) on port %s", os.Getpid(), port)
+	dbURL := getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:55432/credfolio?sslmode=disable")
+	openaiKey := getEnv("OPENAI_API_KEY", "")
 
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	// Custom concise request logger with latency and status code
-	r.Use(requestLogger)
-	r.Use(middleware.Recoverer)
-	r.Use(cors.AllowAll().Handler)
+	logger.Info("starting backend", "pid", os.Getpid(), "port", port)
 
-	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"status":"ok"}`))
-	})
+	// Database
+	database, err := db.Connect(dbURL)
+	if err != nil {
+		logger.Error("failed to connect to database", "error", err)
+		os.Exit(1)
+	}
+	defer database.Close()
+
+	// Repositories
+	repo := queries.NewProfileQueries(database)
+
+	// Services
+	localStorage, err := storage.NewLocalStorage("uploads")
+	if err != nil {
+		logger.Error("failed to init storage", "error", err)
+		os.Exit(1)
+	}
+
+	pdfExt := extractor.NewPDFExtractor()
+	llmClient := llm.NewClient(openaiKey)
+	profileExtractor := profile.NewExtractor(pdfExt, llmClient)
+	cvGenerator := generator.NewCVGenerator()
+
+	profileService := profile.NewService(repo, profileExtractor, localStorage, llmClient)
+
+	// Handlers
+	uploadHandler := handlers.NewUploadHandler(profileService)
+	profileHandler := handlers.NewProfileHandler(profileService)
+	cvHandler := handlers.NewCVHandler(profileService, cvGenerator)
+	tailorHandler := handlers.NewTailorHandler(profileService)
+
+	r := api.NewRouter(uploadHandler, profileHandler, cvHandler, tailorHandler)
 
 	s := &http.Server{
 		Addr:         ":" + port,
@@ -44,9 +73,10 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	log.Printf("backend listening on :%s", port)
+	logger.Info("backend listening", "address", ":"+port)
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("server error: %v", err)
+		logger.Error("server error", "error", err)
+		os.Exit(1)
 	}
 }
 
@@ -56,27 +86,4 @@ func getEnv(key, def string) string {
 		return def
 	}
 	return v
-}
-
-// statusRecorder wraps http.ResponseWriter to capture the status code for logging.
-type statusRecorder struct {
-	http.ResponseWriter
-	status int
-}
-
-func (r *statusRecorder) WriteHeader(code int) {
-	r.status = code
-	r.ResponseWriter.WriteHeader(code)
-}
-
-// requestLogger logs method, path, status and latency for each request.
-func requestLogger(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
-		next.ServeHTTP(rec, r)
-		latency := time.Since(start)
-		log.Printf("%s %s -> %d (%s) ip=%s ua=%q",
-			r.Method, r.URL.Path, rec.status, latency, r.RemoteAddr, r.UserAgent())
-	})
 }

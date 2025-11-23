@@ -22,7 +22,7 @@ setup:
 	# Go tools (best-effort, only if Go is available)
 	@if command -v go >/dev/null 2>&1; then \
 		echo "Ensuring golangci-lint is installed with local Go toolchain..."; \
-		GOTOOLCHAIN=local $(GO) install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; \
+		$(GO) install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; \
 		command -v air >/dev/null 2>&1 || (echo "Installing air..." && go install github.com/air-verse/air@latest); \
 	else \
 		echo "Go not found; skipping Go tool installs (golangci-lint, air)."; \
@@ -45,7 +45,7 @@ typecheck:
 	$(TURBO) run typecheck
 
 test-backend:
-	(cd apps/backend && GOTOOLCHAIN=local go test ./...)
+	(cd apps/backend && go test ./...)
 
 test-frontend:
 	$(TURBO) run test --filter=@credfolio/frontend
@@ -54,10 +54,10 @@ test:
 	$(MAKE) test-backend && $(MAKE) test-frontend
 
 lint-backend:
-	(cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
+	(cd apps/backend && go mod tidy && go mod download && $(GOLANGCI) run)
 
 lint-backend-ci:
-	(cd apps/backend && GOTOOLCHAIN=local $(GOLANGCI) run)
+	(cd apps/backend && $(GOLANGCI) run)
 
 lint-frontend:
 	$(TURBO) run lint --filter=@credfolio/frontend

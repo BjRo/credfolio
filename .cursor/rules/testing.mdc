@@ -1,0 +1,27 @@
+---
+description: Enforce running tests during development
+globs: **/*.go, **/*.ts, **/*.tsx, Makefile
+---
+
+# Testing Policy
+
+You **MUST** run the project's test suite to verify changes whenever you implement new features or refactor code.
+
+## Execution
+
+Run the full test suite using the Makefile:
+
+```bash
+make test
+```
+
+If you are working specifically on the backend or frontend, you may run the specific target to save time, but you should run the full suite before finishing a task.
+
+- Backend only: `make test-backend`
+- Frontend only: `make test-frontend`
+
+## Failure Handling
+
+- If `make test` fails, you **MUST** fix the errors before proceeding.
+- Do not assume "it worked on my machine" or ignore test failures.
+- If a test is flaky or broken unrelated to your changes, note it, but try to fix it if trivial.

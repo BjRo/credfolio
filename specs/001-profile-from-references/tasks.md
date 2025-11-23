@@ -19,16 +19,16 @@ description: "Task list for Profile Generation from References"
 
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
+- **Include exact file paths in descriptions**
 
 ## Phase 1: Setup (Shared Infrastructure)
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Verify and ensure Go module setup in `apps/backend/go.mod`
-- [ ] T002 Verify and ensure Next.js app setup in `apps/frontend/package.json`
-- [ ] T003 [P] Configure environment variables loading in `apps/backend/main.go`
-- [ ] T004 [P] Setup basic logging configuration in `apps/backend/src/utils/logger.go`
+- [x] T001 Verify and ensure Go module setup in `apps/backend/go.mod`
+- [x] T002 Verify and ensure Next.js app setup in `apps/frontend/package.json`
+- [x] T003 [P] Configure environment variables loading in `apps/backend/main.go`
+- [x] T004 [P] Setup basic logging configuration in `apps/backend/src/utils/logger.go`
 
 ---
 
@@ -38,15 +38,15 @@ description: "Task list for Profile Generation from References"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Setup Postgres database connection logic in `apps/backend/src/db/db.go`
-- [ ] T006 Create database migrations for User, ReferenceLetter, Company, Experience, Skill in `apps/backend/src/db/migrations/000001_init_schema.up.sql`
-- [ ] T007 [P] Define Go structs for UserProfile, ReferenceLetter, CompanyEntry, WorkExperience in `apps/backend/src/models/types.go`
-- [ ] T008 [P] Implement PDF text extraction service wrapper (ledongthuc/pdf) in `apps/backend/src/services/extractor/pdf.go`
-- [ ] T009 [P] Create unit tests for PDF extraction in `apps/backend/src/services/extractor/pdf_test.go`
-- [ ] T010 [P] Implement OpenAI client wrapper and configuration in `apps/backend/src/services/llm/client.go`
-- [ ] T011 [P] Create unit tests for OpenAI client in `apps/backend/src/services/llm/client_test.go`
-- [ ] T012 Setup API router (Chi) and middleware in `apps/backend/src/api/router.go`
-- [ ] T013 [P] Configure global error handling middleware in `apps/backend/src/api/middleware/errors.go`
+- [x] T005 Setup Postgres database connection logic in `apps/backend/src/db/db.go`
+- [x] T006 Create database migrations for User, ReferenceLetter, Company, Experience, Skill in `apps/backend/src/db/migrations/000001_init_schema.up.sql`
+- [x] T007 [P] Define Go structs for UserProfile, ReferenceLetter, CompanyEntry, WorkExperience in `apps/backend/src/models/types.go`
+- [x] T008 [P] Implement PDF text extraction service wrapper (ledongthuc/pdf) in `apps/backend/src/services/extractor/pdf.go`
+- [x] T009 [P] Create unit tests for PDF extraction in `apps/backend/src/services/extractor/pdf_test.go`
+- [x] T010 [P] Implement OpenAI client wrapper and configuration in `apps/backend/src/services/llm/client.go`
+- [x] T011 [P] Create unit tests for OpenAI client in `apps/backend/src/services/llm/client_test.go`
+- [x] T012 Setup API router (Chi) and middleware in `apps/backend/src/api/router.go`
+- [x] T013 [P] Configure global error handling middleware in `apps/backend/src/api/middleware/errors.go`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -60,17 +60,17 @@ description: "Task list for Profile Generation from References"
 
 ### Implementation for User Story 1
 
-- [ ] T014 [P] [US1] Define LLM prompts for data extraction in `apps/backend/src/services/llm/prompts.go`
-- [ ] T015 [US1] Implement local file storage service for uploaded files in `apps/backend/src/services/storage/local.go`
-- [ ] T016 [P] [US1] Create unit tests for local storage in `apps/backend/src/services/storage/local_test.go`
-- [ ] T017 [US1] Implement core extraction service (PDF text -> LLM -> JSON) in `apps/backend/src/services/profile/extractor.go`
-- [ ] T018 [P] [US1] Create unit tests for core extraction service in `apps/backend/src/services/profile/extractor_test.go`
-- [ ] T019 [US1] Implement logic to merge extracted data into UserProfile (handling name mismatch/updates) in `apps/backend/src/services/profile/service.go`
-- [ ] T020 [P] [US1] Create unit tests for profile merge logic in `apps/backend/src/services/profile/service_test.go`
-- [ ] T021 [US1] Create `POST /api/upload` handler in `apps/backend/src/api/handlers/upload.go`
-- [ ] T022 [US1] Implement frontend API client upload method in `apps/frontend/services/api.ts`
-- [ ] T023 [P] [US1] Create File Upload component with progress state in `apps/frontend/components/upload/FileUploader.tsx`
-- [ ] T024 [US1] Create Upload Page with drag-and-drop zone in `apps/frontend/app/upload/page.tsx`
+- [x] T014 [P] [US1] Define LLM prompts for data extraction in `apps/backend/src/services/llm/prompts.go`
+- [x] T015 [US1] Implement local file storage service for uploaded files in `apps/backend/src/services/storage/local.go`
+- [x] T016 [P] [US1] Create unit tests for local storage in `apps/backend/src/services/storage/local_test.go`
+- [x] T017 [US1] Implement core extraction service (PDF text -> LLM -> JSON) in `apps/backend/src/services/profile/extractor.go`
+- [x] T018 [P] [US1] Create unit tests for core extraction service in `apps/backend/src/services/profile/extractor_test.go`
+- [x] T019 [US1] Implement logic to merge extracted data into UserProfile (handling name mismatch/updates) in `apps/backend/src/services/profile/service.go`
+- [x] T020 [P] [US1] Create unit tests for profile merge logic in `apps/backend/src/services/profile/service_test.go`
+- [x] T021 [US1] Create `POST /api/upload` handler in `apps/backend/src/api/handlers/upload.go`
+- [x] T022 [US1] Implement frontend API client upload method in `apps/frontend/services/api.ts`
+- [x] T023 [P] [US1] Create File Upload component with progress state in `apps/frontend/components/upload/FileUploader.tsx`
+- [x] T024 [US1] Create Upload Page with drag-and-drop zone in `apps/frontend/app/upload/page.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -84,15 +84,15 @@ description: "Task list for Profile Generation from References"
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Implement database queries to fetch full profile with relations in `apps/backend/src/db/queries/profile.go`
-- [ ] T026 [P] [US2] Create unit/integration tests for profile queries in `apps/backend/src/db/queries/profile_test.go`
-- [ ] T027 [US2] Create `GET /api/profile` handler in `apps/backend/src/api/handlers/profile.go`
-- [ ] T028 [US2] Implement frontend API client getProfile method in `apps/frontend/services/api.ts`
-- [ ] T029 [P] [US2] Create Profile Header component (Name, Summary) in `apps/frontend/components/profile/ProfileHeader.tsx`
-- [ ] T030 [P] [US2] Create Experience List component with "Verified" badges in `apps/frontend/components/profile/ExperienceList.tsx`
-- [ ] T031 [P] [US2] Create Credibility/Feedback section component in `apps/frontend/components/profile/CredibilitySection.tsx`
-- [ ] T032 [P] [US2] Create Skills List component linked to experiences in `apps/frontend/components/profile/SkillsList.tsx`
-- [ ] T033 [US2] Assemble Dashboard Page in `apps/frontend/app/dashboard/page.tsx`
+- [x] T025 [P] [US2] Implement database queries to fetch full profile with relations in `apps/backend/src/db/queries/profile.go`
+- [x] T026 [P] [US2] Create unit/integration tests for profile queries in `apps/backend/src/db/queries/profile_test.go`
+- [x] T027 [US2] Create `GET /api/profile` handler in `apps/backend/src/api/handlers/profile.go`
+- [x] T028 [US2] Implement frontend API client getProfile method in `apps/frontend/services/api.ts`
+- [x] T029 [P] [US2] Create Profile Header component (Name, Summary) in `apps/frontend/components/profile/ProfileHeader.tsx`
+- [x] T030 [P] [US2] Create Experience List component with "Verified" badges in `apps/frontend/components/profile/ExperienceList.tsx`
+- [x] T031 [P] [US2] Create Credibility/Feedback section component in `apps/frontend/components/profile/CredibilitySection.tsx`
+- [x] T032 [P] [US2] Create Skills List component linked to experiences in `apps/frontend/components/profile/SkillsList.tsx`
+- [x] T033 [US2] Assemble Dashboard Page in `apps/frontend/app/dashboard/page.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -106,11 +106,11 @@ description: "Task list for Profile Generation from References"
 
 ### Implementation for User Story 3
 
-- [ ] T034 [P] [US3] Implement PDF generation service (converting profile struct to PDF layout) in `apps/backend/src/services/generator/cv_pdf.go`
-- [ ] T035 [P] [US3] Create unit tests for PDF generation in `apps/backend/src/services/generator/cv_pdf_test.go`
-- [ ] T036 [US3] Create `GET /api/profile/cv` handler in `apps/backend/src/api/handlers/cv.go`
-- [ ] T037 [US3] Add "Download CV" button to Profile Header in `apps/frontend/components/profile/ProfileHeader.tsx`
-- [ ] T038 [US3] Implement download trigger in frontend `apps/frontend/app/dashboard/page.tsx`
+- [x] T034 [P] [US3] Implement PDF generation service (converting profile struct to PDF layout) in `apps/backend/src/services/generator/cv_pdf.go`
+- [x] T035 [P] [US3] Create unit tests for PDF generation in `apps/backend/src/services/generator/cv_pdf_test.go`
+- [x] T036 [US3] Create `GET /api/profile/cv` handler in `apps/backend/src/api/handlers/cv.go`
+- [x] T037 [US3] Add "Download CV" button to Profile Header in `apps/frontend/components/profile/ProfileHeader.tsx`
+- [x] T038 [US3] Implement download trigger in frontend `apps/frontend/app/dashboard/page.tsx`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -124,14 +124,14 @@ description: "Task list for Profile Generation from References"
 
 ### Implementation for User Story 4
 
-- [ ] T039 [P] [US4] Define LLM prompts for profile tailoring/re-ranking in `apps/backend/src/services/llm/prompts.go`
-- [ ] T040 [US4] Implement tailoring service logic in `apps/backend/src/services/profile/tailor.go`
-- [ ] T041 [P] [US4] Create unit tests for tailoring service in `apps/backend/src/services/profile/tailor_test.go`
-- [ ] T042 [US4] Create `POST /api/profile/tailor` handler in `apps/backend/src/api/handlers/tailor.go`
-- [ ] T043 [P] [US4] Create Job Description input modal/form in `apps/frontend/components/profile/JobDescriptionInput.tsx`
-- [ ] T044 [US4] Update Profile View to support "Tailored Mode" (visual highlights) in `apps/frontend/components/profile/ProfileView.tsx`
-- [ ] T045 [US4] Update CV generation service to support tailored ordering/highlighting in `apps/backend/src/services/generator/cv_pdf.go`
-- [ ] T046 [P] [US4] Update unit tests for tailored CV generation in `apps/backend/src/services/generator/cv_pdf_test.go`
+- [x] T039 [P] [US4] Define LLM prompts for profile tailoring/re-ranking in `apps/backend/src/services/llm/prompts.go`
+- [x] T040 [US4] Implement tailoring service logic in `apps/backend/src/services/profile/tailor.go`
+- [x] T041 [P] [US4] Create unit tests for tailoring service in `apps/backend/src/services/profile/tailor_test.go`
+- [x] T042 [US4] Create `POST /api/profile/tailor` handler in `apps/backend/src/api/handlers/tailor.go`
+- [x] T043 [P] [US4] Create Job Description input modal/form in `apps/frontend/components/profile/JobDescriptionInput.tsx`
+- [x] T044 [US4] Update Profile View to support "Tailored Mode" (visual highlights) in `apps/frontend/components/profile/ProfileView.tsx`
+- [x] T045 [US4] Update CV generation service to support tailored ordering/highlighting in `apps/backend/src/services/generator/cv_pdf.go`
+- [x] T046 [P] [US4] Update unit tests for tailored CV generation in `apps/backend/src/services/generator/cv_pdf_test.go`
 
 ---
 
@@ -139,10 +139,10 @@ description: "Task list for Profile Generation from References"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T047 Verify all linting rules pass in backend and frontend
-- [ ] T048 Ensure error messages are user-friendly across UI
-- [ ] T049 [P] Add basic API documentation (Swagger UI or README)
-- [ ] T050 Verify docker-compose build works for full stack
+- [x] T047 Verify all linting rules pass in backend and frontend
+- [x] T048 Ensure error messages are user-friendly across UI
+- [x] T049 [P] Add basic API documentation (Swagger UI or README)
+- [x] T050 Verify docker-compose build works for full stack
 
 ---
 
