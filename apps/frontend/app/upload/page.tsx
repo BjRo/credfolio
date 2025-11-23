@@ -1,4 +1,4 @@
-import FileUploader from '../../components/upload/FileUploader';
+import FileUploader from "../../components/upload/FileUploader";
 
 export default function UploadPage() {
 	return (
@@ -7,10 +7,10 @@ export default function UploadPage() {
 				Upload Reference Letter
 			</h1>
 			<p className="text-gray-600 dark:text-gray-300 mb-8 text-center max-w-lg">
-				Upload your reference letter (PDF) to automatically generate your Credfolio profile.
+				Upload your reference letter (PDF) to automatically generate your
+				Credfolio profile.
 			</p>
 			<FileUploader />
 		</div>
 	);
 }
-

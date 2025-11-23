@@ -41,4 +41,3 @@ export interface TailoringResult {
 	summary_highlights: string;
 	match_score: number;
 }
-
