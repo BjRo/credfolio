@@ -1,0 +1,29 @@
+# credfolio Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-11-23
+
+## Active Technologies
+
+- Go 1.22.5 (Backend), TypeScript 5.6 (Frontend) (001-profile-from-references)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+npm test && npm run lint
+
+## Code Style
+
+Go 1.22.5 (Backend), TypeScript 5.6 (Frontend): Follow standard conventions
+
+## Recent Changes
+
+- 001-profile-from-references: Added Go 1.22.5 (Backend), TypeScript 5.6 (Frontend)
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

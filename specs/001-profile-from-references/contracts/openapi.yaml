@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: Credfolio API
+  version: 1.0.0
+  description: API for Profile Generation from References
+paths:
+  /api/upload:
+    post:
+      summary: Upload a reference letter
+      operationId: uploadReferenceLetter
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Accepted for processing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [pending, processing]
+
+  /api/profile:
+    get:
+      summary: Get user profile
+      operationId: getProfile
+      responses:
+        '200':
+          description: User profile with experiences and skills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /api/profile/cv:
+    get:
+      summary: Download generated CV
+      operationId: downloadCV
+      parameters:
+        - name: tailored_job_id
+          in: query
+          schema:
+            type: string
+          description: Optional ID of a tailoring job to generate specific CV
+      responses:
+        '200':
+          description: PDF file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /api/profile/tailor:
+    post:
+      summary: Tailor profile to a job description
+      operationId: tailorProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_description:
+                  type: string
+      responses:
+        '200':
+          description: Tailored profile preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+components:
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        full_name:
+          type: string
+        companies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyEntry'
+
+    CompanyEntry:
+      type: object
+      properties:
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkExperience'
+
+    WorkExperience:
+      type: object
+      properties:
+        title:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        description:
+          type: string
+        source:
+          type: string
+          enum: [verified, self_reported]
+        employer_feedback:
+          type: string
+        is_verified:
+          type: boolean
+
