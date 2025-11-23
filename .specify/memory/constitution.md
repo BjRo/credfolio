@@ -24,16 +24,16 @@ For every new feature or code change, ensure all of the following succeed locall
 **Mandatory Pre-PR Checklist:**
 
 1. **Lint is clean** (no errors):
-   - Backend: run `make lint-backend`
-   - Frontend: run `make lint-frontend`
+   - Backend: run `make lint-backend` on root level of the repository
+   - Frontend: run `make lint-frontend` on root level of the repository
 
 2. **Tests pass**:
-   - Backend: run `make test-backend`
-   - Frontend: run `make test-frontend`
+   - Backend: run `make test-backend` on root level of the repository
+   - Frontend: run `make test-frontend` on root level of the repository
 
 3. **Code is properly formatted**:
-   - Backend: run `make fmt-backend`
-   - Frontend: run `make fmt-frontend`
+   - Backend: run `make fmt-backend` on root level of the repository
+   - Frontend: run `make fmt-frontend` on root level of the repository
 
 **Rationale**: Ensures code quality, consistency, and prevents regressions before code review. All PRs MUST pass these gates before submission. If any command fails, fix the reported issues before proceeding.
 

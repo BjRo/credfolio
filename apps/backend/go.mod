@@ -5,13 +5,13 @@ go 1.24.1
 toolchain go1.24.10
 
 require (
-	github.com/dslipak/pdf v0.0.2
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-pdf/fpdf v0.9.0
 	github.com/golang-migrate/migrate/v4 v4.19.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.6
 	github.com/joho/godotenv v1.5.1
+	github.com/ledongthuc/pdf v0.0.0-20250511090121-5959a4027728
 	github.com/pashagolub/pgxmock/v3 v3.4.0
 	github.com/rs/cors v1.11.1
 	github.com/sashabaranov/go-openai v1.41.2

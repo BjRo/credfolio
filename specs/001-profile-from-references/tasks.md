@@ -129,7 +129,7 @@ description: "Task list for Profile Generation from References"
 - [x] T041 [P] [US4] Create unit tests for tailoring service in `apps/backend/src/services/profile/tailor_test.go`
 - [x] T042 [US4] Create `POST /api/profile/tailor` handler in `apps/backend/src/api/handlers/tailor.go`
 - [x] T043 [P] [US4] Create Job Description input modal/form in `apps/frontend/components/profile/JobDescriptionInput.tsx`
-- [x] T044 [US4] Update Profile View to support "Tailored Mode" (visual highlights) in `apps/frontend/components/profile/ProfileView.tsx`
+- [x] T044 [US4] Update Profile View to support "Tailored Mode" (visual highlights) in `apps/frontend/components/profile/DashboardView.tsx`
 - [x] T045 [US4] Update CV generation service to support tailored ordering/highlighting in `apps/backend/src/services/generator/cv_pdf.go`
 - [x] T046 [P] [US4] Update unit tests for tailored CV generation in `apps/backend/src/services/generator/cv_pdf_test.go`
 

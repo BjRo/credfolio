@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/dslipak/pdf"
+	"github.com/ledongthuc/pdf"
 )
 
 type PDFExtractor struct{}
