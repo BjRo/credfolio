@@ -2,10 +2,16 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
+	"path/filepath"
+	"runtime"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -50,3 +56,30 @@ func (db *DB) Close() {
 	}
 }
 
+// RunMigrations runs database migrations
+func RunMigrations(connString string) error {
+	// Resolve path to migrations
+	// Assuming running from apps/backend root
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+	migrationPath := filepath.Join(basepath, "migrations")
+
+	sourceURL := fmt.Sprintf("file://%s", migrationPath)
+
+	m, err := migrate.New(sourceURL, connString)
+	if err != nil {
+		return fmt.Errorf("failed to create migrate instance: %w", err)
+	}
+	defer m.Close()
+
+	if err := m.Up(); err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			slog.Info("database migrations up to date")
+			return nil
+		}
+		return fmt.Errorf("failed to run migrations: %w", err)
+	}
+
+	slog.Info("database migrations applied successfully")
+	return nil
+}

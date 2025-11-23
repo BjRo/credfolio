@@ -32,6 +32,12 @@ func main() {
 
 	logger.Info("starting backend", "pid", os.Getpid(), "port", port)
 
+	// Run migrations
+	if err := db.RunMigrations(dbURL); err != nil {
+		logger.Error("failed to run migrations", "error", err)
+		os.Exit(1)
+	}
+
 	// Database
 	database, err := db.Connect(dbURL)
 	if err != nil {

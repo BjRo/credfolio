@@ -57,6 +57,7 @@ func (s *Service) ProcessUpload(ctx context.Context, userID uuid.UUID, filename 
 	defer file.Close()
 
 	stat, _ := file.Stat()
+	fmt.Printf("DEBUG: Processing file %s, size: %d bytes\n", path, stat.Size())
 
 	// 3. Extract
 	data, err := s.extractor.Extract(ctx, file, stat.Size())

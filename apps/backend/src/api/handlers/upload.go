@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/credfolio/apps/backend/src/services/profile"
@@ -35,6 +36,7 @@ func (h *UploadHandler) HandleUpload(w http.ResponseWriter, r *http.Request) {
 
 	// Process
 	if err := h.Service.ProcessUpload(r.Context(), userID, header.Filename, file); err != nil {
+		slog.Error("upload processing failed", "error", err, "user_id", userID, "filename", header.Filename)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

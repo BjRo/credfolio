@@ -1,10 +1,11 @@
 package extractor
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 
-	"github.com/ledongthuc/pdf"
+	"github.com/dslipak/pdf"
 )
 
 type PDFExtractor struct{}
@@ -20,7 +21,7 @@ func (e *PDFExtractor) ExtractText(r io.ReaderAt, size int64) (string, error) {
 		return "", fmt.Errorf("failed to open pdf: %w", err)
 	}
 
-	var content string
+	var buf bytes.Buffer
 	// Iterate over all pages
 	numPages := f.NumPage()
 	for i := 1; i <= numPages; i++ {
@@ -34,8 +35,9 @@ func (e *PDFExtractor) ExtractText(r io.ReaderAt, size int64) (string, error) {
 			// Log warning? For now just continue
 			continue
 		}
-		content += text + "\n"
+		buf.WriteString(text)
+		buf.WriteString("\n")
 	}
 
-	return content, nil
+	return buf.String(), nil
 }
