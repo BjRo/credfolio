@@ -15,10 +15,29 @@ describe("FileUploader", () => {
     expect(
       screen.getByText(/Drag & Drop or Click to Upload/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/PDF files only/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDF, Text, or Markdown/i)).toBeInTheDocument();
   });
 
-  it("shows error for non-PDF files", async () => {
+  it("shows error for invalid files", async () => {
+    render(<FileUploader />);
+    const input = screen.getByLabelText(/Drag & Drop or Click to Upload/i);
+
+    const file = new File(["dummy content"], "test.jpg", {
+      type: "image/jpeg",
+    });
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Only PDF, Text, or Markdown files are supported/i)
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("accepts text files", async () => {
+    const mockUpload = vi.mocked(uploadReferenceLetter);
+    mockUpload.mockResolvedValueOnce({ status: "processing", user_id: "123" });
+
     render(<FileUploader />);
     const input = screen.getByLabelText(/Drag & Drop or Click to Upload/i);
 
@@ -27,9 +46,11 @@ describe("FileUploader", () => {
     });
     fireEvent.change(input, { target: { files: [file] } });
 
+    expect(screen.getByText(/Uploading.../i)).toBeInTheDocument();
+
     await waitFor(() => {
       expect(
-        screen.getByText(/Only PDF files are supported/i)
+        screen.getByText(/File uploaded successfully! Processing.../i)
       ).toBeInTheDocument();
     });
   });

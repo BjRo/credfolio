@@ -1,5 +1,7 @@
-export default function CredibilitySection({ companies }: { companies: any[] }) {
-	const verifiedRoles = companies?.flatMap(c => c.roles || []).filter((r: any) => r.is_verified) || [];
+import type { CompanyEntry } from '../../types';
+
+export default function CredibilitySection({ companies }: { companies: CompanyEntry[] }) {
+	const verifiedRoles = companies?.flatMap(c => c.roles || []).filter((r) => r.is_verified) || [];
 	const verifiedCount = verifiedRoles.length;
     const totalRoles = companies?.flatMap(c => c.roles || []).length || 0;
 

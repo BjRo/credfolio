@@ -1,4 +1,6 @@
-export default function ProfileHeader({ profile }: { profile: any }) {
+import type { UserProfile } from '../../types';
+
+export default function ProfileHeader({ profile }: { profile: UserProfile }) {
 	if (!profile) return null;
 
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';

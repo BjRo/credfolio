@@ -1,3 +1,5 @@
+import type { UserProfile, TailoringResult } from '../types';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export async function uploadReferenceLetter(file: File): Promise<{ status: string; user_id: string }> {
@@ -17,7 +19,7 @@ export async function uploadReferenceLetter(file: File): Promise<{ status: strin
 	return res.json();
 }
 
-export async function getProfile(userID: string): Promise<any> {
+export async function getProfile(userID: string): Promise<UserProfile> {
 	const res = await fetch(`${API_URL}/api/profile?user_id=${userID}`);
 	if (!res.ok) {
 		throw new Error('Failed to fetch profile');
@@ -25,7 +27,7 @@ export async function getProfile(userID: string): Promise<any> {
 	return res.json();
 }
 
-export async function tailorProfile(userID: string, jobDescription: string): Promise<any> {
+export async function tailorProfile(userID: string, jobDescription: string): Promise<TailoringResult> {
 	const res = await fetch(`${API_URL}/api/profile/tailor`, {
 		method: 'POST',
 		headers: {

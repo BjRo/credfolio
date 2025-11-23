@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from 'react';
+import type { TailoringResult } from '../../types';
 import { tailorProfile } from '../../services/api';
 
-export default function JobDescriptionInput({ userID, onTailored }: { userID: string, onTailored: (result: any) => void }) {
+export default function JobDescriptionInput({ userID, onTailored }: { userID: string, onTailored: (result: TailoringResult) => void }) {
 	const [jd, setJd] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');

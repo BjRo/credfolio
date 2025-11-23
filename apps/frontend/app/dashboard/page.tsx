@@ -1,4 +1,5 @@
 import { getProfile } from '../../services/api';
+import type { UserProfile } from '../../types';
 import DashboardView from '../../components/profile/DashboardView';
 
 export default async function DashboardPage({
@@ -20,7 +21,7 @@ export default async function DashboardPage({
 		);
 	}
 
-	let profile;
+	let profile: UserProfile;
 	try {
 		profile = await getProfile(userID);
 	} catch (e) {

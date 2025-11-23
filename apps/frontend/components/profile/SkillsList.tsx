@@ -1,4 +1,6 @@
-export default function SkillsList({ skills, highlightIDs }: { skills: any[]; highlightIDs?: string[] }) {
+import type { Skill } from '../../types';
+
+export default function SkillsList({ skills, highlightIDs }: { skills?: Skill[]; highlightIDs?: string[] }) {
 	if (!skills || skills.length === 0) return null;
 	return (
 		<div className="flex flex-wrap gap-2">

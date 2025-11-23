@@ -8,17 +8,26 @@ export default function FileUploader() {
 	const [message, setMessage] = useState('');
 
 	const handleFile = async (file: File) => {
-		if (file.type !== 'application/pdf') {
+		// Allow PDF, plain text, and Markdown
+		const validTypes = ['application/pdf', 'text/plain', 'text/markdown'];
+		const validExtensions = ['.pdf', '.txt', '.md'];
+
+		const hasValidType = validTypes.includes(file.type);
+		const hasValidExt = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+
+		if (!hasValidType && !hasValidExt) {
 			setStatus('error');
-			setMessage('Only PDF files are supported');
+			setMessage('Only PDF, Text, or Markdown files are supported');
 			return;
 		}
 
 		setStatus('uploading');
 		try {
-			await uploadReferenceLetter(file);
+			const res = await uploadReferenceLetter(file);
 			setStatus('success');
 			setMessage('File uploaded successfully! Processing...');
+            // Optional: redirect to dashboard or show link
+            // window.location.href = `/dashboard?user_id=${res.user_id}`;
 		} catch (err) {
 			setStatus('error');
 			setMessage('Upload failed. Please try again.');
@@ -27,7 +36,7 @@ export default function FileUploader() {
 
 	const onDrop = (e: React.DragEvent) => {
 		e.preventDefault();
-		if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+		if (e.dataTransfer.files?.[0]) {
 			handleFile(e.dataTransfer.files[0]);
 		}
 	};
@@ -37,7 +46,7 @@ export default function FileUploader() {
 	};
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) {
+		if (e.target.files?.[0]) {
 			handleFile(e.target.files[0]);
 		}
 	};
@@ -51,14 +60,14 @@ export default function FileUploader() {
 			>
 				<input
 					type="file"
-					accept=".pdf"
+					accept=".pdf,.txt,.md"
 					className="hidden"
 					id="file-upload"
 					onChange={onChange}
 				/>
 				<label htmlFor="file-upload" className="cursor-pointer block w-full h-full">
 					<div className="text-lg mb-2 font-medium">Drag & Drop or Click to Upload</div>
-					<div className="text-sm text-gray-500">PDF files only</div>
+					<div className="text-sm text-gray-500">PDF, Text, or Markdown</div>
 				</label>
 			</div>
 
@@ -74,4 +83,3 @@ export default function FileUploader() {
 		</div>
 	);
 }
-

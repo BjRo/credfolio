@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from 'react';
+import type { UserProfile, TailoringResult } from '../../types';
 import ProfileHeader from './ProfileHeader';
 import ExperienceList from './ExperienceList';
 import CredibilitySection from './CredibilitySection';
 import JobDescriptionInput from './JobDescriptionInput';
 
-export default function DashboardView({ profile, userID }: { profile: any; userID: string }) {
-	const [tailoring, setTailoring] = useState<any>(null);
+export default function DashboardView({ profile, userID }: { profile: UserProfile; userID: string }) {
+	const [tailoring, setTailoring] = useState<TailoringResult | null>(null);
 
-	const handleTailored = (res: any) => {
+	const handleTailored = (res: TailoringResult) => {
 		setTailoring(res);
 	};
 
