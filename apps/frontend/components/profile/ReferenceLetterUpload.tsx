@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { uploadReferenceLetter } from "../../lib/api/referenceLetters";
 import { getErrorMessage } from "../../lib/utils/errorMessages";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ReferenceLetterUpload({
 	onUploadComplete,
@@ -41,7 +42,7 @@ export default function ReferenceLetterUpload({
 			</p>
 
 			<div className="flex items-center gap-4">
-				<label className="block">
+				<label className="block flex-1">
 					<span className="sr-only">Choose file</span>
 					<input
 						type="file"
@@ -58,7 +59,10 @@ export default function ReferenceLetterUpload({
 					/>
 				</label>
 				{uploading && (
-					<span className="text-sm text-gray-500">Uploading...</span>
+					<div className="flex items-center gap-2 text-sm text-gray-600">
+						<LoadingSpinner size="sm" className="text-indigo-600" />
+						<span>Uploading and processing...</span>
+					</div>
 				)}
 			</div>
 

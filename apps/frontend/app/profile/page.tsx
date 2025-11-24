@@ -5,6 +5,7 @@ import { getProfile } from "../../lib/api/profile";
 import type { Profile } from "../../lib/api/generated/models/Profile";
 import ProfileView from "../../components/profile/ProfileView";
 import DownloadCVButton from "../../components/profile/DownloadCVButton";
+import ProgressIndicator from "../../components/profile/ProgressIndicator";
 import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function ProfilePage() {
@@ -33,10 +34,10 @@ export default function ProfilePage() {
 	if (loading) {
 		return (
 			<div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
-				<div className="text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto" />
-					<p className="mt-4 text-gray-600">Loading profile...</p>
-				</div>
+				<ProgressIndicator
+					message="Loading your profile..."
+					subMessage="Please wait while we fetch your profile data."
+				/>
 			</div>
 		);
 	}
