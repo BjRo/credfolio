@@ -147,3 +147,38 @@ func (m *MockReferenceLetterRepository) Delete(ctx context.Context, id uuid.UUID
 	args := m.Called(ctx, id)
 	return args.Error(0)
 }
+
+type MockJobMatchRepository struct {
+	mock.Mock
+}
+
+func (m *MockJobMatchRepository) Create(ctx context.Context, jobMatch *domain.JobMatch) error {
+	args := m.Called(ctx, jobMatch)
+	return args.Error(0)
+}
+
+func (m *MockJobMatchRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.JobMatch, error) {
+	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*domain.JobMatch), args.Error(1)
+}
+
+func (m *MockJobMatchRepository) GetByProfileID(ctx context.Context, profileID uuid.UUID) ([]*domain.JobMatch, error) {
+	args := m.Called(ctx, profileID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*domain.JobMatch), args.Error(1)
+}
+
+func (m *MockJobMatchRepository) Update(ctx context.Context, jobMatch *domain.JobMatch) error {
+	args := m.Called(ctx, jobMatch)
+	return args.Error(0)
+}
+
+func (m *MockJobMatchRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}

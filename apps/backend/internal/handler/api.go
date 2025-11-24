@@ -14,6 +14,7 @@ import (
 // API implements generated.ServerInterface
 type API struct {
 	ProfileService      *service.ProfileService
+	TailoringService    *service.TailoringService
 	ReferenceLetterRepo repository.ReferenceLetterRepository
 	PDFExtractor        pdf.ExtractorInterface
 	Logger              *logger.Logger
@@ -21,12 +22,14 @@ type API struct {
 
 func NewAPI(
 	profileService *service.ProfileService,
+	tailoringService *service.TailoringService,
 	referenceLetterRepo repository.ReferenceLetterRepository,
 	pdfExtractor pdf.ExtractorInterface,
 	logger *logger.Logger,
 ) *API {
 	return &API{
 		ProfileService:      profileService,
+		TailoringService:    tailoringService,
 		ReferenceLetterRepo: referenceLetterRepo,
 		PDFExtractor:        pdfExtractor,
 		Logger:              logger,
@@ -37,9 +40,7 @@ func NewAPI(
 var _ generated.ServerInterface = (*API)(nil)
 
 // TailorProfile implements generated.ServerInterface
-func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
+// Implementation is in profile_handler.go
 
 // DownloadCV implements generated.ServerInterface
 func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId openapi_types.UUID) {

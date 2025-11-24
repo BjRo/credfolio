@@ -151,7 +151,11 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 	return profile, nil
 }
 
-// GetProfile retrieves a profile by user ID
+// GetProfile retrieves a profile by user ID with all associated data
+// This includes:
+// - WorkExperiences with CredibilityHighlights (aggregated from all reference letters)
+// - Skills aggregated across all work experiences (ManyToMany relationship ensures deduplication)
+// - JobMatches if any
 func (s *ProfileService) GetProfile(ctx context.Context, userID uuid.UUID) (*domain.Profile, error) {
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {

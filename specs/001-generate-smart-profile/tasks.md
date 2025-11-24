@@ -111,15 +111,15 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 ### Implementation for User Story 2
 
-- [ ] T048 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T049 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
-- [ ] T050 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
-- [ ] T051 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
-- [ ] T052 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
-- [ ] T053 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
-- [ ] T054 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
-- [ ] T055 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T056 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
+- [X] T048 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T049 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
+- [X] T050 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
+- [X] T051 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
+- [X] T052 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
+- [X] T053 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
+- [X] T054 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
+- [X] T055 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
+- [X] T056 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - users can generate profiles and view them with credibility highlights.
 
@@ -133,19 +133,19 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 ### Implementation for User Story 3
 
-- [ ] T057 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
-- [ ] T058 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
-- [ ] T059 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
-- [ ] T060 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
-- [ ] T061 [US3] Implement match score calculation in TailoringService in apps/frontend/lib/api/profile.ts
-- [ ] T062 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T063 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
-- [ ] T064 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
-- [ ] T065 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
-- [ ] T066 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
-- [ ] T067 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
-- [ ] T068 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T069 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
+- [X] T057 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
+- [X] T058 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
+- [X] T059 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
+- [X] T060 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
+- [X] T061 [US3] Implement match score calculation in TailoringService in apps/frontend/lib/api/profile.ts
+- [X] T062 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T063 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
+- [X] T064 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
+- [X] T065 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
+- [X] T066 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
+- [X] T067 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
+- [X] T068 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
+- [X] T069 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1, 2, AND 3 should all work independently - users can generate profiles, view them, and tailor them to job descriptions.
 

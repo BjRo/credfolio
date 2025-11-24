@@ -27,6 +27,7 @@ func TestUploadReferenceLetter(t *testing.T) {
 	mockWorkExpRepo := new(mocks.MockWorkExperienceRepository)
 	mockCredibilityRepo := new(mocks.MockCredibilityHighlightRepository)
 	mockRefLetterRepo := new(mocks.MockReferenceLetterRepository)
+	mockJobMatchRepo := new(mocks.MockJobMatchRepository)
 	mockLLMProvider := new(servicemocks.MockLLMProvider)
 	mockPDFExtractor := new(pdfmocks.MockPDFExtractor)
 	appLogger := logger.New()
@@ -41,7 +42,14 @@ func TestUploadReferenceLetter(t *testing.T) {
 		appLogger,
 	)
 
-	api := handler.NewAPI(svc, mockRefLetterRepo, mockPDFExtractor, appLogger)
+	tailoringSvc := service.NewTailoringService(
+		mockProfileRepo,
+		mockJobMatchRepo,
+		mockLLMProvider,
+		appLogger,
+	)
+
+	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockPDFExtractor, appLogger)
 
 	userID := uuid.New()
 
@@ -101,6 +109,7 @@ func TestGenerateProfile(t *testing.T) {
 	mockWorkExpRepo := new(mocks.MockWorkExperienceRepository)
 	mockCredibilityRepo := new(mocks.MockCredibilityHighlightRepository)
 	mockRefLetterRepo := new(mocks.MockReferenceLetterRepository)
+	mockJobMatchRepo := new(mocks.MockJobMatchRepository)
 	mockLLMProvider := new(servicemocks.MockLLMProvider)
 	mockPDFExtractor := new(pdfmocks.MockPDFExtractor)
 	appLogger := logger.New()
@@ -115,7 +124,14 @@ func TestGenerateProfile(t *testing.T) {
 		appLogger,
 	)
 
-	api := handler.NewAPI(svc, mockRefLetterRepo, mockPDFExtractor, appLogger)
+	tailoringSvc := service.NewTailoringService(
+		mockProfileRepo,
+		mockJobMatchRepo,
+		mockLLMProvider,
+		appLogger,
+	)
+
+	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockPDFExtractor, appLogger)
 
 	userID := uuid.New()
 	letterID := uuid.New()

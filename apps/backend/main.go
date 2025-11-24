@@ -59,6 +59,9 @@ func main() {
 	}
 	pdfExtractor := pdf.NewExtractor()
 
+	// Initialize repositories
+	jobMatchRepo := repository.NewGormJobMatchRepository(repository.GetDB())
+
 	// Initialize services
 	profileService := service.NewProfileService(
 		profileRepo,
@@ -70,9 +73,17 @@ func main() {
 		appLogger,
 	)
 
+	tailoringService := service.NewTailoringService(
+		profileRepo,
+		jobMatchRepo,
+		llmProvider,
+		appLogger,
+	)
+
 	// Initialize API handler
 	apiHandler := handler.NewAPI(
 		profileService,
+		tailoringService,
 		referenceLetterRepo,
 		pdfExtractor,
 		appLogger,
