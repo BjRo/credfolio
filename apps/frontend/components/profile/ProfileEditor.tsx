@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DefaultService } from "../../lib/api/generated";
 import type { Profile } from "../../lib/api/generated/models/Profile";
+import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function ProfileEditor({
 	profile,
@@ -24,7 +25,7 @@ export default function ProfileEditor({
 			alert("Profile updated!");
 		} catch (err) {
 			console.error(err);
-			alert("Failed to update profile.");
+			alert(getErrorMessage(err));
 		} finally {
 			setUpdating(false);
 		}

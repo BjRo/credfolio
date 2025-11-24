@@ -9,6 +9,7 @@ import JobDescriptionInput from "../../../components/profile/JobDescriptionInput
 import TailoredProfileView from "../../../components/profile/TailoredProfileView";
 import ProfileView from "../../../components/profile/ProfileView";
 import DownloadCVButton from "../../../components/profile/DownloadCVButton";
+import { getErrorMessage } from "../../../lib/utils/errorMessages";
 
 export default function TailorProfilePage() {
 	const [profile, setProfile] = useState<Profile | null>(null);
@@ -24,7 +25,7 @@ export default function TailorProfilePage() {
 			setProfile(data);
 		} catch (err) {
 			console.error("Failed to load profile:", err);
-			setError("Failed to load profile. Please try again.");
+			setError(getErrorMessage(err));
 		}
 	};
 
@@ -40,7 +41,7 @@ export default function TailorProfilePage() {
 			await loadProfile();
 		} catch (err) {
 			console.error("Failed to tailor profile:", err);
-			setError("Failed to tailor profile. Please try again.");
+			setError(getErrorMessage(err));
 		} finally {
 			setLoading(false);
 		}

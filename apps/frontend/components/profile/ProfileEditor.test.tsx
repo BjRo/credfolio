@@ -64,7 +64,7 @@ describe("ProfileEditor", () => {
 		fireEvent.click(saveButton);
 
 		await waitFor(() => {
-			expect(alertMock).toHaveBeenCalledWith("Failed to update profile.");
+			expect(alertMock).toHaveBeenCalledWith("Update failed");
 		});
 
 		alertMock.mockRestore();

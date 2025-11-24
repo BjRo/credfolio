@@ -178,8 +178,8 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T080 [P] Update API documentation in apps/backend/api/openapi.yaml with complete request/response examples
-- [ ] T081 [P] Add comprehensive error messages and user feedback throughout frontend components
+- [X] T080 [P] Update API documentation in apps/backend/api/openapi.yaml with complete request/response examples
+- [X] T081 [P] Add comprehensive error messages and user feedback throughout frontend components
 - [ ] T082 Code cleanup and refactoring: Extract common patterns in service layer
 - [ ] T083 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
 - [ ] T084 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/

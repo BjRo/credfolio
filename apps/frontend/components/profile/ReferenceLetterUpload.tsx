@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { uploadReferenceLetter } from "../../lib/api/referenceLetters";
+import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function ReferenceLetterUpload({
 	onUploadComplete,
@@ -25,7 +26,7 @@ export default function ReferenceLetterUpload({
 			// Reset input - might be tricky with React state, but we can leave it populated or clear it via ref if needed.
 			// For simple UI, just leaving it is fine or user can upload another.
 		} catch (err) {
-			setError("Failed to upload reference letter. Please try again.");
+			setError(getErrorMessage(err));
 			console.error(err);
 		} finally {
 			setUploading(false);

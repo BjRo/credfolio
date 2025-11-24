@@ -15,7 +15,7 @@ import (
 func (a *API) GenerateProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	if userID == uuid.Nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		writeErrorResponse(w, http.StatusUnauthorized, ErrorCodeUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -23,12 +23,12 @@ func (a *API) GenerateProfile(w http.ResponseWriter, r *http.Request) {
 	letters, err := a.ReferenceLetterRepo.GetByUserID(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get reference letters: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeDatabaseError, "Internal server error")
 		return
 	}
 
 	if len(letters) == 0 {
-		http.Error(w, "No reference letters found", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeNoReferenceLetters, "No reference letters found")
 		return
 	}
 
@@ -40,7 +40,7 @@ func (a *API) GenerateProfile(w http.ResponseWriter, r *http.Request) {
 	profile, err := a.ProfileService.GenerateProfileFromReferences(r.Context(), userID, letterIDs)
 	if err != nil {
 		a.Logger.Error("Failed to generate profile: %v", err)
-		http.Error(w, "Failed to generate profile", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeProfileGenerationFailed, "Failed to generate profile")
 		return
 	}
 
@@ -56,20 +56,20 @@ func (a *API) GenerateProfile(w http.ResponseWriter, r *http.Request) {
 func (a *API) GetProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	if userID == uuid.Nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		writeErrorResponse(w, http.StatusUnauthorized, ErrorCodeUnauthorized, "Unauthorized")
 		return
 	}
 
 	profile, err := a.ProfileService.GetProfile(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get profile: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeDatabaseError, "Internal server error")
 		return
 	}
 
 	// If profile doesn't exist (might return nil or error depending on repo), handle it.
 	if profile == nil {
-		http.Error(w, "Profile not found", http.StatusNotFound)
+		writeErrorResponse(w, http.StatusNotFound, ErrorCodeProfileNotFound, "Profile not found")
 		return
 	}
 
@@ -84,13 +84,13 @@ func (a *API) GetProfile(w http.ResponseWriter, r *http.Request) {
 func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	if userID == uuid.Nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		writeErrorResponse(w, http.StatusUnauthorized, ErrorCodeUnauthorized, "Unauthorized")
 		return
 	}
 
 	var input generated.ProfileInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequestBody, "Invalid request body")
 		return
 	}
 
@@ -98,12 +98,12 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	profile, err := a.ProfileService.GetProfile(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get profile: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeDatabaseError, "Internal server error")
 		return
 	}
 
 	if profile == nil {
-		http.Error(w, "Profile not found", http.StatusNotFound)
+		writeErrorResponse(w, http.StatusNotFound, ErrorCodeProfileNotFound, "Profile not found")
 		return
 	}
 
@@ -117,7 +117,7 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 	if err := a.ProfileService.UpdateProfile(r.Context(), profile); err != nil {
 		a.Logger.Error("Failed to update profile: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeProfileUpdateFailed, "Failed to update profile")
 		return
 	}
 

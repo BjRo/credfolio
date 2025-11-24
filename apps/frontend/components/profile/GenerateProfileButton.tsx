@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { generateProfile } from "../../lib/api/profile";
 import type { Profile } from "../../lib/api/generated/models/Profile";
+import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function GenerateProfileButton({
 	onGenerateComplete,
@@ -20,7 +21,7 @@ export default function GenerateProfileButton({
 			const profile = await generateProfile();
 			if (onGenerateComplete) onGenerateComplete(profile);
 		} catch (err) {
-			setError("Failed to generate profile. Please try again.");
+			setError(getErrorMessage(err));
 			console.error(err);
 		} finally {
 			setGenerating(false);

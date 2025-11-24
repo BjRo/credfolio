@@ -61,9 +61,7 @@ describe("ReferenceLetterUpload", () => {
 		fireEvent.change(input, { target: { files: [file] } });
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(/Failed to upload reference letter/i),
-			).toBeInTheDocument();
+			expect(screen.getByText(/Upload failed/i)).toBeInTheDocument();
 		});
 
 		consoleErrorSpy.mockRestore();

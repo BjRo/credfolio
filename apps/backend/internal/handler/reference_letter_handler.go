@@ -19,21 +19,21 @@ import (
 func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	if userID == uuid.Nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		writeErrorResponse(w, http.StatusUnauthorized, ErrorCodeUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Parse multipart form (10MB max)
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		a.Logger.Error("Failed to parse multipart form: %v", err)
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequestBody, "Invalid request body")
 		return
 	}
 
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		a.Logger.Error("Failed to get file from form: %v", err)
-		http.Error(w, "File is required", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeMissingField, "File is required")
 		return
 	}
 	defer func() {
@@ -46,7 +46,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	uploadDir := "tmp/uploads"
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		a.Logger.Error("Failed to create upload directory: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Internal server error")
 		return
 	}
 
@@ -57,7 +57,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	dst, err := os.Create(filePath)
 	if err != nil {
 		a.Logger.Error("Failed to create destination file: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Internal server error")
 		return
 	}
 	defer func() {
@@ -68,7 +68,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := io.Copy(dst, file); err != nil {
 		a.Logger.Error("Failed to copy file content: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Internal server error")
 		return
 	}
 
@@ -79,7 +79,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	savedFile, err := os.Open(filePath)
 	if err != nil {
 		a.Logger.Error("Failed to open saved file for extraction: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Internal server error")
 		return
 	}
 	defer func() {
@@ -91,7 +91,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	extractedText, err := a.PDFExtractor.ExtractText(savedFile)
 	if err != nil {
 		a.Logger.Error("Failed to extract text from PDF: %v", err)
-		http.Error(w, "Failed to process PDF", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodePDFExtractionFailed, "Failed to process PDF")
 		return
 	}
 
@@ -112,7 +112,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 
 	if err := a.ReferenceLetterRepo.Create(r.Context(), letter); err != nil {
 		a.Logger.Error("Failed to create reference letter record: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeDatabaseError, "Internal server error")
 		return
 	}
 

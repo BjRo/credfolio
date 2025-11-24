@@ -5,6 +5,7 @@ import { getProfile } from "../../lib/api/profile";
 import type { Profile } from "../../lib/api/generated/models/Profile";
 import ProfileView from "../../components/profile/ProfileView";
 import DownloadCVButton from "../../components/profile/DownloadCVButton";
+import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function ProfilePage() {
 	const [profile, setProfile] = useState<Profile | null>(null);
@@ -20,7 +21,7 @@ export default function ProfilePage() {
 				setProfile(data);
 			} catch (err) {
 				console.error("Failed to load profile:", err);
-				setError("Failed to load profile. Please try again.");
+				setError(getErrorMessage(err));
 			} finally {
 				setLoading(false);
 			}

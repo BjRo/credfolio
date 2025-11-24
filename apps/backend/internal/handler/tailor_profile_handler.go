@@ -14,20 +14,20 @@ import (
 func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(r)
 	if userID == uuid.Nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		writeErrorResponse(w, http.StatusUnauthorized, ErrorCodeUnauthorized, "Unauthorized")
 		return
 	}
 
 	// Parse request body
 	var body generated.TailorProfileJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequestBody, "Invalid request body")
 		return
 	}
 
 	// Validate job description
 	if body.JobDescription == nil || *body.JobDescription == "" {
-		http.Error(w, "job description is required", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeJobDescriptionRequired, "Job description is required")
 		return
 	}
 
@@ -39,7 +39,7 @@ func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		a.Logger.Error("Failed to tailor profile: %v", err)
-		http.Error(w, "Failed to tailor profile: "+err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeProfileTailoringFailed, "Failed to tailor profile")
 		return
 	}
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { downloadCV } from "../../lib/api/profile";
+import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 interface DownloadCVButtonProps {
 	profileId: string;
@@ -37,7 +38,7 @@ export default function DownloadCVButton({
 			document.body.removeChild(a);
 		} catch (err) {
 			console.error("Failed to download CV:", err);
-			setError(err instanceof Error ? err.message : "Failed to download CV");
+			setError(getErrorMessage(err));
 		} finally {
 			setLoading(false);
 		}

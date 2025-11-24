@@ -16,6 +16,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+              example:
+                id: "123e4567-e89b-12d3-a456-426614174000"
+                summary: "Experienced software engineer with expertise in full-stack development"
+                workExperiences:
+                  - id: "223e4567-e89b-12d3-a456-426614174001"
+                    companyName: "Tech Corp"
+                    role: "Senior Software Engineer"
+                    startDate: "2020-01-01"
+                    endDate: "2023-12-31"
+                    description: "Led development of key features"
+                    credibilityHighlights:
+                      - quote: "Outstanding performance and leadership"
+                        sentiment: "POSITIVE"
+                skills: ["TypeScript", "React", "Node.js", "Go"]
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1201
+                message: "Profile not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1501
+                message: "Internal server error"
     put:
       summary: Update profile
       operationId: updateProfile
@@ -25,6 +66,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProfileInput'
+            example:
+              summary: "Updated professional summary"
       responses:
         '200':
           description: Updated successfully
@@ -32,6 +75,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1102
+                message: "Invalid request body"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1201
+                message: "Profile not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1405
+                message: "Failed to update profile"
 
   /reference-letters:
     post:
@@ -47,6 +126,9 @@ paths:
                 file:
                   type: string
                   format: binary
+            encoding:
+              file:
+                contentType: application/pdf
       responses:
         '201':
           description: Uploaded successfully
@@ -54,6 +136,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReferenceLetter'
+              example:
+                id: "323e4567-e89b-12d3-a456-426614174002"
+                fileName: "reference_letter.pdf"
+                uploadDate: "2024-01-15T10:30:00Z"
+                status: "PROCESSED"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1103
+                message: "File is required"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1401
+                message: "Failed to process PDF"
 
   /profile/generate:
     post:
@@ -66,6 +180,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1301
+                message: "No reference letters found"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1403
+                message: "Failed to generate profile"
 
   /profile/tailor:
     post:
@@ -80,6 +221,8 @@ paths:
               properties:
                 jobDescription:
                   type: string
+            example:
+              jobDescription: "We are looking for a Senior Software Engineer with experience in React, TypeScript, and Node.js. The ideal candidate should have 5+ years of experience in full-stack development."
       responses:
         '200':
           description: Tailored profile created
@@ -87,6 +230,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobMatch'
+              example:
+                id: "423e4567-e89b-12d3-a456-426614174003"
+                matchScore: 0.85
+                tailoredSummary: "Highly qualified candidate with strong alignment to job requirements"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1302
+                message: "Job description is required"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1404
+                message: "Failed to tailor profile"
 
   /profile/{profileId}/cv:
     get:
@@ -99,6 +273,15 @@ paths:
           schema:
             type: string
             format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: jobMatchId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Optional job match ID for tailored CV
+          example: "423e4567-e89b-12d3-a456-426614174003"
       responses:
         '200':
           description: PDF File
@@ -107,6 +290,51 @@ paths:
               schema:
                 type: string
                 format: binary
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1106
+                message: "Invalid jobMatchId"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1001
+                message: "Unauthorized"
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1002
+                message: "Forbidden"
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1201
+                message: "Profile not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_id: 1402
+                message: "Failed to generate CV"
 
 components:
   schemas:
@@ -211,6 +439,24 @@ components:
           format: uuid
         matchScore:
           type: number
+          format: float
+          minimum: 0
+          maximum: 1
         tailoredSummary:
           type: string
+
+    ErrorResponse:
+      type: object
+      required:
+        - error_id
+        - message
+      properties:
+        error_id:
+          type: integer
+          description: Numeric error identifier for programmatic error handling
+          example: 1301
+        message:
+          type: string
+          description: Human-readable error message
+          example: "No reference letters found"
 

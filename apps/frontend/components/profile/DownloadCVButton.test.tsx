@@ -150,7 +150,9 @@ describe("DownloadCVButton", () => {
 		fireEvent.click(button);
 
 		await waitFor(() => {
-			expect(screen.getByText(/Failed to download CV/i)).toBeInTheDocument();
+			expect(
+				screen.getByText(/An unexpected error occurred/i),
+			).toBeInTheDocument();
 		});
 	});
 });

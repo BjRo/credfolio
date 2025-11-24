@@ -56,9 +56,7 @@ describe("GenerateProfileButton", () => {
 		fireEvent.click(button);
 
 		await waitFor(() => {
-			expect(
-				screen.getByText(/Failed to generate profile/i),
-			).toBeInTheDocument();
+			expect(screen.getByText(/Generation failed/i)).toBeInTheDocument();
 			expect(button).not.toBeDisabled();
 		});
 
