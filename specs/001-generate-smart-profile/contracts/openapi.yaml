@@ -1,0 +1,216 @@
+openapi: 3.0.3
+info:
+  title: Credfolio API
+  version: 1.0.0
+  description: API for Smart Profile Generation and Credibility
+
+paths:
+  /profile:
+    get:
+      summary: Get current user's profile
+      operationId: getProfile
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+    put:
+      summary: Update profile
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+  /reference-letters:
+    post:
+      summary: Upload a reference letter
+      operationId: uploadReferenceLetter
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferenceLetter'
+
+  /profile/generate:
+    post:
+      summary: Generate profile from uploaded letters
+      operationId: generateProfile
+      responses:
+        '200':
+          description: Generation started/completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+  /profile/tailor:
+    post:
+      summary: Create a tailored profile for a job description
+      operationId: tailorProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jobDescription:
+                  type: string
+      responses:
+        '200':
+          description: Tailored profile created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobMatch'
+
+  /profile/{profileId}/cv:
+    get:
+      summary: Download CV as PDF
+      operationId: downloadCV
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: PDF File
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        summary:
+          type: string
+        workExperiences:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkExperience'
+        skills:
+          type: array
+          items:
+            type: string
+
+    ProfileInput:
+      type: object
+      properties:
+        summary:
+          type: string
+        workExperiences:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkExperienceInput'
+        skills:
+          type: array
+          items:
+            type: string
+
+    WorkExperience:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyName:
+          type: string
+        role:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        description:
+          type: string
+        credibilityHighlights:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredibilityHighlight'
+
+    WorkExperienceInput:
+      type: object
+      properties:
+        companyName:
+          type: string
+        role:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        description:
+          type: string
+
+    CredibilityHighlight:
+      type: object
+      properties:
+        quote:
+          type: string
+        sentiment:
+          type: string
+          enum: [POSITIVE, NEUTRAL]
+
+    ReferenceLetter:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        uploadDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+
+    JobMatch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        matchScore:
+          type: number
+        tailoredSummary:
+          type: string
+
