@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/google/uuid"
@@ -24,6 +25,7 @@ func (r *GormProfileRepository) Create(ctx context.Context, profile *domain.Prof
 }
 
 // GetByID retrieves a profile by ID
+// Returns an error if the profile is not found (used after creation, so should exist)
 func (r *GormProfileRepository) GetByID(ctx context.Context, id uuid.UUID) (*domain.Profile, error) {
 	var profile domain.Profile
 	err := r.db.WithContext(ctx).
@@ -48,6 +50,9 @@ func (r *GormProfileRepository) GetByUserID(ctx context.Context, userID uuid.UUI
 		Preload("JobMatches").
 		First(&profile, "user_id = ?", userID).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // Return nil profile, nil error for "not found"
+		}
 		return nil, err
 	}
 	return &profile, nil

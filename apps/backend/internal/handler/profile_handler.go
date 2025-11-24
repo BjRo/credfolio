@@ -172,13 +172,23 @@ func (a *API) toGeneratedProfile(profile *domain.Profile) generated.Profile {
 		}
 		workExps = append(workExps, weResp)
 	}
-	resp.WorkExperiences = &workExps
+	if len(workExps) > 0 {
+		resp.WorkExperiences = &workExps
+	} else {
+		emptyWorkExps := []generated.WorkExperience{}
+		resp.WorkExperiences = &emptyWorkExps
+	}
 
 	var skills []string
 	for _, s := range profile.Skills {
 		skills = append(skills, s.Name)
 	}
-	resp.Skills = &skills
+	if len(skills) > 0 {
+		resp.Skills = &skills
+	} else {
+		emptySkills := []string{}
+		resp.Skills = &emptySkills
+	}
 
 	return resp
 }

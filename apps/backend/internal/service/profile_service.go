@@ -88,7 +88,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 
 		startDate, err := time.Parse("2006-01-02", profileData.StartDate)
 		if err != nil {
-			s.LogError("Failed to parse start date: %v", err)
+			s.LogError("Failed to parse start date '%s' from letter %s: %v", profileData.StartDate, letterID, err)
 			continue
 		}
 
