@@ -13,10 +13,10 @@ import (
 
 // TailoringService handles profile tailoring to job descriptions
 type TailoringService struct {
+	*BaseService
 	profileRepo  repository.ProfileRepository
 	jobMatchRepo repository.JobMatchRepository
 	llmProvider  LLMProvider
-	logger       *logger.Logger
 }
 
 // NewTailoringService creates a new tailoring service
@@ -27,10 +27,10 @@ func NewTailoringService(
 	logger *logger.Logger,
 ) *TailoringService {
 	return &TailoringService{
+		BaseService:  NewBaseService(logger),
 		profileRepo:  profileRepo,
 		jobMatchRepo: jobMatchRepo,
 		llmProvider:  llmProvider,
-		logger:       logger,
 	}
 }
 
@@ -40,17 +40,17 @@ func (s *TailoringService) TailorProfileToJobDescription(
 	userID uuid.UUID,
 	jobDescription string,
 ) (*domain.JobMatch, error) {
-	s.logger.Info("Tailoring profile for user %s", userID)
+	s.LogOperationStart("Tailoring profile for user %s", userID)
 
 	// Validate job description
-	if strings.TrimSpace(jobDescription) == "" {
-		return nil, fmt.Errorf("job description cannot be empty")
+	if err := s.ValidateNotEmpty(jobDescription, "job description"); err != nil {
+		return nil, err
 	}
 
 	// Get user's profile
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get profile: %w", err)
+		return nil, s.WrapError(err, "failed to get profile")
 	}
 
 	// Convert profile to text format for LLM
@@ -59,7 +59,7 @@ func (s *TailoringService) TailorProfileToJobDescription(
 	// Generate tailored summary and match score using LLM
 	tailoredSummary, matchScore, err := s.llmProvider.TailorProfile(ctx, profileText, jobDescription)
 	if err != nil {
-		return nil, fmt.Errorf("failed to tailor profile: %w", err)
+		return nil, s.WrapError(err, "failed to tailor profile")
 	}
 
 	// Create JobMatch record
@@ -71,10 +71,10 @@ func (s *TailoringService) TailorProfileToJobDescription(
 	}
 
 	if err := s.jobMatchRepo.Create(ctx, jobMatch); err != nil {
-		return nil, fmt.Errorf("failed to create job match: %w", err)
+		return nil, s.WrapError(err, "failed to create job match")
 	}
 
-	s.logger.Info("Created job match %s with score %.2f", jobMatch.ID, matchScore)
+	s.LogOperationComplete("Created job match %s with score %.2f", jobMatch.ID, matchScore)
 	return jobMatch, nil
 }
 

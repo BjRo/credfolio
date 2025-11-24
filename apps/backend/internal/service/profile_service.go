@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/credfolio/apps/backend/internal/domain"
@@ -14,13 +13,13 @@ import (
 
 // ProfileService handles profile generation and management
 type ProfileService struct {
+	*BaseService
 	profileRepo         repository.ProfileRepository
 	workExpRepo         repository.WorkExperienceRepository
 	credibilityRepo     repository.CredibilityHighlightRepository
 	referenceLetterRepo repository.ReferenceLetterRepository
 	llmProvider         LLMProvider
 	pdfExtractor        pdf.ExtractorInterface
-	logger              *logger.Logger
 }
 
 // NewProfileService creates a new profile service
@@ -34,19 +33,19 @@ func NewProfileService(
 	logger *logger.Logger,
 ) *ProfileService {
 	return &ProfileService{
+		BaseService:         NewBaseService(logger),
 		profileRepo:         profileRepo,
 		workExpRepo:         workExpRepo,
 		credibilityRepo:     credibilityRepo,
 		referenceLetterRepo: referenceLetterRepo,
 		llmProvider:         llmProvider,
 		pdfExtractor:        pdfExtractor,
-		logger:              logger,
 	}
 }
 
 // GenerateProfileFromReferences generates a profile from uploaded reference letters
 func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, userID uuid.UUID, referenceLetterIDs []uuid.UUID) (*domain.Profile, error) {
-	s.logger.Info("Starting profile generation for user %s with %d reference letters", userID, len(referenceLetterIDs))
+	s.LogOperationStart("Starting profile generation for user %s with %d reference letters", userID, len(referenceLetterIDs))
 
 	// Get or create profile
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
@@ -56,7 +55,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			UserID: userID,
 		}
 		if err := s.profileRepo.Create(ctx, profile); err != nil {
-			return nil, fmt.Errorf("failed to create profile: %w", err)
+			return nil, s.WrapError(err, "failed to create profile")
 		}
 	}
 
@@ -64,7 +63,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 	for _, letterID := range referenceLetterIDs {
 		letter, err := s.referenceLetterRepo.GetByID(ctx, letterID)
 		if err != nil {
-			s.logger.Error("Failed to get reference letter %s: %v", letterID, err)
+			s.LogError("Failed to get reference letter %s: %v", letterID, err)
 			continue
 		}
 
@@ -73,28 +72,28 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 		if text == "" {
 			// TODO: Extract from PDF file using pdfExtractor
 			// For now, we assume text is already extracted
-			s.logger.Error("Reference letter %s has no extracted text", letterID)
+			s.LogError("Reference letter %s has no extracted text", letterID)
 			continue
 		}
 
 		// Extract structured data using LLM
 		profileData, err := s.llmProvider.ExtractProfileData(ctx, text)
 		if err != nil {
-			s.logger.Error("Failed to extract profile data from letter %s: %v", letterID, err)
+			s.LogError("Failed to extract profile data from letter %s: %v", letterID, err)
 			continue
 		}
 
 		// Extract credibility highlights
 		credibilityData, err := s.llmProvider.ExtractCredibility(ctx, text)
 		if err != nil {
-			s.logger.Error("Failed to extract credibility from letter %s: %v", letterID, err)
+			s.LogError("Failed to extract credibility from letter %s: %v", letterID, err)
 			// Continue even if credibility extraction fails
 		}
 
 		// Parse dates
 		startDate, err := time.Parse("2006-01-02", profileData.StartDate)
 		if err != nil {
-			s.logger.Error("Failed to parse start date: %v", err)
+			s.LogError("Failed to parse start date: %v", err)
 			continue
 		}
 
@@ -118,7 +117,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 		}
 
 		if err := s.workExpRepo.Create(ctx, workExp); err != nil {
-			s.logger.Error("Failed to create work experience: %v", err)
+			s.LogError("Failed to create work experience: %v", err)
 			continue
 		}
 
@@ -132,7 +131,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 					SourceLetterID:   letterID,
 				}
 				if err := s.credibilityRepo.Create(ctx, highlight); err != nil {
-					s.logger.Error("Failed to create credibility highlight: %v", err)
+					s.LogError("Failed to create credibility highlight: %v", err)
 				}
 			}
 		}
@@ -144,10 +143,10 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 	// Reload profile with all associations
 	profile, err = s.profileRepo.GetByID(ctx, profile.ID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to reload profile: %w", err)
+		return nil, s.WrapError(err, "failed to reload profile")
 	}
 
-	s.logger.Info("Profile generation completed for user %s", userID)
+	s.LogOperationComplete("Profile generation completed for user %s", userID)
 	return profile, nil
 }
 
@@ -159,7 +158,7 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 func (s *ProfileService) GetProfile(ctx context.Context, userID uuid.UUID) (*domain.Profile, error) {
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get profile: %w", err)
+		return nil, s.WrapError(err, "failed to get profile")
 	}
 	return profile, nil
 }
@@ -167,7 +166,7 @@ func (s *ProfileService) GetProfile(ctx context.Context, userID uuid.UUID) (*dom
 // UpdateProfile updates an existing profile
 func (s *ProfileService) UpdateProfile(ctx context.Context, profile *domain.Profile) error {
 	if err := s.profileRepo.Update(ctx, profile); err != nil {
-		return fmt.Errorf("failed to update profile: %w", err)
+		return s.WrapError(err, "failed to update profile")
 	}
 	return nil
 }
