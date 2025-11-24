@@ -161,8 +161,15 @@ func SanitizeProfileSummary(value string) string {
 
 func ValidateFileType(mimeType string, filename string) error {
 	allowedMimeTypes := []string{
-		"application/pdf",
-		"application/x-pdf",
+		"text/plain",
+		"text/markdown",
+		"text/md",
+		"text/txt",
+		"text/x-md",
+		"text/x-txt",
+		"text/x-markdown",
+		"text/x-md",
+		"text/x-txt",
 	}
 
 	mimeTypeLower := strings.ToLower(strings.TrimSpace(mimeType))
@@ -175,12 +182,12 @@ func ValidateFileType(mimeType string, filename string) error {
 	}
 
 	ext := strings.ToLower(filepath.Ext(filename))
-	isValidExtension := ext == ".pdf"
+	isValidExtension := ext == ".md" || ext == ".txt" || ext == ".markdown"
 
 	if !isValidMimeType && !isValidExtension {
 		return &ValidationError{
 			ErrorCode: ErrorCodeInvalidFileType,
-			Message:   "file must be a PDF (application/pdf)",
+			Message:   "file must be a txt or md file",
 			Field:     "file",
 		}
 	}

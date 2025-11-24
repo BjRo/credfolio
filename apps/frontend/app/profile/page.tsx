@@ -9,78 +9,78 @@ import ProgressIndicator from "../../components/profile/ProgressIndicator";
 import { getErrorMessage } from "../../lib/utils/errorMessages";
 
 export default function ProfilePage() {
-	const [profile, setProfile] = useState<Profile | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const loadProfile = async () => {
-			try {
-				setLoading(true);
-				setError(null);
-				const data = await getProfile();
-				setProfile(data);
-			} catch (err) {
-				console.error("Failed to load profile:", err);
-				setError(getErrorMessage(err));
-			} finally {
-				setLoading(false);
-			}
-		};
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getProfile();
+        setProfile(data);
+      } catch (err) {
+        console.error("Failed to load profile:", err);
+        setError(getErrorMessage(err));
+      } finally {
+        setLoading(false);
+      }
+    };
 
-		loadProfile();
-	}, []);
+    loadProfile();
+  }, []);
 
-	if (loading) {
-		return (
-			<div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
-				<ProgressIndicator
-					message="Loading your profile..."
-					subMessage="Please wait while we fetch your profile data."
-				/>
-			</div>
-		);
-	}
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+        <ProgressIndicator
+          message="Loading your profile..."
+          subMessage="Please wait while we fetch your profile data."
+        />
+      </div>
+    );
+  }
 
-	if (error) {
-		return (
-			<div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
-				<div className="text-center bg-white p-8 rounded-lg shadow-md">
-					<p className="text-red-600 mb-4">{error}</p>
-					<button
-						type="button"
-						onClick={() => window.location.reload()}
-						className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-					>
-						Retry
-					</button>
-				</div>
-			</div>
-		);
-	}
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center bg-white p-8 rounded-lg shadow-md">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-	if (!profile) {
-		return (
-			<div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
-				<div className="text-center bg-white p-8 rounded-lg shadow-md">
-					<p className="text-gray-600 mb-4">No profile found.</p>
-					<a
-						href="/profile/generate"
-						className="text-indigo-600 hover:text-indigo-700 underline"
-					>
-						Generate your profile
-					</a>
-				</div>
-			</div>
-		);
-	}
+  if (!profile) {
+    return (
+      <div className="max-w-4xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center bg-white p-8 rounded-lg shadow-md">
+          <p className="text-gray-600 mb-4">No profile found.</p>
+          <a
+            href="/profile/generate"
+            className="text-indigo-600 hover:text-indigo-700 underline"
+          >
+            Generate your profile
+          </a>
+        </div>
+      </div>
+    );
+  }
 
-	return (
-		<div className="bg-gray-100 py-8">
-			<div className="max-w-4xl mx-auto px-4 mb-4 flex justify-end">
-				{profile.id && <DownloadCVButton profileId={profile.id} />}
-			</div>
-			<ProfileView profile={profile} />
-		</div>
-	);
+  return (
+    <div className="bg-gray-100 py-8">
+      <div className="max-w-4xl mx-auto px-4 mb-4 flex justify-end">
+        {profile.id && <DownloadCVButton profileId={profile.id} />}
+      </div>
+      <ProfileView profile={profile} />
+    </div>
+  );
 }

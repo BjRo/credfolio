@@ -102,7 +102,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 
 	savedFile, err := os.Open(filePath)
 	if err != nil {
-		a.Logger.Error("Failed to open saved file for extraction: %v", err)
+		a.Logger.Error("Failed to open saved file for reading: %v", err)
 		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Internal server error")
 		return
 	}
@@ -112,12 +112,13 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	extractedText, err := a.PDFExtractor.ExtractText(savedFile)
+	extractedTextBytes, err := io.ReadAll(savedFile)
 	if err != nil {
-		a.Logger.Error("Failed to extract text from PDF: %v", err)
-		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodePDFExtractionFailed, "Failed to process PDF")
+		a.Logger.Error("Failed to read text from file: %v", err)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeInternalServerError, "Failed to read file content")
 		return
 	}
+	extractedText := string(extractedTextBytes)
 
 	status := domain.ReferenceLetterStatusPending
 	if extractedText != "" {

@@ -108,11 +108,12 @@ The frontend will be available at `http://localhost:3000`
 ## 6. Verification
 
 1. Check backend health: `curl http://localhost:8080/healthz`
-2. View API documentation: Open `http://localhost:8080/swagger` in your browser
    - Interactive Swagger UI for exploring and testing API endpoints
-   - OpenAPI spec available at `http://localhost:8080/openapi.json`
-3. Check frontend: Open `http://localhost:3000` in your browser
+2. Check frontend: Open `http://localhost:3000` in your browser
+3. Check `http://localhost:3000/profile/generate`
 4. Test API endpoints using the frontend UI, Swagger UI, or curl:
+   - View API documentation: Open `http://localhost:8080/docs` in your browser
+   - OpenAPI spec available at `http://localhost:8080/docs.json`
    - Upload reference letter: `POST http://localhost:8080/reference-letters`
    - Generate profile: `POST http://localhost:8080/profile/generate`
    - Get profile: `GET http://localhost:8080/profile`

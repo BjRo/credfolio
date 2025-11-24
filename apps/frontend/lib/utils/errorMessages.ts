@@ -22,7 +22,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 	1101: "Invalid request: Please check your input and try again.",
 	1102: "Invalid request body: The request format is incorrect.",
 	1103: "Missing required field: Please fill in all required fields.",
-	1104: "Invalid file type: Only PDF files are accepted.",
+	1104: "Invalid file type: Only txt or md files are accepted.",
 	1105: "File too large: Please upload a file smaller than 10MB.",
 	1106: "Invalid job match ID: The provided job match ID is not valid.",
 	1107: "Profile ID mismatch: The profile ID does not match.",
@@ -39,7 +39,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 	1303: "Job match mismatch: The job match does not belong to this profile.",
 
 	// Processing Errors (1400-1499)
-	1401: "Failed to process PDF: Unable to extract text from the uploaded file. Please ensure it's a valid PDF.",
+	1401: "Failed to process document: Unable to extract text from the uploaded file",
 	1402: "Failed to generate CV: Unable to create the PDF file. Please try again.",
 	1403: "Profile generation failed: Unable to generate your profile. Please try again or contact support if the issue persists.",
 	1404: "Profile tailoring failed: Unable to match your profile to the job description. Please try again.",
