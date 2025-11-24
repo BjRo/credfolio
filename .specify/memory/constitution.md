@@ -19,9 +19,15 @@ Follow-up TODOs:
 
 ### I. Definition of Done (NON-NEGOTIABLE)
 
-For every new feature or code change, ensure all of the following succeed locally before opening a PR. For changes that affect only the backend or only the frontend, you may run the commands only for the affected side, unless you suspect cross-cutting impact.
+For every new feature or code change, ensure all of the following succeed locally before calling a feature done.
 
-**Mandatory Pre-PR Checklist:**
+THIS IS NOT NEGOTIABLE.
+
+For changes that affect only the backend or only the frontend, you may run the commands only for the affected side, unless you suspect cross-cutting impact.
+
+ALWAYS RUN THE VERIFICATION TOOLS FROM THE PROJECT ROOT.
+
+**Mandatory Verification Checklist:**
 
 1. **Lint is clean** (no errors):
    - Backend: run `make lint-backend`
@@ -36,26 +42,6 @@ For every new feature or code change, ensure all of the following succeed locall
    - Frontend: run `make fmt-frontend`
 
 **Rationale**: Ensures code quality, consistency, and prevents regressions before code review. All PRs MUST pass these gates before submission. If any command fails, fix the reported issues before proceeding.
-
-**Makefile Quick Reference:**
-
-Available commands from repository root:
-- `setup`: Install JS/TS deps (pnpm) and Go tools (golangci-lint, air)
-- `dev`: Start database (Docker Compose) and run all apps in dev mode in parallel
-- `build`: Build all apps
-- `start`: Start all apps in production mode (where applicable)
-- `typecheck`: Run type checking across the monorepo
-- `test-backend`: Run Go tests in `apps/backend`
-- `test-frontend`: Run Vitest tests in `apps/frontend`
-- `test`: Run backend tests first, then frontend tests
-- `lint-backend`: Run `golangci-lint` in `apps/backend` (tidies modules first)
-- `lint-frontend`: Run Biome lint in `apps/frontend`
-- `lint`: Run backend lint first, then frontend lint
-- `fmt-backend`: Run `gofmt -s -w` and, if available, `goimports -w` in `apps/backend`
-- `fmt-frontend`: Run Biome format in `apps/frontend`
-- `fmt`: Format backend first, then frontend
-- `db-up`: Start Postgres and pgAdmin via Docker Compose (host ports: Postgres 55432, pgAdmin 8081)
-- `db-down`: Stop and remove DB containers and volumes
 
 ### II. Architecture Decision Records (ADR)
 

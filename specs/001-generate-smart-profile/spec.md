@@ -17,7 +17,7 @@ As a Job Seeker, I want to upload my past reference letters so that my professio
 
 **Acceptance Scenarios**:
 
-1. **Given** a user with no profile data, **When** they upload a valid PDF reference letter, **Then** the system extracts the company name, role, dates, and key skills.
+1. **Given** a user with no profile data, **When** they upload a valid reference letter, **Then** the system extracts the company name, role, dates, and key skills.
 2. **Given** an uploaded reference letter, **When** processing is complete, **Then** the system populates a "Credibility" section with positive quotes or sentiment summaries from the text.
 3. **Given** the generated profile, **When** the user reviews it, **Then** they can edit or delete any extracted information.
 
@@ -70,7 +70,6 @@ As a Job Seeker, I want to download my standard or tailored profile as a formatt
 
 ### Edge Cases
 
-- What happens when a reference letter is handwritten or low-quality scan? (Assume OCR failure handling or rejection).
 - How does the system handle conflicting dates or roles from different letters? (User should resolve, or show all).
 - What happens if the Job Description is too short or vague? (System provides best-effort match or asks for more info).
 - What if the reference letter is in a language other than English? (Assume MVP supports English only or standard major languages).
@@ -79,7 +78,7 @@ As a Job Seeker, I want to download my standard or tailored profile as a formatt
 
 ### Functional Requirements
 
-- **FR-001**: System MUST allow users to upload reference letters in PDF, DOCX, and TXT formats.
+- **FR-001**: System MUST allow users to upload reference letters in TXT or Markdown format
 - **FR-002**: System MUST extract structured data from reference letters: Company Name, Job Title, Employment Dates, Skills, and Achievements.
 - **FR-003**: System MUST extract "Credibility Indicators" (positive sentiment, specific praise quotes) from reference letters.
 - **FR-004**: System MUST provide an interface for users to review, edit, and approve extracted data.
@@ -101,7 +100,7 @@ As a Job Seeker, I want to download my standard or tailored profile as a formatt
 
 - Users already have accounts and are authenticated.
 - Reference letters are in supported languages (initially English).
-- The extraction technology (OCR/AI) is available as a service or module.
+- The extraction technology AI is available as a service or module.
 
 ## Success Criteria *(mandatory)*
 
