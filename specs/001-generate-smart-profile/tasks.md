@@ -29,13 +29,13 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create backend project structure per implementation plan in apps/backend/internal/domain, apps/backend/internal/service, apps/backend/internal/repository, apps/backend/internal/handler
-- [ ] T002 Create frontend project structure per implementation plan in apps/frontend/app/profile, apps/frontend/components/profile, apps/frontend/lib/api
-- [ ] T003 [P] Initialize Go dependencies in apps/backend/go.mod: gorm.io/gorm, gorm.io/driver/postgres, github.com/go-chi/chi, github.com/openai/openai-go, github.com/johnfercher/maroto/v2, github.com/ledongthuc/pdf, github.com/oapi-codegen/oapi-codegen/v2
-- [ ] T004 [P] Configure backend linting and formatting tools (golangci-lint, gofmt) in apps/backend/
-- [ ] T005 [P] Configure frontend linting and formatting tools (biome, prettier) in apps/frontend/
-- [ ] T006 Setup environment configuration management in apps/backend/pkg/config/config.go
-- [ ] T007 [P] Create OpenAPI contract file in apps/backend/api/openapi.yaml from specs/001-generate-smart-profile/contracts/openapi.yaml
+- [X] T001 Create backend project structure per implementation plan in apps/backend/internal/domain, apps/backend/internal/service, apps/backend/internal/repository, apps/backend/internal/handler
+- [X] T002 Create frontend project structure per implementation plan in apps/frontend/app/profile, apps/frontend/components/profile, apps/frontend/lib/api
+- [X] T003 [P] Initialize Go dependencies in apps/backend/go.mod: gorm.io/gorm, gorm.io/driver/postgres, github.com/go-chi/chi, github.com/openai/openai-go, github.com/johnfercher/maroto/v2, github.com/ledongthuc/pdf, github.com/oapi-codegen/oapi-codegen/v2
+- [X] T004 [P] Configure backend linting and formatting tools (golangci-lint, gofmt) in apps/backend/
+- [X] T005 [P] Configure frontend linting and formatting tools (biome, prettier) in apps/frontend/
+- [X] T006 Setup environment configuration management in apps/backend/pkg/config/config.go
+- [X] T007 [P] Create OpenAPI contract file in apps/backend/api/openapi.yaml from specs/001-generate-smart-profile/contracts/openapi.yaml
 
 ---
 
@@ -45,24 +45,24 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T008 Setup PostgreSQL database connection using GORM in apps/backend/internal/repository/db.go
-- [ ] T009 Create base User model (mock/existing) in apps/backend/internal/domain/user.go
-- [ ] T010 [P] Create base Profile model in apps/backend/internal/domain/profile.go
-- [ ] T011 [P] Create base WorkExperience model in apps/backend/internal/domain/work_experience.go
-- [ ] T012 [P] Create base Skill model in apps/backend/internal/domain/skill.go
-- [ ] T013 [P] Create base ReferenceLetter model in apps/backend/internal/domain/reference_letter.go
-- [ ] T014 [P] Create base CredibilityHighlight model in apps/backend/internal/domain/credibility_highlight.go
-- [ ] T015 [P] Create base JobMatch model in apps/backend/internal/domain/job_match.go
-- [ ] T016 Setup GORM AutoMigrate for all domain models in apps/backend/internal/repository/migrations.go
-- [ ] T017 [P] Create LLMProvider interface abstraction in apps/backend/internal/service/llm_provider.go
-- [ ] T018 [P] Implement OpenAIProvider struct satisfying LLMProvider interface in apps/backend/pkg/ai/openai_provider.go
-- [ ] T019 [P] Create PDF text extraction service using ledongthuc/pdf in apps/backend/pkg/pdf/extractor.go
-- [ ] T020 [P] Create PDF generation service using maroto in apps/backend/pkg/pdf/generator.go
-- [ ] T021 Setup Chi router and middleware structure in apps/backend/cmd/server/main.go
-- [ ] T022 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go
-- [ ] T023 Configure error handling and logging infrastructure in apps/backend/pkg/logger/logger.go
-- [ ] T024 Generate OpenAPI server stubs using oapi-codegen in apps/backend/api/generated/
-- [ ] T025 Generate TypeScript API client from OpenAPI spec in apps/frontend/lib/api/generated/
+- [X] T008 Setup PostgreSQL database connection using GORM in apps/backend/internal/repository/db.go
+- [X] T009 Create base User model (mock/existing) in apps/backend/internal/domain/user.go
+- [X] T010 [P] Create base Profile model in apps/backend/internal/domain/profile.go
+- [X] T011 [P] Create base WorkExperience model in apps/backend/internal/domain/work_experience.go
+- [X] T012 [P] Create base Skill model in apps/backend/internal/domain/skill.go
+- [X] T013 [P] Create base ReferenceLetter model in apps/backend/internal/domain/reference_letter.go
+- [X] T014 [P] Create base CredibilityHighlight model in apps/backend/internal/domain/credibility_highlight.go
+- [X] T015 [P] Create base JobMatch model in apps/backend/internal/domain/job_match.go
+- [X] T016 Setup GORM AutoMigrate for all domain models in apps/backend/internal/repository/migrations.go
+- [X] T017 [P] Create LLMProvider interface abstraction in apps/backend/internal/service/llm_provider.go
+- [X] T018 [P] Implement OpenAIProvider struct satisfying LLMProvider interface in apps/backend/pkg/ai/openai_provider.go
+- [X] T019 [P] Create PDF text extraction service using ledongthuc/pdf in apps/backend/pkg/pdf/extractor.go
+- [X] T020 [P] Create PDF generation service using maroto in apps/backend/pkg/pdf/generator.go
+- [X] T021 Setup Chi router and middleware structure in apps/backend/cmd/server/main.go
+- [X] T022 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go
+- [X] T023 Configure error handling and logging infrastructure in apps/backend/pkg/logger/logger.go
+- [X] T024 Generate OpenAPI server stubs using oapi-codegen in apps/backend/api/generated/
+- [X] T025 Generate TypeScript API client from OpenAPI spec in apps/frontend/lib/api/generated/
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -76,28 +76,28 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 ### Implementation for User Story 1
 
-- [ ] T026 [P] [US1] Create Profile repository interface in apps/backend/internal/repository/profile_repository.go
-- [ ] T027 [P] [US1] Create ReferenceLetter repository interface in apps/backend/internal/repository/reference_letter_repository.go
-- [ ] T028 [P] [US1] Implement GormProfileRepository in apps/backend/internal/repository/gorm_profile_repository.go
-- [ ] T029 [P] [US1] Implement GormReferenceLetterRepository in apps/backend/internal/repository/gorm_reference_letter_repository.go
-- [ ] T030 [US1] Create ProfileService with GenerateProfileFromReferences method in apps/backend/internal/service/profile_service.go
-- [ ] T031 [US1] Implement AI extraction logic in ProfileService that calls LLMProvider to extract structured data (Company, Role, Dates, Skills, Achievements) in apps/backend/internal/service/profile_service.go
-- [ ] T032 [US1] Implement credibility extraction logic that extracts positive sentiment quotes from reference letters in apps/backend/internal/service/profile_service.go
-- [ ] T033 [US1] Create WorkExperience repository interface in apps/backend/internal/repository/work_experience_repository.go
-- [ ] T034 [US1] Implement GormWorkExperienceRepository in apps/backend/internal/repository/gorm_work_experience_repository.go
-- [ ] T035 [US1] Create CredibilityHighlight repository interface in apps/backend/internal/repository/credibility_highlight_repository.go
-- [ ] T036 [US1] Implement GormCredibilityHighlightRepository in apps/backend/internal/repository/gorm_credibility_highlight_repository.go
-- [ ] T037 [US1] Implement file upload handler for reference letters (multipart/form-data) in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T038 [US1] Implement POST /reference-letters endpoint handler in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T039 [US1] Implement POST /profile/generate endpoint handler that processes uploaded reference letters in apps/backend/internal/handler/profile_handler.go
-- [ ] T040 [US1] Add validation and error handling for file uploads and AI extraction in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T041 [US1] Add logging for profile generation operations in apps/backend/internal/service/profile_service.go
-- [ ] T042 [US1] Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx
-- [ ] T043 [US1] Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx
-- [ ] T044 [US1] Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts
-- [ ] T045 [US1] Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts
-- [ ] T046 [US1] Create profile generation page in apps/frontend/app/profile/generate/page.tsx
-- [ ] T047 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/components/profile/ProfileEditor.tsx
+- [X] T026 [P] [US1] Create Profile repository interface in apps/backend/internal/repository/profile_repository.go
+- [X] T027 [P] [US1] Create ReferenceLetter repository interface in apps/backend/internal/repository/reference_letter_repository.go
+- [X] T028 [P] [US1] Implement GormProfileRepository in apps/backend/internal/repository/gorm_profile_repository.go
+- [X] T029 [P] [US1] Implement GormReferenceLetterRepository in apps/backend/internal/repository/gorm_reference_letter_repository.go
+- [X] T030 [US1] Create ProfileService with GenerateProfileFromReferences method in apps/backend/internal/service/profile_service.go
+- [X] T031 [US1] Implement AI extraction logic in ProfileService that calls LLMProvider to extract structured data (Company, Role, Dates, Skills, Achievements) in apps/backend/internal/service/profile_service.go
+- [X] T032 [US1] Implement credibility extraction logic that extracts positive sentiment quotes from reference letters in apps/backend/internal/service/profile_service.go
+- [X] T033 [US1] Create WorkExperience repository interface in apps/backend/internal/repository/work_experience_repository.go
+- [X] T034 [US1] Implement GormWorkExperienceRepository in apps/backend/internal/repository/gorm_work_experience_repository.go
+- [X] T035 [US1] Create CredibilityHighlight repository interface in apps/backend/internal/repository/credibility_highlight_repository.go
+- [X] T036 [US1] Implement GormCredibilityHighlightRepository in apps/backend/internal/repository/gorm_credibility_highlight_repository.go
+- [X] T037 [US1] Implement file upload handler for reference letters (multipart/form-data) in apps/backend/internal/handler/reference_letter_handler.go
+- [X] T038 [US1] Implement POST /reference-letters endpoint handler in apps/backend/internal/handler/reference_letter_handler.go
+- [X] T039 [US1] Implement POST /profile/generate endpoint handler that processes uploaded reference letters in apps/backend/internal/handler/profile_handler.go
+- [X] T040 [US1] Add validation and error handling for file uploads and AI extraction in apps/backend/internal/handler/reference_letter_handler.go
+- [X] T041 [US1] Add logging for profile generation operations in apps/backend/internal/service/profile_service.go
+- [X] T042 [US1] Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx
+- [X] T043 [US1] Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx
+- [X] T044 [US1] Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts
+- [X] T045 [US1] Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts
+- [X] T046 [US1] Create profile generation page in apps/frontend/app/profile/generate/page.tsx
+- [X] T047 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/components/profile/ProfileEditor.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently - users can upload reference letters, generate profiles, and edit extracted data.
 

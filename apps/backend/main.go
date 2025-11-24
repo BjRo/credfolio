@@ -6,8 +6,17 @@ import (
 	"os"
 	"time"
 
+	"github.com/credfolio/apps/backend/api/generated"
+	"github.com/credfolio/apps/backend/internal/handler"
+	authmiddleware "github.com/credfolio/apps/backend/internal/handler/middleware"
+	"github.com/credfolio/apps/backend/internal/repository"
+	"github.com/credfolio/apps/backend/internal/service"
+	"github.com/credfolio/apps/backend/pkg/ai"
+	"github.com/credfolio/apps/backend/pkg/config"
+	"github.com/credfolio/apps/backend/pkg/logger"
+	"github.com/credfolio/apps/backend/pkg/pdf"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
@@ -20,21 +29,71 @@ func main() {
 	_ = godotenv.Load()
 	_ = godotenv.Load(".env.development")
 
-	port := getEnv("PORT", "8080")
+	cfg := config.Load()
+	port := cfg.Port
 	log.Printf("starting backend (pid=%d) on port %s", os.Getpid(), port)
 
+	// Initialize database
+	if err := repository.InitDB(cfg); err != nil {
+		log.Fatalf("failed to initialize database: %v", err)
+	}
+
+	// Run migrations
+	if err := repository.RunMigrations(); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
+	db := repository.GetDB()
+
+	// Initialize repositories
+	profileRepo := repository.NewGormProfileRepository(db)
+	workExpRepo := repository.NewGormWorkExperienceRepository(db)
+	credibilityRepo := repository.NewGormCredibilityHighlightRepository(db)
+	referenceLetterRepo := repository.NewGormReferenceLetterRepository(db)
+
+	// Initialize providers
+	appLogger := logger.New()
+	llmProvider, err := ai.NewOpenAIProvider(cfg.OpenAIKey, "")
+	if err != nil {
+		log.Fatalf("failed to initialize AI provider: %v", err)
+	}
+	pdfExtractor := pdf.NewExtractor()
+
+	// Initialize services
+	profileService := service.NewProfileService(
+		profileRepo,
+		workExpRepo,
+		credibilityRepo,
+		referenceLetterRepo,
+		llmProvider,
+		pdfExtractor,
+		appLogger,
+	)
+
+	// Initialize API handler
+	apiHandler := handler.NewAPI(
+		profileService,
+		referenceLetterRepo,
+		pdfExtractor,
+		appLogger,
+	)
+
 	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
+	r.Use(chimiddleware.RequestID)
+	r.Use(chimiddleware.RealIP)
 	// Custom concise request logger with latency and status code
 	r.Use(requestLogger)
-	r.Use(middleware.Recoverer)
+	r.Use(chimiddleware.Recoverer)
 	r.Use(cors.AllowAll().Handler)
+	r.Use(authmiddleware.MockAuth) // Mock authentication middleware
 
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
+
+	// Register generated API routes
+	generated.HandlerFromMux(apiHandler, r)
 
 	s := &http.Server{
 		Addr:         ":" + port,
@@ -48,14 +107,6 @@ func main() {
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("server error: %v", err)
 	}
-}
-
-func getEnv(key, def string) string {
-	v := os.Getenv(key)
-	if v == "" {
-		return def
-	}
-	return v
 }
 
 // statusRecorder wraps http.ResponseWriter to capture the status code for logging.

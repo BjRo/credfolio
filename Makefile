@@ -45,7 +45,7 @@ typecheck:
 	$(TURBO) run typecheck
 
 test-backend:
-	(cd apps/backend && GOTOOLCHAIN=local go test ./...)
+	(cd apps/backend && go test ./...)
 
 test-frontend:
 	$(TURBO) run test --filter=@credfolio/frontend
@@ -54,10 +54,10 @@ test:
 	$(MAKE) test-backend && $(MAKE) test-frontend
 
 lint-backend:
-	(cd apps/backend && GOTOOLCHAIN=local go mod tidy && GOTOOLCHAIN=local go mod download && GOTOOLCHAIN=local $(GOLANGCI) run)
+	(cd apps/backend && go mod tidy && go mod download && $(GOLANGCI) run)
 
 lint-backend-ci:
-	(cd apps/backend && GOTOOLCHAIN=local $(GOLANGCI) run)
+	(cd apps/backend && $(GOLANGCI) run)
 
 lint-frontend:
 	$(TURBO) run lint --filter=@credfolio/frontend
