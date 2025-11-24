@@ -94,6 +94,16 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate profile summary
+	if err := ValidateProfileSummary(input.Summary); err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+			return
+		}
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequest, "Invalid profile summary")
+		return
+	}
+
 	// Get existing profile
 	profile, err := a.ProfileService.GetProfile(r.Context(), userID)
 	if err != nil {
@@ -107,9 +117,9 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update fields
+	// Update fields with sanitized values
 	if input.Summary != nil {
-		profile.Summary = *input.Summary
+		profile.Summary = SanitizeProfileSummary(*input.Summary)
 	}
 
 	// TODO: Update Work Experiences and Skills

@@ -42,6 +42,17 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	// Validate and sanitize filename
+	sanitizedFilename, err := SanitizeFilename(header.Filename)
+	if err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+			return
+		}
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequest, "Invalid filename")
+		return
+	}
+
 	// Ensure uploads directory exists
 	uploadDir := "tmp/uploads"
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
@@ -50,8 +61,8 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Save file to disk
-	filename := fmt.Sprintf("%s-%s", uuid.New().String(), header.Filename)
+	// Save file to disk with sanitized filename
+	filename := fmt.Sprintf("%s-%s", uuid.New().String(), sanitizedFilename)
 	filePath := filepath.Join(uploadDir, filename)
 
 	dst, err := os.Create(filePath)
@@ -103,7 +114,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 
 	letter := &domain.ReferenceLetter{
 		UserID:        userID,
-		FileName:      header.Filename,
+		FileName:      sanitizedFilename, // Use sanitized filename
 		StoragePath:   filePath,
 		Status:        status,
 		ExtractedText: extractedText,

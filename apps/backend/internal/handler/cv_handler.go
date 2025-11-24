@@ -51,8 +51,12 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 	var jobMatch *domain.JobMatch
 	jobMatchIdStr := r.URL.Query().Get("jobMatchId")
 	if jobMatchIdStr != "" {
-		jobMatchUUID, err := uuid.Parse(jobMatchIdStr)
+		jobMatchUUID, err := ValidateUUID(jobMatchIdStr, "jobMatchId")
 		if err != nil {
+			if valErr, ok := err.(*ValidationError); ok {
+				writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+				return
+			}
 			writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidJobMatchID, "Invalid jobMatchId")
 			return
 		}

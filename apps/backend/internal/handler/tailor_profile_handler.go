@@ -26,16 +26,23 @@ func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate job description
-	if body.JobDescription == nil || *body.JobDescription == "" {
+	if err := ValidateJobDescription(body.JobDescription); err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+			return
+		}
 		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeJobDescriptionRequired, "Job description is required")
 		return
 	}
+
+	// Sanitize job description
+	sanitizedJobDescription := SanitizeJobDescription(*body.JobDescription)
 
 	// Call tailoring service
 	jobMatch, err := a.TailoringService.TailorProfileToJobDescription(
 		r.Context(),
 		userID,
-		*body.JobDescription,
+		sanitizedJobDescription,
 	)
 	if err != nil {
 		a.Logger.Error("Failed to tailor profile: %v", err)

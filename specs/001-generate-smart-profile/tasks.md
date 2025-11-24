@@ -183,7 +183,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [X] T082 Code cleanup and refactoring: Extract common patterns in service layer
 - [X] T083 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
 - [X] T084 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
-- [ ] T085 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
+- [X] T085 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
 - [ ] T086 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
 - [ ] T087 Run quickstart.md validation: Verify all setup steps work end-to-end
 - [ ] T088 [P] Add comprehensive logging for all API endpoints in apps/backend/internal/handler/
