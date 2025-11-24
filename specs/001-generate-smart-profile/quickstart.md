@@ -9,62 +9,99 @@
 
 ## 1. Infrastructure Setup
 
-Start PostgreSQL:
+Create `infra/.env`:
 
-```bash
-docker run --name credfolio-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15
+```ini
+POSTGRES_USER=credfolio
+POSTGRES_PASSWORD=credfolio
+POSTGRES_DB=credfolio
+PGADMIN_DEFAULT_EMAIL=admin@example.com
+PGADMIN_DEFAULT_PASSWORD=adminadmin
 ```
 
-Create the database:
+Start PostgreSQL and pgAdmin:
 
 ```bash
-docker exec -it credfolio-db createdb -U postgres credfolio
+make db-up
 ```
+
+This starts:
+- PostgreSQL on port `55432` (host) → `5432` (container)
+- pgAdmin on port `8081` (host) → `80` (container)
 
 ## 2. Environment Variables
 
 Create `apps/backend/.env`:
 
 ```ini
-DATABASE_URL="host=localhost user=postgres password=postgres dbname=credfolio port=5432 sslmode=disable"
-OPENAI_API_KEY="sk-..."
+DATABASE_URL=postgres://credfolio:credfolio@localhost:55432/credfolio?sslmode=disable
+OPENAI_API_KEY=sk-...
 PORT=8080
 ```
 
-## 3. Backend Setup
+Create `apps/frontend/.env.local`:
 
-Install dependencies & Generate Code:
-
-```bash
-cd apps/backend
-go mod download
-# If using oapi-codegen
-go generate ./...
+```ini
+NEXT_PUBLIC_API_BASE=http://localhost:8080
 ```
 
-Run Backend:
-
-```bash
-make dev-db
-```
-
-## 4. Frontend Setup
+## 3. Project Setup
 
 Install dependencies:
 
 ```bash
-pnpm install
+make setup
 ```
 
-Run Frontend:
+This installs:
+- JavaScript/TypeScript dependencies (pnpm)
+- Go tools (golangci-lint, air)
+
+## 4. Backend Setup
+
+Install Go dependencies:
+
+```bash
+cd apps/backend
+go mod download
+```
+
+Note: Code generation (OpenAPI server stubs) is already done. If you need to regenerate after modifying `apps/backend/api/openapi.yaml`, run:
+
+```bash
+go generate ./...
+```
+
+Run Backend (from repo root):
+
+```bash
+make dev
+```
+
+Or run backend with database startup:
 
 ```bash
 make dev-db
 ```
 
-## 5. Verification
+The backend will be available at `http://localhost:8080`
 
-1. Open `http://localhost:8080/swagger/index.html` to see the API Docs.
-2. Use the "Upload Reference Letter" endpoint to test PDF upload.
-3. Check `http://localhost:3000` for the frontend.
+## 5. Frontend Setup
+
+The frontend dependencies are installed by `make setup`. To run the frontend:
+
+```bash
+make dev
+```
+
+The frontend will be available at `http://localhost:3000`
+
+## 6. Verification
+
+1. Check backend health: `curl http://localhost:8080/healthz`
+2. Check frontend: Open `http://localhost:3000` in your browser
+3. Test API endpoints using the frontend UI or curl:
+   - Upload reference letter: `POST http://localhost:8080/reference-letters`
+   - Generate profile: `POST http://localhost:8080/profile/generate`
+   - Get profile: `GET http://localhost:8080/profile`
 
