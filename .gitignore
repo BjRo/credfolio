@@ -12,9 +12,11 @@ reports/
 
 # Env files
 .env
-.env.*.local
+.env.local
 apps/*/.env
+apps/*/.env.local
 infra/.env
+infra/.env.local
 
 # Editor/OS
 .DS_Store
