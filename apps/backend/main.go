@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -27,7 +28,7 @@ func main() {
 
 	// Load environment from .env files in development if present
 	_ = godotenv.Load()
-	_ = godotenv.Load(".env.development")
+	_ = godotenv.Load(".env.local")
 
 	cfg := config.Load()
 	port := cfg.Port
@@ -104,6 +105,58 @@ func main() {
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
+	})
+
+	// Serve OpenAPI spec as JSON
+	r.Get("/docs.json", func(w http.ResponseWriter, r *http.Request) {
+		swagger, err := generated.GetSwagger()
+		if err != nil {
+			http.Error(w, "Failed to load OpenAPI spec", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(swagger); err != nil {
+			http.Error(w, "Failed to encode OpenAPI spec", http.StatusInternalServerError)
+			return
+		}
+	})
+
+	// Serve Swagger UI
+	r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
+		html := `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Credfolio API Documentation</title>
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
+	<style>
+		html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+		*, *:before, *:after { box-sizing: inherit; }
+		body { margin:0; background: #fafafa; }
+	</style>
+</head>
+<body>
+	<div id="swagger-ui"></div>
+	<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+	<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js"></script>
+	<script>
+		window.onload = function() {
+			window.ui = SwaggerUIBundle({
+				url: "/docs.json",
+				dom_id: "#swagger-ui",
+				presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+				layout: "StandaloneLayout",
+				deepLinking: true,
+				showExtensions: true,
+				showCommonExtensions: true
+			});
+		};
+	</script>
+</body>
+</html>`
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write([]byte(html))
 	})
 
 	// Register generated API routes

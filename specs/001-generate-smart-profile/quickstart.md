@@ -29,6 +29,15 @@ This starts:
 - PostgreSQL on port `55432` (host) → `5432` (container)
 - pgAdmin on port `8081` (host) → `80` (container)
 
+**Important:** If you previously ran the database with different credentials (e.g., `postgres/postgres`), you need to recreate the database volume:
+
+```bash
+make db-down  # Stops and removes containers and volumes
+make db-up    # Starts fresh with credentials from infra/.env
+```
+
+This ensures the database is initialized with the correct user (`credfolio`) from the start.
+
 ## 2. Environment Variables
 
 Create `apps/backend/.env`:
@@ -99,9 +108,46 @@ The frontend will be available at `http://localhost:3000`
 ## 6. Verification
 
 1. Check backend health: `curl http://localhost:8080/healthz`
-2. Check frontend: Open `http://localhost:3000` in your browser
-3. Test API endpoints using the frontend UI or curl:
+2. View API documentation: Open `http://localhost:8080/swagger` in your browser
+   - Interactive Swagger UI for exploring and testing API endpoints
+   - OpenAPI spec available at `http://localhost:8080/openapi.json`
+3. Check frontend: Open `http://localhost:3000` in your browser
+4. Test API endpoints using the frontend UI, Swagger UI, or curl:
    - Upload reference letter: `POST http://localhost:8080/reference-letters`
    - Generate profile: `POST http://localhost:8080/profile/generate`
    - Get profile: `GET http://localhost:8080/profile`
+
+## 7. Troubleshooting
+
+### Database Authentication Error
+
+If you see an error like:
+```
+FATAL: password authentication failed for user "credfolio" (SQLSTATE 28P01)
+```
+
+This usually means the database was initialized with different credentials. Fix it by:
+
+1. **Check `infra/.env`** - Ensure it has:
+   ```ini
+   POSTGRES_USER=credfolio
+   POSTGRES_PASSWORD=credfolio
+   POSTGRES_DB=credfolio
+   ```
+
+2. **Recreate the database** (this will delete existing data):
+   ```bash
+   make db-down
+   make db-up
+   ```
+
+3. **Verify `apps/backend/.env`** exists with:
+   ```ini
+   DATABASE_URL=postgres://credfolio:credfolio@localhost:55432/credfolio?sslmode=disable
+   ```
+
+4. **Test the connection**:
+   ```bash
+   PGPASSWORD=credfolio psql -h localhost -p 55432 -U credfolio -d credfolio -c "SELECT version();"
+   ```
 
