@@ -53,10 +53,12 @@ func main() {
 
 	// Initialize providers
 	appLogger := logger.New()
-	llmProvider, err := ai.NewOpenAIProvider(cfg.OpenAIKey, "")
+	openAIProvider, err := ai.NewOpenAIProvider(cfg.OpenAIKey, "")
 	if err != nil {
 		log.Fatalf("failed to initialize AI provider: %v", err)
 	}
+	// Wrap OpenAI provider with caching to improve performance
+	llmProvider := ai.NewCachedLLMProvider(openAIProvider)
 	pdfExtractor := pdf.NewExtractor()
 
 	// Initialize repositories
