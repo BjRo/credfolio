@@ -8,6 +8,7 @@ import type { JobMatch } from "../../../lib/api/generated/models/JobMatch";
 import JobDescriptionInput from "../../../components/profile/JobDescriptionInput";
 import TailoredProfileView from "../../../components/profile/TailoredProfileView";
 import ProfileView from "../../../components/profile/ProfileView";
+import DownloadCVButton from "../../../components/profile/DownloadCVButton";
 
 export default function TailorProfilePage() {
 	const [profile, setProfile] = useState<Profile | null>(null);
@@ -103,6 +104,16 @@ export default function TailorProfilePage() {
 					>
 						Tailored Profile
 					</button>
+				</div>
+			)}
+
+			{/* Download Button */}
+			{profile?.id && (
+				<div className="mb-4 flex justify-end">
+					<DownloadCVButton
+						profileId={profile.id}
+						jobMatchId={showTailored && jobMatch?.id ? jobMatch.id : undefined}
+					/>
 				</div>
 			)}
 

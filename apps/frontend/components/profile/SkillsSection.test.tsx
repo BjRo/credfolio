@@ -27,4 +27,3 @@ describe("SkillsSection", () => {
 		expect(screen.getByText("React")).toBeInTheDocument();
 	});
 });
-

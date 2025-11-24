@@ -24,7 +24,9 @@ export default function MatchScore({ score }: MatchScoreProps) {
 		<div className="mb-6">
 			<div className="flex items-center justify-between mb-2">
 				<h3 className="text-xl font-bold text-gray-900">Match Score</h3>
-				<span className={`px-3 py-1 rounded-full text-white font-semibold ${colorClass}`}>
+				<span
+					className={`px-3 py-1 rounded-full text-white font-semibold ${colorClass}`}
+				>
 					{percentage}%
 				</span>
 			</div>

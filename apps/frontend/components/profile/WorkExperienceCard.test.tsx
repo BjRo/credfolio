@@ -64,4 +64,3 @@ describe("WorkExperienceCard", () => {
 		expect(screen.getByText("Acme Corp")).toBeInTheDocument();
 	});
 });
-

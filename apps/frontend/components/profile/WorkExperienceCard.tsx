@@ -30,9 +30,7 @@ export default function WorkExperienceCard({
 		<div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-indigo-500">
 			<div className="flex justify-between items-start mb-2">
 				<div>
-					<h3 className="text-xl font-bold text-gray-900">
-						{experience.role}
-					</h3>
+					<h3 className="text-xl font-bold text-gray-900">{experience.role}</h3>
 					<p className="text-lg text-indigo-600 font-medium">
 						{experience.companyName}
 					</p>
@@ -46,10 +44,7 @@ export default function WorkExperienceCard({
 					{experience.description}
 				</p>
 			)}
-			<CredibilityHighlights
-				highlights={experience.credibilityHighlights}
-			/>
+			<CredibilityHighlights highlights={experience.credibilityHighlights} />
 		</div>
 	);
 }
-

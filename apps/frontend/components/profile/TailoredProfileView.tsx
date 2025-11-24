@@ -39,11 +39,12 @@ export default function TailoredProfileView({
 							<p className="text-gray-700 text-lg leading-relaxed">
 								{tailoredSummary}
 							</p>
-							{jobMatch.tailoredSummary && jobMatch.tailoredSummary !== profile.summary && (
-								<p className="mt-3 text-sm text-indigo-600 italic">
-									✓ Summary tailored to highlight relevant experience
-								</p>
-							)}
+							{jobMatch.tailoredSummary &&
+								jobMatch.tailoredSummary !== profile.summary && (
+									<p className="mt-3 text-sm text-indigo-600 italic">
+										✓ Summary tailored to highlight relevant experience
+									</p>
+								)}
 						</div>
 					)}
 				</div>
@@ -72,8 +73,8 @@ export default function TailoredProfileView({
 					<p className="text-sm text-indigo-800">
 						<strong>Note:</strong> This profile has been tailored to emphasize
 						skills and experiences most relevant to the job description. The
-						original profile content is preserved, with emphasis added to
-						highly relevant areas.
+						original profile content is preserved, with emphasis added to highly
+						relevant areas.
 					</p>
 				</div>
 			</div>

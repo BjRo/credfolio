@@ -85,6 +85,7 @@ func main() {
 		profileService,
 		tailoringService,
 		referenceLetterRepo,
+		jobMatchRepo,
 		pdfExtractor,
 		appLogger,
 	)

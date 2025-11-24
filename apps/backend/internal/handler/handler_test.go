@@ -49,7 +49,7 @@ func TestUploadReferenceLetter(t *testing.T) {
 		appLogger,
 	)
 
-	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockPDFExtractor, appLogger)
+	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockJobMatchRepo, mockPDFExtractor, appLogger)
 
 	userID := uuid.New()
 
@@ -131,7 +131,7 @@ func TestGenerateProfile(t *testing.T) {
 		appLogger,
 	)
 
-	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockPDFExtractor, appLogger)
+	api := handler.NewAPI(svc, tailoringSvc, mockRefLetterRepo, mockJobMatchRepo, mockPDFExtractor, appLogger)
 
 	userID := uuid.New()
 	letterID := uuid.New()

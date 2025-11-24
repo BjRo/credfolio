@@ -13,10 +13,10 @@ import (
 
 // TailoringService handles profile tailoring to job descriptions
 type TailoringService struct {
-	profileRepo   repository.ProfileRepository
-	jobMatchRepo  repository.JobMatchRepository
-	llmProvider   LLMProvider
-	logger        *logger.Logger
+	profileRepo  repository.ProfileRepository
+	jobMatchRepo repository.JobMatchRepository
+	llmProvider  LLMProvider
+	logger       *logger.Logger
 }
 
 // NewTailoringService creates a new tailoring service

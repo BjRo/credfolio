@@ -159,16 +159,16 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 ### Implementation for User Story 4
 
-- [ ] T070 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T071 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T072 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T073 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T074 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T075 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
-- [ ] T076 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
-- [ ] T077 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T078 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T079 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
+- [X] T070 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
+- [X] T071 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
+- [X] T072 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
+- [X] T073 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T074 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
+- [X] T075 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
+- [X] T076 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
+- [X] T077 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
+- [X] T078 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
+- [X] T079 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
 
 **Checkpoint**: All user stories should now be independently functional - users can generate profiles, view them with credibility, tailor them to jobs, and download CVs.
 

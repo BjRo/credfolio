@@ -11,7 +11,9 @@ describe("ProfileView", () => {
 		};
 		render(<ProfileView profile={profile} />);
 		expect(screen.getByText("Professional Profile")).toBeInTheDocument();
-		expect(screen.getByText("Experienced software engineer")).toBeInTheDocument();
+		expect(
+			screen.getByText("Experienced software engineer"),
+		).toBeInTheDocument();
 	});
 
 	it("renders profile with skills", () => {
@@ -57,4 +59,3 @@ describe("ProfileView", () => {
 		).toBeInTheDocument();
 	});
 });
-

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getProfile } from "../../lib/api/profile";
 import type { Profile } from "../../lib/api/generated/models/Profile";
 import ProfileView from "../../components/profile/ProfileView";
+import DownloadCVButton from "../../components/profile/DownloadCVButton";
 
 export default function ProfilePage() {
 	const [profile, setProfile] = useState<Profile | null>(null);
@@ -72,6 +73,12 @@ export default function ProfilePage() {
 		);
 	}
 
-	return <ProfileView profile={profile} />;
+	return (
+		<div className="bg-gray-100 py-8">
+			<div className="max-w-4xl mx-auto px-4 mb-4 flex justify-end">
+				{profile.id && <DownloadCVButton profileId={profile.id} />}
+			</div>
+			<ProfileView profile={profile} />
+		</div>
+	);
 }
-

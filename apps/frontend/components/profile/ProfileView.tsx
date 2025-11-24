@@ -40,8 +40,7 @@ export default function ProfileView({ profile }: { profile: Profile }) {
 				)}
 
 				{/* Empty State */}
-				{(!profile.workExperiences ||
-					profile.workExperiences.length === 0) &&
+				{(!profile.workExperiences || profile.workExperiences.length === 0) &&
 					(!profile.skills || profile.skills.length === 0) && (
 						<div className="text-center py-12 text-gray-500">
 							<p>No profile data available yet.</p>
@@ -55,4 +54,3 @@ export default function ProfileView({ profile }: { profile: Profile }) {
 		</div>
 	);
 }
-

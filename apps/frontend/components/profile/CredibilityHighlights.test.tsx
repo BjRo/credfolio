@@ -56,4 +56,3 @@ describe("CredibilityHighlights", () => {
 		expect(screen.getByText(/Second quote/)).toBeInTheDocument();
 	});
 });
-
