@@ -7,7 +7,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 **Input**: Design documents from `/specs/001-generate-smart-profile/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: Tests are NOT included in this task list as they were not explicitly requested in the feature specification.
+**Tests**: Follow the ADRs, add tests for every task. Make sure to run `make fmt` and that `make lint` and `make test` pass for every task.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -21,7 +21,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 - **Monorepo**: `apps/backend/`, `apps/frontend/`
 - **Backend**: `apps/backend/internal/{domain,service,repository,handler}`, `apps/backend/pkg/{ai,pdf}`
-- **Frontend**: `apps/frontend/src/app/profile`, `apps/frontend/src/components/profile`, `apps/frontend/src/lib/api`
+- **Frontend**: `apps/frontend/app/profile`, `apps/frontend/components/profile`, `apps/frontend/lib/api`
 
 ---
 
@@ -30,7 +30,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create backend project structure per implementation plan in apps/backend/internal/domain, apps/backend/internal/service, apps/backend/internal/repository, apps/backend/internal/handler
-- [ ] T002 Create frontend project structure per implementation plan in apps/frontend/src/app/profile, apps/frontend/src/components/profile, apps/frontend/src/lib/api
+- [ ] T002 Create frontend project structure per implementation plan in apps/frontend/app/profile, apps/frontend/components/profile, apps/frontend/lib/api
 - [ ] T003 [P] Initialize Go dependencies in apps/backend/go.mod: gorm.io/gorm, gorm.io/driver/postgres, github.com/go-chi/chi, github.com/openai/openai-go, github.com/johnfercher/maroto/v2, github.com/ledongthuc/pdf, github.com/oapi-codegen/oapi-codegen/v2
 - [ ] T004 [P] Configure backend linting and formatting tools (golangci-lint, gofmt) in apps/backend/
 - [ ] T005 [P] Configure frontend linting and formatting tools (biome, prettier) in apps/frontend/
@@ -62,7 +62,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T022 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go
 - [ ] T023 Configure error handling and logging infrastructure in apps/backend/pkg/logger/logger.go
 - [ ] T024 Generate OpenAPI server stubs using oapi-codegen in apps/backend/api/generated/
-- [ ] T025 Generate TypeScript API client from OpenAPI spec in apps/frontend/src/lib/api/generated/
+- [ ] T025 Generate TypeScript API client from OpenAPI spec in apps/frontend/lib/api/generated/
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -92,12 +92,12 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T039 [US1] Implement POST /profile/generate endpoint handler that processes uploaded reference letters in apps/backend/internal/handler/profile_handler.go
 - [ ] T040 [US1] Add validation and error handling for file uploads and AI extraction in apps/backend/internal/handler/reference_letter_handler.go
 - [ ] T041 [US1] Add logging for profile generation operations in apps/backend/internal/service/profile_service.go
-- [ ] T042 [US1] Create reference letter upload UI component in apps/frontend/src/components/profile/ReferenceLetterUpload.tsx
-- [ ] T043 [US1] Create profile generation trigger UI in apps/frontend/src/components/profile/GenerateProfileButton.tsx
-- [ ] T044 [US1] Create API client method for POST /reference-letters in apps/frontend/src/lib/api/referenceLetters.ts
-- [ ] T045 [US1] Create API client method for POST /profile/generate in apps/frontend/src/lib/api/profile.ts
-- [ ] T046 [US1] Create profile generation page in apps/frontend/src/app/profile/generate/page.tsx
-- [ ] T047 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/src/components/profile/ProfileEditor.tsx
+- [ ] T042 [US1] Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx
+- [ ] T043 [US1] Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx
+- [ ] T044 [US1] Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts
+- [ ] T045 [US1] Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts
+- [ ] T046 [US1] Create profile generation page in apps/frontend/app/profile/generate/page.tsx
+- [ ] T047 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/components/profile/ProfileEditor.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently - users can upload reference letters, generate profiles, and edit extracted data.
 
@@ -113,13 +113,13 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 - [ ] T048 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
 - [ ] T049 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
-- [ ] T050 [US2] Create API client method for GET /profile in apps/frontend/src/lib/api/profile.ts
-- [ ] T051 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/src/components/profile/ProfileView.tsx
-- [ ] T052 [US2] Create CredibilityHighlights section component in apps/frontend/src/components/profile/CredibilityHighlights.tsx
-- [ ] T053 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/src/components/profile/WorkExperienceCard.tsx
-- [ ] T054 [US2] Create Skills aggregation display component in apps/frontend/src/components/profile/SkillsSection.tsx
-- [ ] T055 [US2] Create profile view page in apps/frontend/src/app/profile/page.tsx
-- [ ] T056 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/src/components/profile/ProfileView.tsx
+- [ ] T050 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
+- [ ] T051 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
+- [ ] T052 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
+- [ ] T053 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
+- [ ] T054 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
+- [ ] T055 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
+- [ ] T056 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - users can generate profiles and view them with credibility highlights.
 
@@ -137,15 +137,15 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T058 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
 - [ ] T059 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
 - [ ] T060 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
-- [ ] T061 [US3] Implement match score calculation in TailoringService in apps/frontend/src/lib/api/profile.ts
+- [ ] T061 [US3] Implement match score calculation in TailoringService in apps/frontend/lib/api/profile.ts
 - [ ] T062 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
 - [ ] T063 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
-- [ ] T064 [US3] Create API client method for POST /profile/tailor in apps/frontend/src/lib/api/profile.ts
-- [ ] T065 [US3] Create JobDescriptionInput component in apps/frontend/src/components/profile/JobDescriptionInput.tsx
-- [ ] T066 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/src/components/profile/TailoredProfileView.tsx
-- [ ] T067 [US3] Create MatchScore display component in apps/frontend/src/components/profile/MatchScore.tsx
-- [ ] T068 [US3] Create profile tailoring page in apps/frontend/src/app/profile/tailor/page.tsx
-- [ ] T069 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/src/components/profile/TailoredProfileView.tsx
+- [ ] T064 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
+- [ ] T065 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
+- [ ] T066 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
+- [ ] T067 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
+- [ ] T068 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
+- [ ] T069 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1, 2, AND 3 should all work independently - users can generate profiles, view them, and tailor them to job descriptions.
 
@@ -164,10 +164,10 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T072 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
 - [ ] T073 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
 - [ ] T074 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T075 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/src/lib/api/profile.ts
-- [ ] T076 [US4] Create DownloadCVButton component in apps/frontend/src/components/profile/DownloadCVButton.tsx
-- [ ] T077 [US4] Add download CV functionality to profile view page in apps/frontend/src/app/profile/page.tsx
-- [ ] T078 [US4] Add download CV functionality to tailored profile view in apps/frontend/src/app/profile/tailor/page.tsx
+- [ ] T075 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
+- [ ] T076 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
+- [ ] T077 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
+- [ ] T078 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
 - [ ] T079 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
 
 **Checkpoint**: All user stories should now be independently functional - users can generate profiles, view them with credibility, tailor them to jobs, and download CVs.
@@ -182,7 +182,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T081 [P] Add comprehensive error messages and user feedback throughout frontend components
 - [ ] T082 Code cleanup and refactoring: Extract common patterns in service layer
 - [ ] T083 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
-- [ ] T084 [P] Add loading states and progress indicators for AI operations in apps/frontend/src/components/profile/
+- [ ] T084 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
 - [ ] T085 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
 - [ ] T086 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
 - [ ] T087 Run quickstart.md validation: Verify all setup steps work end-to-end
@@ -246,10 +246,10 @@ Task: "Implement GormWorkExperienceRepository in apps/backend/internal/repositor
 Task: "Implement GormCredibilityHighlightRepository in apps/backend/internal/repository/gorm_credibility_highlight_repository.go"
 
 # Launch frontend components together:
-Task: "Create reference letter upload UI component in apps/frontend/src/components/profile/ReferenceLetterUpload.tsx"
-Task: "Create profile generation trigger UI in apps/frontend/src/components/profile/GenerateProfileButton.tsx"
-Task: "Create API client method for POST /reference-letters in apps/frontend/src/lib/api/referenceLetters.ts"
-Task: "Create API client method for POST /profile/generate in apps/frontend/src/lib/api/profile.ts"
+Task: "Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx"
+Task: "Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx"
+Task: "Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts"
+Task: "Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts"
 ```
 
 ---
