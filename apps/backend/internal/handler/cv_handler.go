@@ -19,10 +19,8 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 		return
 	}
 
-	// Convert OpenAPI UUID to uuid.UUID
 	profileUUID := uuid.UUID(profileId)
 
-	// Get profile
 	profile, err := a.ProfileService.GetProfile(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get profile: %v", err)
@@ -30,24 +28,10 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 		return
 	}
 
-	if profile == nil {
-		writeErrorResponse(w, http.StatusNotFound, ErrorCodeProfileNotFound, "Profile not found")
+	if !a.verifyProfile(w, profile, userID, profileUUID) {
 		return
 	}
 
-	// Verify profile belongs to user
-	if profile.UserID != userID {
-		writeErrorResponse(w, http.StatusForbidden, ErrorCodeForbidden, "Forbidden")
-		return
-	}
-
-	// Verify profile ID matches
-	if profile.ID != profileUUID {
-		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeProfileIDMismatch, "Profile ID mismatch")
-		return
-	}
-
-	// Check for jobMatchId query parameter for tailored CV
 	var jobMatch *domain.JobMatch
 	jobMatchIdStr := r.URL.Query().Get("jobMatchId")
 	if jobMatchIdStr != "" {
@@ -61,7 +45,6 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 			return
 		}
 
-		// Get job match and verify it belongs to this profile
 		jobMatch, err = a.JobMatchRepo.GetByID(r.Context(), jobMatchUUID)
 		if err != nil {
 			a.Logger.Error("Failed to get job match: %v", err)
@@ -69,14 +52,11 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 			return
 		}
 
-		// Verify job match belongs to this profile
-		if jobMatch.BaseProfileID != profileUUID {
-			writeErrorResponse(w, http.StatusForbidden, ErrorCodeJobMatchMismatch, "Job match does not belong to this profile")
+		if !a.verifyJobMatch(w, jobMatch, profileUUID) {
 			return
 		}
 	}
 
-	// Generate PDF
 	cvGenerator := pdf.NewCVGenerator()
 	pdfBytes, err := cvGenerator.GenerateCVFromProfile(profile, jobMatch)
 	if err != nil {
@@ -85,13 +65,42 @@ func (a *API) DownloadCV(w http.ResponseWriter, r *http.Request, profileId opena
 		return
 	}
 
-	// Set headers for PDF download
 	w.Header().Set("Content-Type", "application/pdf")
 	w.Header().Set("Content-Disposition", "attachment; filename=cv.pdf")
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(pdfBytes)))
 
-	// Write PDF
 	if _, err := w.Write(pdfBytes); err != nil {
 		a.Logger.Error("Failed to write PDF response: %v", err)
 	}
+}
+
+// verifyProfile verifies that a profile exists, belongs to the user, and matches the expected profile ID.
+// Returns false if verification fails (and writes error response), true otherwise.
+func (a *API) verifyProfile(w http.ResponseWriter, profile *domain.Profile, userID uuid.UUID, profileUUID uuid.UUID) bool {
+	if profile == nil {
+		writeErrorResponse(w, http.StatusNotFound, ErrorCodeProfileNotFound, "Profile not found")
+		return false
+	}
+
+	if profile.UserID != userID {
+		writeErrorResponse(w, http.StatusForbidden, ErrorCodeForbidden, "Forbidden")
+		return false
+	}
+
+	if profile.ID != profileUUID {
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeProfileIDMismatch, "Profile ID mismatch")
+		return false
+	}
+
+	return true
+}
+
+// verifyJobMatch verifies that a job match belongs to the specified profile.
+// Returns false if verification fails (and writes error response), true otherwise.
+func (a *API) verifyJobMatch(w http.ResponseWriter, jobMatch *domain.JobMatch, profileUUID uuid.UUID) bool {
+	if jobMatch.BaseProfileID != profileUUID {
+		writeErrorResponse(w, http.StatusForbidden, ErrorCodeJobMatchMismatch, "Job match does not belong to this profile")
+		return false
+	}
+	return true
 }

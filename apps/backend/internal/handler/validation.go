@@ -36,7 +36,6 @@ func ValidateString(value *string, fieldName string, minLen, maxLen int, require
 
 	str := *value
 
-	// Check length
 	length := utf8.RuneCountInString(str)
 	if length < minLen {
 		return &ValidationError{
@@ -53,7 +52,6 @@ func ValidateString(value *string, fieldName string, minLen, maxLen int, require
 		}
 	}
 
-	// Check for only whitespace
 	trimmed := strings.TrimSpace(str)
 	if required && len(trimmed) == 0 {
 		return &ValidationError{
@@ -99,14 +97,12 @@ func SanitizeFilename(filename string) (string, error) {
 		}
 	}
 
-	// Get base name to prevent path traversal
 	baseName := filepath.Base(filename)
 
 	// Remove any remaining path separators
 	baseName = strings.ReplaceAll(baseName, "/", "")
 	baseName = strings.ReplaceAll(baseName, "\\", "")
 
-	// Validate length
 	if len(baseName) > 255 {
 		return "", &ValidationError{
 			ErrorCode: ErrorCodeInvalidRequest,
@@ -115,7 +111,6 @@ func SanitizeFilename(filename string) (string, error) {
 		}
 	}
 
-	// Check for invalid characters
 	invalidChars := []string{"..", "<", ">", ":", "\"", "|", "?", "*"}
 	for _, char := range invalidChars {
 		if strings.Contains(baseName, char) {

@@ -42,27 +42,22 @@ func (s *TailoringService) TailorProfileToJobDescription(
 ) (*domain.JobMatch, error) {
 	s.LogOperationStart("Tailoring profile for user %s", userID)
 
-	// Validate job description
 	if err := s.ValidateNotEmpty(jobDescription, "job description"); err != nil {
 		return nil, err
 	}
 
-	// Get user's profile
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {
 		return nil, s.WrapError(err, "failed to get profile")
 	}
 
-	// Convert profile to text format for LLM
 	profileText := s.buildProfileText(profile)
 
-	// Generate tailored summary and match score using LLM
 	tailoredSummary, matchScore, err := s.llmProvider.TailorProfile(ctx, profileText, jobDescription)
 	if err != nil {
 		return nil, s.WrapError(err, "failed to tailor profile")
 	}
 
-	// Create JobMatch record
 	jobMatch := &domain.JobMatch{
 		BaseProfileID:   profile.ID,
 		JobDescription:  jobDescription,
@@ -86,7 +81,6 @@ func (s *TailoringService) buildProfileText(profile *domain.Profile) string {
 		parts = append(parts, fmt.Sprintf("Summary: %s", profile.Summary))
 	}
 
-	// Add work experiences
 	if len(profile.WorkExperiences) > 0 {
 		parts = append(parts, "\nWork Experience:")
 		for _, exp := range profile.WorkExperiences {
@@ -104,7 +98,6 @@ func (s *TailoringService) buildProfileText(profile *domain.Profile) string {
 		}
 	}
 
-	// Add skills
 	if len(profile.Skills) > 0 {
 		skillNames := make([]string, len(profile.Skills))
 		for i, skill := range profile.Skills {

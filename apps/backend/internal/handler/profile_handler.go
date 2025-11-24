@@ -19,7 +19,6 @@ func (a *API) GenerateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get all reference letters for the user
 	letters, err := a.ReferenceLetterRepo.GetByUserID(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get reference letters: %v", err)
@@ -94,7 +93,6 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate profile summary
 	if err := ValidateProfileSummary(input.Summary); err != nil {
 		if valErr, ok := err.(*ValidationError); ok {
 			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
@@ -104,7 +102,6 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get existing profile
 	profile, err := a.ProfileService.GetProfile(r.Context(), userID)
 	if err != nil {
 		a.Logger.Error("Failed to get profile: %v", err)
@@ -117,7 +114,6 @@ func (a *API) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update fields with sanitized values
 	if input.Summary != nil {
 		profile.Summary = SanitizeProfileSummary(*input.Summary)
 	}
@@ -144,7 +140,6 @@ func (a *API) toGeneratedProfile(profile *domain.Profile) generated.Profile {
 		Summary: &profile.Summary,
 	}
 
-	// Map WorkExperiences
 	var workExps []generated.WorkExperience
 	for _, we := range profile.WorkExperiences {
 		id := we.ID
@@ -156,7 +151,6 @@ func (a *API) toGeneratedProfile(profile *domain.Profile) generated.Profile {
 			end = &e
 		}
 
-		// Map Credibility Highlights
 		var highlights []generated.CredibilityHighlight
 		for _, ch := range we.CredibilityHighlights {
 			quote := ch.Quote
@@ -180,7 +174,6 @@ func (a *API) toGeneratedProfile(profile *domain.Profile) generated.Profile {
 	}
 	resp.WorkExperiences = &workExps
 
-	// Map Skills
 	var skills []string
 	for _, s := range profile.Skills {
 		skills = append(skills, s.Name)

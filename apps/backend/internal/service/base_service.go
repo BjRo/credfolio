@@ -48,7 +48,6 @@ func (b *BaseService) ValidateNotEmpty(value, fieldName string) error {
 	if value == "" || len([]rune(value)) == 0 {
 		return fmt.Errorf("%s cannot be empty", fieldName)
 	}
-	// Check if string is only whitespace
 	trimmed := ""
 	for _, r := range value {
 		if r != ' ' && r != '\t' && r != '\n' && r != '\r' {

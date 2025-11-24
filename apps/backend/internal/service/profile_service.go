@@ -47,7 +47,6 @@ func NewProfileService(
 func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, userID uuid.UUID, referenceLetterIDs []uuid.UUID) (*domain.Profile, error) {
 	s.LogOperationStart("Starting profile generation for user %s with %d reference letters", userID, len(referenceLetterIDs))
 
-	// Get or create profile
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {
 		// Profile doesn't exist, create a new one
@@ -67,7 +66,6 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			continue
 		}
 
-		// Extract text from PDF if not already extracted
 		text := letter.ExtractedText
 		if text == "" {
 			// TODO: Extract from PDF file using pdfExtractor
@@ -76,21 +74,18 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			continue
 		}
 
-		// Extract structured data using LLM
 		profileData, err := s.llmProvider.ExtractProfileData(ctx, text)
 		if err != nil {
 			s.LogError("Failed to extract profile data from letter %s: %v", letterID, err)
 			continue
 		}
 
-		// Extract credibility highlights
 		credibilityData, err := s.llmProvider.ExtractCredibility(ctx, text)
 		if err != nil {
 			s.LogError("Failed to extract credibility from letter %s: %v", letterID, err)
 			// Continue even if credibility extraction fails
 		}
 
-		// Parse dates
 		startDate, err := time.Parse("2006-01-02", profileData.StartDate)
 		if err != nil {
 			s.LogError("Failed to parse start date: %v", err)
@@ -105,7 +100,6 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			}
 		}
 
-		// Create work experience
 		workExp := &domain.WorkExperience{
 			ProfileID:         profile.ID,
 			CompanyName:       profileData.CompanyName,
@@ -121,7 +115,6 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			continue
 		}
 
-		// Create credibility highlights
 		if credibilityData != nil {
 			for _, quote := range credibilityData.Quotes {
 				highlight := &domain.CredibilityHighlight{
@@ -140,7 +133,6 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 		// This would require a SkillRepository and ProfileSkill management
 	}
 
-	// Reload profile with all associations
 	profile, err = s.profileRepo.GetByID(ctx, profile.ID)
 	if err != nil {
 		return nil, s.WrapError(err, "failed to reload profile")

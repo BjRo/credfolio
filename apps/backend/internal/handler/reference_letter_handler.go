@@ -42,7 +42,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	// Validate and sanitize filename
 	sanitizedFilename, err := SanitizeFilename(header.Filename)
 	if err != nil {
 		if valErr, ok := err.(*ValidationError); ok {
@@ -53,7 +52,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Ensure uploads directory exists
 	uploadDir := "tmp/uploads"
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		a.Logger.Error("Failed to create upload directory: %v", err)
@@ -61,7 +59,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Save file to disk with sanitized filename
 	filename := fmt.Sprintf("%s-%s", uuid.New().String(), sanitizedFilename)
 	filePath := filepath.Join(uploadDir, filename)
 
@@ -83,10 +80,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract text from PDF
-	// We need to re-open the file or seek to start because io.Copy consumed it
-	// But Extractor.ExtractText takes an io.Reader.
-	// Since we saved it to disk, we can open the saved file.
+	// Re-open the file for extraction since io.Copy consumed the original reader
 	savedFile, err := os.Open(filePath)
 	if err != nil {
 		a.Logger.Error("Failed to open saved file for extraction: %v", err)
@@ -106,7 +100,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create ReferenceLetter record
 	status := domain.ReferenceLetterStatusPending
 	if extractedText != "" {
 		status = domain.ReferenceLetterStatusProcessed
@@ -127,7 +120,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 

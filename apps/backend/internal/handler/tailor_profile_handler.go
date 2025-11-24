@@ -18,14 +18,12 @@ func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse request body
 	var body generated.TailorProfileJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequestBody, "Invalid request body")
 		return
 	}
 
-	// Validate job description
 	if err := ValidateJobDescription(body.JobDescription); err != nil {
 		if valErr, ok := err.(*ValidationError); ok {
 			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
@@ -35,10 +33,8 @@ func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Sanitize job description
 	sanitizedJobDescription := SanitizeJobDescription(*body.JobDescription)
 
-	// Call tailoring service
 	jobMatch, err := a.TailoringService.TailorProfileToJobDescription(
 		r.Context(),
 		userID,
@@ -50,7 +46,6 @@ func (a *API) TailorProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Convert to generated response
 	resp := a.toGeneratedJobMatch(jobMatch)
 
 	w.Header().Set("Content-Type", "application/json")
