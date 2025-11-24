@@ -27,8 +27,9 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
 
 	// Load environment from .env files in development if present
+	// Load .env first, then .env.local with Overload to override .env values
 	_ = godotenv.Load()
-	_ = godotenv.Load(".env.local")
+	_ = godotenv.Overload(".env.local") // Overload forces override of existing env vars
 
 	cfg := config.Load()
 	port := cfg.Port
