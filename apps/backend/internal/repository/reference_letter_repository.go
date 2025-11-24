@@ -12,6 +12,7 @@ type ReferenceLetterRepository interface {
 	Create(ctx context.Context, letter *domain.ReferenceLetter) error
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.ReferenceLetter, error)
 	GetByUserID(ctx context.Context, userID uuid.UUID) ([]*domain.ReferenceLetter, error)
+	GetByContentSHA(ctx context.Context, userID uuid.UUID, contentSHA string) (*domain.ReferenceLetter, error)
 	Update(ctx context.Context, letter *domain.ReferenceLetter) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }

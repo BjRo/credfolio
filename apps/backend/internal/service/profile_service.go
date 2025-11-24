@@ -49,6 +49,9 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 
 	profile, err := s.profileRepo.GetByUserID(ctx, userID)
 	if err != nil {
+		return nil, s.WrapError(err, "failed to get profile")
+	}
+	if profile == nil {
 		// Profile doesn't exist, create a new one
 		profile = &domain.Profile{
 			UserID: userID,
@@ -100,19 +103,41 @@ func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, user
 			}
 		}
 
-		workExp := &domain.WorkExperience{
-			ProfileID:         profile.ID,
-			CompanyName:       profileData.CompanyName,
-			Role:              profileData.Role,
-			StartDate:         startDate,
-			EndDate:           endDate,
-			Description:       profileData.Description,
-			ReferenceLetterID: &letterID,
-		}
+		// Check if a work experience with the same company, role, and dates already exists
+		var workExp *domain.WorkExperience
+		existingWorkExp, err := s.workExpRepo.FindByCompanyRoleAndDates(ctx, profile.ID, profileData.CompanyName, profileData.Role, startDate, endDate)
+		if err == nil && existingWorkExp != nil {
+			// Work experience already exists, update it instead of creating a new one
+			s.LogOperationStart("Work experience already exists for %s at %s, updating existing entry", profileData.Role, profileData.CompanyName)
 
-		if err := s.workExpRepo.Create(ctx, workExp); err != nil {
-			s.LogError("Failed to create work experience: %v", err)
-			continue
+			// Update the existing work experience with new information
+			existingWorkExp.Description = profileData.Description
+			// Update reference letter ID if not already set, or if this is a more recent letter
+			if existingWorkExp.ReferenceLetterID == nil {
+				existingWorkExp.ReferenceLetterID = &letterID
+			}
+
+			if err := s.workExpRepo.Update(ctx, existingWorkExp); err != nil {
+				s.LogError("Failed to update work experience: %v", err)
+				continue
+			}
+			workExp = existingWorkExp
+		} else {
+			// No duplicate found, create new work experience
+			workExp = &domain.WorkExperience{
+				ProfileID:         profile.ID,
+				CompanyName:       profileData.CompanyName,
+				Role:              profileData.Role,
+				StartDate:         startDate,
+				EndDate:           endDate,
+				Description:       profileData.Description,
+				ReferenceLetterID: &letterID,
+			}
+
+			if err := s.workExpRepo.Create(ctx, workExp); err != nil {
+				s.LogError("Failed to create work experience: %v", err)
+				continue
+			}
 		}
 
 		if credibilityData != nil {

@@ -25,6 +25,7 @@ type ReferenceLetter struct {
 	UploadDate    time.Time             `gorm:"not null;default:CURRENT_TIMESTAMP"`
 	Status        ReferenceLetterStatus `gorm:"type:varchar(20);not null;default:'PENDING'"`
 	ExtractedText string                `gorm:"type:text"`
+	ContentSHA    string                `gorm:"type:varchar(64);index"` // SHA256 hash of ExtractedText for deduplication
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

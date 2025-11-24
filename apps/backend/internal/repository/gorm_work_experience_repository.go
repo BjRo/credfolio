@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/google/uuid"
@@ -43,6 +44,27 @@ func (r *GormWorkExperienceRepository) GetByProfileID(ctx context.Context, profi
 		Where("profile_id = ?", profileID).
 		Find(&experiences).Error
 	return experiences, err
+}
+
+// FindByCompanyRoleAndDates finds a work experience by company name, role, and date range
+// This is used for deduplication when processing OpenAI responses
+func (r *GormWorkExperienceRepository) FindByCompanyRoleAndDates(ctx context.Context, profileID uuid.UUID, companyName string, role string, startDate time.Time, endDate *time.Time) (*domain.WorkExperience, error) {
+	var exp domain.WorkExperience
+	query := r.db.WithContext(ctx).
+		Where("profile_id = ? AND company_name = ? AND role = ? AND start_date = ?", profileID, companyName, role, startDate)
+
+	// Match end date: both nil or both have the same value
+	if endDate == nil {
+		query = query.Where("end_date IS NULL")
+	} else {
+		query = query.Where("end_date = ?", *endDate)
+	}
+
+	err := query.First(&exp).Error
+	if err != nil {
+		return nil, err
+	}
+	return &exp, nil
 }
 
 // Update updates an existing work experience

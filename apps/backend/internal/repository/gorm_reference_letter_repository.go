@@ -40,6 +40,18 @@ func (r *GormReferenceLetterRepository) GetByUserID(ctx context.Context, userID 
 	return letters, err
 }
 
+// GetByContentSHA retrieves a reference letter by content SHA for a specific user
+func (r *GormReferenceLetterRepository) GetByContentSHA(ctx context.Context, userID uuid.UUID, contentSHA string) (*domain.ReferenceLetter, error) {
+	var letter domain.ReferenceLetter
+	err := r.db.WithContext(ctx).
+		Where("user_id = ? AND content_sha = ?", userID, contentSHA).
+		First(&letter).Error
+	if err != nil {
+		return nil, err
+	}
+	return &letter, nil
+}
+
 // Update updates an existing reference letter
 func (r *GormReferenceLetterRepository) Update(ctx context.Context, letter *domain.ReferenceLetter) error {
 	return r.db.WithContext(ctx).Save(letter).Error

@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"context"
+	"time"
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/google/uuid"
@@ -66,6 +67,14 @@ func (m *MockWorkExperienceRepository) GetByProfileID(ctx context.Context, profi
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]*domain.WorkExperience), args.Error(1)
+}
+
+func (m *MockWorkExperienceRepository) FindByCompanyRoleAndDates(ctx context.Context, profileID uuid.UUID, companyName string, role string, startDate time.Time, endDate *time.Time) (*domain.WorkExperience, error) {
+	args := m.Called(ctx, profileID, companyName, role, startDate, endDate)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*domain.WorkExperience), args.Error(1)
 }
 
 func (m *MockWorkExperienceRepository) Update(ctx context.Context, we *domain.WorkExperience) error {
@@ -136,6 +145,14 @@ func (m *MockReferenceLetterRepository) GetByUserID(ctx context.Context, userID 
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]*domain.ReferenceLetter), args.Error(1)
+}
+
+func (m *MockReferenceLetterRepository) GetByContentSHA(ctx context.Context, userID uuid.UUID, contentSHA string) (*domain.ReferenceLetter, error) {
+	args := m.Called(ctx, userID, contentSHA)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*domain.ReferenceLetter), args.Error(1)
 }
 
 func (m *MockReferenceLetterRepository) Update(ctx context.Context, letter *domain.ReferenceLetter) error {

@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +16,7 @@ import (
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/credfolio/apps/backend/internal/handler/middleware"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // UploadReferenceLetter implements generated.ServerInterface
@@ -120,6 +124,38 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 	}
 	extractedText := string(extractedTextBytes)
 
+	// Calculate SHA256 hash of the extracted text for deduplication
+	hash := sha256.Sum256([]byte(extractedText))
+	contentSHA := hex.EncodeToString(hash[:])
+
+	// Check if a reference letter with the same content already exists
+	existingLetter, err := a.ReferenceLetterRepo.GetByContentSHA(r.Context(), userID, contentSHA)
+	if err == nil && existingLetter != nil {
+		// Reference letter with same content already exists, return it
+		a.Logger.Info("Reference letter with same content already exists (SHA: %s), returning existing letter", contentSHA)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK) // Return 200 OK instead of 201 Created for existing resource
+
+		statusStr := string(existingLetter.Status)
+		resp := generated.ReferenceLetter{
+			Id:         &existingLetter.ID,
+			FileName:   &existingLetter.FileName,
+			UploadDate: &existingLetter.UploadDate,
+			Status:     &statusStr,
+		}
+
+		if err := json.NewEncoder(w).Encode(resp); err != nil {
+			a.Logger.Error("Failed to encode response: %v", err)
+		}
+		return
+	} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// Error other than "not found" occurred
+		a.Logger.Error("Failed to check for existing reference letter: %v", err)
+		writeErrorResponse(w, http.StatusInternalServerError, ErrorCodeDatabaseError, "Internal server error")
+		return
+	}
+
+	// No duplicate found, create new reference letter
 	status := domain.ReferenceLetterStatusPending
 	if extractedText != "" {
 		status = domain.ReferenceLetterStatusProcessed
@@ -131,6 +167,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		StoragePath:   filePath,
 		Status:        status,
 		ExtractedText: extractedText,
+		ContentSHA:    contentSHA,
 		UploadDate:    time.Now(),
 	}
 
