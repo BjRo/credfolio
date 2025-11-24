@@ -64,15 +64,9 @@ func ValidateString(value *string, fieldName string, minLen, maxLen int, require
 	return nil
 }
 
-// SanitizeString sanitizes a string by:
-// - Trimming whitespace
-// - Escaping HTML entities
-// - Removing control characters (except newlines, tabs, carriage returns)
 func SanitizeString(value string) string {
-	// Trim whitespace
 	sanitized := strings.TrimSpace(value)
 
-	// Remove control characters except newlines, tabs, and carriage returns
 	var builder strings.Builder
 	for _, r := range sanitized {
 		if r == '\n' || r == '\t' || r == '\r' {
@@ -80,10 +74,8 @@ func SanitizeString(value string) string {
 		} else if r >= 32 || r == '\n' || r == '\t' || r == '\r' {
 			builder.WriteRune(r)
 		}
-		// Skip other control characters
 	}
 
-	// HTML escape to prevent XSS
 	return html.EscapeString(builder.String())
 }
 
@@ -98,8 +90,6 @@ func SanitizeFilename(filename string) (string, error) {
 	}
 
 	baseName := filepath.Base(filename)
-
-	// Remove any remaining path separators
 	baseName = strings.ReplaceAll(baseName, "/", "")
 	baseName = strings.ReplaceAll(baseName, "\\", "")
 
@@ -157,9 +147,7 @@ func SanitizeJobDescription(value string) string {
 	return SanitizeString(value)
 }
 
-// ValidateProfileSummary validates a profile summary input
 func ValidateProfileSummary(value *string) error {
-	// Summary is optional, but if provided, should be valid
 	if value == nil {
 		return nil
 	}
@@ -169,4 +157,55 @@ func ValidateProfileSummary(value *string) error {
 // SanitizeProfileSummary sanitizes a profile summary
 func SanitizeProfileSummary(value string) string {
 	return SanitizeString(value)
+}
+
+func ValidateFileType(mimeType string, filename string) error {
+	allowedMimeTypes := []string{
+		"application/pdf",
+		"application/x-pdf",
+	}
+
+	mimeTypeLower := strings.ToLower(strings.TrimSpace(mimeType))
+	isValidMimeType := false
+	for _, allowed := range allowedMimeTypes {
+		if mimeTypeLower == allowed {
+			isValidMimeType = true
+			break
+		}
+	}
+
+	ext := strings.ToLower(filepath.Ext(filename))
+	isValidExtension := ext == ".pdf"
+
+	if !isValidMimeType && !isValidExtension {
+		return &ValidationError{
+			ErrorCode: ErrorCodeInvalidFileType,
+			Message:   "file must be a PDF (application/pdf)",
+			Field:     "file",
+		}
+	}
+
+	return nil
+}
+
+func ValidateFileSize(fileSize int64, maxSizeBytes int64) error {
+	if fileSize <= 0 {
+		return &ValidationError{
+			ErrorCode: ErrorCodeInvalidRequest,
+			Message:   "file is empty",
+			Field:     "file",
+		}
+	}
+
+	if fileSize > maxSizeBytes {
+		maxSizeMB := float64(maxSizeBytes) / (1024 * 1024)
+		fileSizeMB := float64(fileSize) / (1024 * 1024)
+		return &ValidationError{
+			ErrorCode: ErrorCodeFileTooLarge,
+			Message:   fmt.Sprintf("file size (%.2f MB) exceeds maximum allowed size (%.2f MB)", fileSizeMB, maxSizeMB),
+			Field:     "file",
+		}
+	}
+
+	return nil
 }

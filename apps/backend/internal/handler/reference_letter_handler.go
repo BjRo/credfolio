@@ -23,7 +23,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse multipart form (10MB max)
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		a.Logger.Error("Failed to parse multipart form: %v", err)
 		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidRequestBody, "Invalid request body")
@@ -41,6 +40,27 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 			a.Logger.Error("Failed to close uploaded file: %v", err)
 		}
 	}()
+
+	if err := ValidateFileType(header.Header.Get("Content-Type"), header.Filename); err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			a.Logger.Error("Invalid file type: %s (MIME: %s, Filename: %s)", valErr.Message, header.Header.Get("Content-Type"), header.Filename)
+			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+			return
+		}
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeInvalidFileType, "Invalid file type")
+		return
+	}
+
+	const maxFileSize = 10 << 20 // 10MB in bytes
+	if err := ValidateFileSize(header.Size, maxFileSize); err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			a.Logger.Error("File size validation failed: %s (Size: %d bytes)", valErr.Message, header.Size)
+			writeErrorResponse(w, http.StatusBadRequest, valErr.ErrorCode, valErr.Message)
+			return
+		}
+		writeErrorResponse(w, http.StatusBadRequest, ErrorCodeFileTooLarge, "File size exceeds maximum allowed")
+		return
+	}
 
 	sanitizedFilename, err := SanitizeFilename(header.Filename)
 	if err != nil {
@@ -80,7 +100,6 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Re-open the file for extraction since io.Copy consumed the original reader
 	savedFile, err := os.Open(filePath)
 	if err != nil {
 		a.Logger.Error("Failed to open saved file for extraction: %v", err)
@@ -107,7 +126,7 @@ func (a *API) UploadReferenceLetter(w http.ResponseWriter, r *http.Request) {
 
 	letter := &domain.ReferenceLetter{
 		UserID:        userID,
-		FileName:      sanitizedFilename, // Use sanitized filename
+		FileName:      sanitizedFilename,
 		StoragePath:   filePath,
 		Status:        status,
 		ExtractedText: extractedText,
