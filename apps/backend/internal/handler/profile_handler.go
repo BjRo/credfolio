@@ -1,23 +1,31 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/credfolio/apps/backend/internal/handler/middleware"
-	"github.com/credfolio/apps/backend/internal/service"
 	"github.com/credfolio/apps/backend/pkg/logger"
+	"github.com/google/uuid"
 )
+
+// ProfileServicer defines the interface for profile service operations
+type ProfileServicer interface {
+	GenerateProfileFromReferences(ctx context.Context, userID uuid.UUID) (*domain.Profile, error)
+	GetProfile(ctx context.Context, userID uuid.UUID) (*domain.Profile, error)
+	UpdateProfile(ctx context.Context, profile *domain.Profile) error
+}
 
 // ProfileHandler handles profile HTTP requests
 type ProfileHandler struct {
-	profileService *service.ProfileService
+	profileService ProfileServicer
 	logger         *logger.Logger
 }
 
 // NewProfileHandler creates a new profile handler
-func NewProfileHandler(profileService *service.ProfileService) *ProfileHandler {
+func NewProfileHandler(profileService ProfileServicer) *ProfileHandler {
 	return &ProfileHandler{
 		profileService: profileService,
 		logger:         logger.New(logger.LevelInfo),

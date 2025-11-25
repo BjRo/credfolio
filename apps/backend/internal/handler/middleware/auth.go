@@ -68,3 +68,8 @@ func RequireAuth(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// SetUserID adds a user ID to the context (useful for testing)
+func SetUserID(ctx context.Context, userID uuid.UUID) context.Context {
+	return context.WithValue(ctx, UserIDKey, userID)
+}

@@ -104,25 +104,25 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 > **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
 
-- [ ] T043 [P] [US1] Unit test for ProfileRepository when saving profile persists to database in apps/backend/internal/repository/profile_repository_test.go
-- [ ] T044 [P] [US1] Unit test for ProfileRepository when finding by user ID returns profile in apps/backend/internal/repository/profile_repository_test.go
-- [ ] T045 [P] [US1] Unit test for ReferenceLetterRepository when saving reference letter persists to database in apps/backend/internal/repository/reference_letter_repository_test.go
-- [ ] T046 [P] [US1] Unit test for ReferenceLetterRepository when finding by user ID returns letters in apps/backend/internal/repository/reference_letter_repository_test.go
-- [ ] T047 [P] [US1] Unit test for WorkExperienceRepository when saving work experience persists to database in apps/backend/internal/repository/work_experience_repository_test.go
-- [ ] T048 [P] [US1] Unit test for CredibilityHighlightRepository when saving highlight persists to database in apps/backend/internal/repository/credibility_highlight_repository_test.go
-- [ ] T049 [P] [US1] Unit test for ProfileService when generating profile from reference letter extracts structured data in apps/backend/internal/service/profile_service_test.go
-- [ ] T050 [P] [US1] Unit test for ProfileService when LLMProvider returns error propagates error in apps/backend/internal/service/profile_service_test.go
-- [ ] T051 [P] [US1] Unit test for ProfileService when extracting credibility finds positive sentiment quotes in apps/backend/internal/service/profile_service_test.go
-- [ ] T052 [P] [US1] Unit test for ProfileService when reference letter is invalid returns validation error in apps/backend/internal/service/profile_service_test.go
-- [ ] T053 [P] [US1] Unit test for ReferenceLetterHandler when uploading valid file returns reference letter ID in apps/backend/internal/handler/reference_letter_handler_test.go
-- [ ] T054 [P] [US1] Unit test for ReferenceLetterHandler when uploading invalid file type returns error in apps/backend/internal/handler/reference_letter_handler_test.go
-- [ ] T055 [P] [US1] Unit test for ProfileHandler when generating profile returns profile data in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T056 [P] [US1] Unit test for ReferenceLetterUpload component when file selected shows file name in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
-- [ ] T057 [P] [US1] Unit test for ReferenceLetterUpload component when upload fails displays error message in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
-- [ ] T058 [P] [US1] Unit test for GenerateProfileButton component when clicked triggers generation in apps/frontend/components/profile/GenerateProfileButton.test.tsx
-- [ ] T059 [P] [US1] Unit test for ProfileEditor component when editing field updates value in apps/frontend/components/profile/ProfileEditor.test.tsx
-- [ ] T060 [P] [US1] Unit test for API client when posting reference letter sends multipart form data in apps/frontend/lib/api/referenceLetters.test.ts
-- [ ] T061 [P] [US1] Unit test for API client when generating profile calls correct endpoint in apps/frontend/lib/api/profile.test.ts
+- [X] T043 [P] [US1] Unit test for ProfileRepository when saving profile persists to database in apps/backend/internal/repository/profile_repository_test.go
+- [X] T044 [P] [US1] Unit test for ProfileRepository when finding by user ID returns profile in apps/backend/internal/repository/profile_repository_test.go
+- [X] T045 [P] [US1] Unit test for ReferenceLetterRepository when saving reference letter persists to database in apps/backend/internal/repository/reference_letter_repository_test.go
+- [X] T046 [P] [US1] Unit test for ReferenceLetterRepository when finding by user ID returns letters in apps/backend/internal/repository/reference_letter_repository_test.go
+- [X] T047 [P] [US1] Unit test for WorkExperienceRepository when saving work experience persists to database in apps/backend/internal/repository/work_experience_repository_test.go
+- [X] T048 [P] [US1] Unit test for CredibilityHighlightRepository when saving highlight persists to database in apps/backend/internal/repository/credibility_highlight_repository_test.go
+- [X] T049 [P] [US1] Unit test for ProfileService when generating profile from reference letter extracts structured data in apps/backend/internal/service/profile_service_test.go
+- [X] T050 [P] [US1] Unit test for ProfileService when LLMProvider returns error propagates error in apps/backend/internal/service/profile_service_test.go
+- [X] T051 [P] [US1] Unit test for ProfileService when extracting credibility finds positive sentiment quotes in apps/backend/internal/service/profile_service_test.go
+- [X] T052 [P] [US1] Unit test for ProfileService when reference letter is invalid returns validation error in apps/backend/internal/service/profile_service_test.go
+- [X] T053 [P] [US1] Unit test for ReferenceLetterHandler when uploading valid file returns reference letter ID in apps/backend/internal/handler/reference_letter_handler_test.go
+- [X] T054 [P] [US1] Unit test for ReferenceLetterHandler when uploading invalid file type returns error in apps/backend/internal/handler/reference_letter_handler_test.go
+- [X] T055 [P] [US1] Unit test for ProfileHandler when generating profile returns profile data in apps/backend/internal/handler/profile_handler_test.go
+- [X] T056 [P] [US1] Unit test for ReferenceLetterUpload component when file selected shows file name in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
+- [X] T057 [P] [US1] Unit test for ReferenceLetterUpload component when upload fails displays error message in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
+- [X] T058 [P] [US1] Unit test for GenerateProfileButton component when clicked triggers generation in apps/frontend/components/profile/GenerateProfileButton.test.tsx
+- [X] T059 [P] [US1] Unit test for ProfileEditor component when editing field updates value in apps/frontend/components/profile/ProfileEditor.test.tsx
+- [X] T060 [P] [US1] Unit test for API client when posting reference letter sends multipart form data in apps/frontend/lib/api/referenceLetters.test.ts
+- [X] T061 [P] [US1] Unit test for API client when generating profile calls correct endpoint in apps/frontend/lib/api/profile.test.ts
 
 ### Implementation for User Story 1
 
