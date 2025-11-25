@@ -274,18 +274,18 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T147 [P] Documentation updates in apps/backend/api/openapi.yaml with complete request/response examples
-- [ ] T148 [P] Add comprehensive error messages and user feedback throughout frontend components
-- [ ] T149 Code cleanup and refactoring: Extract common patterns in service layer
+- [X] T147 [P] Documentation updates in apps/backend/api/openapi.yaml with complete request/response examples
+- [X] T148 [P] Add comprehensive error messages and user feedback throughout frontend components
+- [X] T149 Code cleanup and refactoring: Extract common patterns in service layer
 - [ ] T150 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
-- [ ] T151 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
-- [ ] T152 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
-- [ ] T153 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T154 Run quickstart.md validation: Verify all setup steps work end-to-end
-- [ ] T155 [P] Add comprehensive logging for all API endpoints in apps/backend/internal/handler/
-- [ ] T156 Optimize database queries with proper indexing in apps/backend/internal/repository/
-- [ ] T157 Add rate limiting for AI API calls in apps/backend/internal/service/profile_service.go
-- [ ] T158 [P] Additional unit tests for edge cases in apps/backend/internal/service/ and apps/frontend/components/profile/
+- [X] T151 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
+- [X] T152 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
+- [X] T153 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
+- [X] T154 Run quickstart.md validation: Verify all setup steps work end-to-end
+- [X] T155 [P] Add comprehensive logging for all API endpoints in apps/backend/internal/handler/
+- [X] T156 Optimize database queries with proper indexing in apps/backend/internal/repository/
+- [X] T157 Add rate limiting for AI API calls in apps/backend/internal/service/profile_service.go
+- [X] T158 [P] Additional unit tests for edge cases in apps/backend/internal/service/ and apps/frontend/components/profile/
 
 ---
 

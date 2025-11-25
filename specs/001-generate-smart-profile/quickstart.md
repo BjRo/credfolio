@@ -3,68 +3,99 @@
 ## Prerequisites
 
 - **Go 1.23+**
-- **Node.js 20+**
-- **Docker** (for Postgres)
+- **Node.js 20+** with pnpm
+- **Docker** (for PostgreSQL)
 - **OpenAI API Key**
 
-## 1. Infrastructure Setup
+## 1. Initial Setup
 
-Start PostgreSQL:
-
-```bash
-docker run --name credfolio-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15
-```
-
-Create the database:
+Clone and install dependencies:
 
 ```bash
-docker exec -it credfolio-db createdb -U postgres credfolio
+# Install all dependencies (Go tools, pnpm packages)
+make setup
 ```
 
 ## 2. Environment Variables
 
-Create `apps/backend/.env`:
+Create `infra/.env` for the database:
+
+```ini
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=credfolio
+```
+
+Create `apps/backend/.env` for the backend:
 
 ```ini
 DATABASE_URL="host=localhost user=postgres password=postgres dbname=credfolio port=5432 sslmode=disable"
-OPENAI_API_KEY="sk-..."
+OPENAI_API_KEY="sk-your-api-key-here"
 PORT=8080
 ```
 
-## 3. Backend Setup
+## 3. Start Development Environment
 
-Install dependencies & Generate Code:
-
-```bash
-cd apps/backend
-go mod download
-# If using oapi-codegen
-go generate ./...
-```
-
-Run Backend:
+Start everything (database + backend + frontend):
 
 ```bash
 make dev-db
 ```
 
-## 4. Frontend Setup
-
-Install dependencies:
+Or start components individually:
 
 ```bash
-pnpm install
+# Start database only
+make db-up
+
+# Start dev servers (frontend + backend)
+make dev
 ```
 
-Run Frontend:
+## 4. Run Tests
 
 ```bash
-make dev-db
+# Run all tests
+make test
+
+# Run backend tests only
+make test-backend
+
+# Run frontend tests only
+make test-frontend
 ```
 
 ## 5. Verification
 
-1. Open `http://localhost:8080/swagger/index.html` to see the API Docs.
-2. Use the "Upload Reference Letter" endpoint to test PDF upload.
-3. Check `http://localhost:3000` for the frontend.
+1. **Frontend**: Open `http://localhost:3000` - you should see the Credfolio home page
+2. **Backend API**: Open `http://localhost:8080/api/v1/profile` - should return 401 (unauthorized)
+3. **Upload a reference letter**: Navigate to `/profile/generate` and upload a `.txt` or `.md` file
+4. **Generate profile**: Click "Generate Profile with AI" to process the uploaded letters
+5. **View profile**: See your generated profile at `/profile`
+6. **Tailor profile**: Go to `/profile/tailor` and paste a job description
+7. **Download CV**: Click "Download CV" to generate a PDF
+
+## Troubleshooting
+
+### Database connection issues
+
+```bash
+# Restart database
+make db-down
+make db-up
+```
+
+### Port already in use
+
+Check if ports 3000 (frontend), 5432 (database), or 8080 (backend) are in use:
+
+```bash
+lsof -i :3000
+lsof -i :5432
+lsof -i :8080
+```
+
+### OpenAI API errors
+
+Ensure your `OPENAI_API_KEY` is valid and has sufficient credits.
 

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/credfolio/apps/backend/internal/domain"
@@ -11,6 +12,51 @@ import (
 	"github.com/google/uuid"
 )
 
+// RateLimiter provides simple per-user rate limiting for AI API calls
+type RateLimiter struct {
+	mu           sync.Mutex
+	userRequests map[uuid.UUID][]time.Time
+	maxRequests  int
+	window       time.Duration
+}
+
+// NewRateLimiter creates a new rate limiter
+func NewRateLimiter(maxRequests int, window time.Duration) *RateLimiter {
+	return &RateLimiter{
+		userRequests: make(map[uuid.UUID][]time.Time),
+		maxRequests:  maxRequests,
+		window:       window,
+	}
+}
+
+// Allow checks if a request is allowed for the given user
+func (rl *RateLimiter) Allow(userID uuid.UUID) bool {
+	rl.mu.Lock()
+	defer rl.mu.Unlock()
+
+	now := time.Now()
+	windowStart := now.Add(-rl.window)
+
+	// Filter out old requests
+	requests := rl.userRequests[userID]
+	var recent []time.Time
+	for _, t := range requests {
+		if t.After(windowStart) {
+			recent = append(recent, t)
+		}
+	}
+
+	// Check if under limit
+	if len(recent) >= rl.maxRequests {
+		return false
+	}
+
+	// Record this request
+	recent = append(recent, now)
+	rl.userRequests[userID] = recent
+	return true
+}
+
 // ProfileService handles profile-related business logic
 type ProfileService struct {
 	profileRepo         repository.ProfileRepository
@@ -18,6 +64,7 @@ type ProfileService struct {
 	workExperienceRepo  repository.WorkExperienceRepository
 	highlightRepo       repository.CredibilityHighlightRepository
 	llmProvider         LLMProvider
+	rateLimiter         *RateLimiter
 	logger              *logger.Logger
 }
 
@@ -35,13 +82,23 @@ func NewProfileService(
 		workExperienceRepo:  workExperienceRepo,
 		highlightRepo:       highlightRepo,
 		llmProvider:         llmProvider,
+		rateLimiter:         NewRateLimiter(10, time.Minute), // 10 AI calls per minute per user
 		logger:              logger.New(logger.LevelInfo),
 	}
 }
 
+// ErrRateLimitExceeded is returned when rate limit is exceeded
+var ErrRateLimitExceeded = errors.New("rate limit exceeded: too many AI requests, please wait before trying again")
+
 // GenerateProfileFromReferences generates a profile from uploaded reference letters
 func (s *ProfileService) GenerateProfileFromReferences(ctx context.Context, userID uuid.UUID) (*domain.Profile, error) {
 	s.logger.Info("Starting profile generation for user %s", userID.String())
+
+	// Check rate limit before AI operations
+	if !s.rateLimiter.Allow(userID) {
+		s.logger.Warn("Rate limit exceeded for user %s", userID.String())
+		return nil, ErrRateLimitExceeded
+	}
 
 	// Find all pending reference letters for the user
 	letters, err := s.referenceLetterRepo.FindPendingByUserID(ctx, userID)

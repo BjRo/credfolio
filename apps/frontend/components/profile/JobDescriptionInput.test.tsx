@@ -38,7 +38,7 @@ describe("JobDescriptionInput", () => {
 
 		// Assert
 		expect(
-			screen.getByPlaceholderText(/paste the job description/i),
+			screen.getByPlaceholderText(/paste the complete job description/i),
 		).toBeInTheDocument();
 	});
 
@@ -57,5 +57,76 @@ describe("JobDescriptionInput", () => {
 		// Assert
 		const textarea = screen.getByRole("textbox");
 		expect(textarea).toBeDisabled();
+	});
+
+	it("when text too short, shows minimum character warning", () => {
+		// Arrange & Act
+		render(<JobDescriptionInput value="Short text" onChange={() => {}} />);
+
+		// Assert
+		expect(screen.getByText(/minimum 50 required/i)).toBeInTheDocument();
+	});
+
+	it("when valid text length, shows checkmark", () => {
+		// Arrange & Act
+		const validText =
+			"This is a job description that is long enough to meet the minimum character requirement for validation purposes.";
+		render(<JobDescriptionInput value={validText} onChange={() => {}} />);
+
+		// Assert
+		expect(screen.getByText(/characters ✓/i)).toBeInTheDocument();
+	});
+
+	it("when error provided, displays error message", () => {
+		// Arrange & Act
+		render(
+			<JobDescriptionInput
+				value=""
+				onChange={() => {}}
+				error="Something went wrong"
+			/>,
+		);
+
+		// Assert
+		expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+	});
+
+	it("when onTailor provided and valid, shows tailor button", () => {
+		// Arrange
+		const onTailor = vi.fn();
+		const validText =
+			"This is a job description that is long enough to meet the minimum character requirement for validation purposes.";
+		render(
+			<JobDescriptionInput
+				value={validText}
+				onChange={() => {}}
+				onTailor={onTailor}
+			/>,
+		);
+
+		// Act
+		const button = screen.getByRole("button", { name: /tailor my profile/i });
+		fireEvent.click(button);
+
+		// Assert
+		expect(onTailor).toHaveBeenCalled();
+	});
+
+	it("when isLoading, shows loading state and disables button", () => {
+		// Arrange & Act
+		const validText =
+			"This is a job description that is long enough to meet the minimum character requirement for validation purposes.";
+		render(
+			<JobDescriptionInput
+				value={validText}
+				onChange={() => {}}
+				onTailor={() => {}}
+				isLoading={true}
+			/>,
+		);
+
+		// Assert
+		expect(screen.getByText(/analyzing job description/i)).toBeInTheDocument();
+		expect(screen.getByRole("button")).toBeDisabled();
 	});
 });

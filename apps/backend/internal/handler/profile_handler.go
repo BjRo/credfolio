@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/credfolio/apps/backend/internal/handler/middleware"
@@ -99,6 +100,15 @@ type TailoredExperienceResponse struct {
 type TailorRequest struct {
 	JobDescription string `json:"jobDescription"`
 }
+
+const (
+	// MinJobDescriptionLength is the minimum allowed job description length
+	MinJobDescriptionLength = 50
+	// MaxJobDescriptionLength is the maximum allowed job description length
+	MaxJobDescriptionLength = 10000
+	// MaxSummaryLength is the maximum allowed profile summary length
+	MaxSummaryLength = 2000
+)
 
 // Get handles GET /profile - get current user's profile
 func (h *ProfileHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -276,37 +286,64 @@ func (h *ProfileHandler) Tailor(w http.ResponseWriter, r *http.Request) {
 	// Get user ID from context
 	userID, ok := middleware.GetUserID(r.Context())
 	if !ok {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		h.logger.Error("User ID not found in context for tailor request")
+		h.writeError(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	var input TailorRequest
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		h.logger.Error("Failed to decode tailor request body: %v", err)
+		h.writeError(w, "Invalid request body. Please provide a valid JSON object.", http.StatusBadRequest)
 		return
 	}
 
-	if input.JobDescription == "" {
-		http.Error(w, "Job description is required", http.StatusBadRequest)
+	// Validate job description
+	jobDesc := strings.TrimSpace(input.JobDescription)
+	if jobDesc == "" {
+		h.writeError(w, "Job description is required", http.StatusBadRequest)
+		return
+	}
+	if len(jobDesc) < MinJobDescriptionLength {
+		h.writeError(w, fmt.Sprintf("Job description too short. Minimum %d characters required for accurate matching.", MinJobDescriptionLength), http.StatusBadRequest)
+		return
+	}
+	if len(jobDesc) > MaxJobDescriptionLength {
+		h.writeError(w, fmt.Sprintf("Job description too long. Maximum %d characters allowed.", MaxJobDescriptionLength), http.StatusBadRequest)
 		return
 	}
 
 	if h.tailoringService == nil {
-		http.Error(w, "Tailoring service not available", http.StatusServiceUnavailable)
+		h.logger.Error("Tailoring service not configured")
+		h.writeError(w, "Profile tailoring is not available at this time", http.StatusServiceUnavailable)
 		return
 	}
 
-	h.logger.Info("Tailoring profile for user %s", userID.String())
+	h.logger.Info("Tailoring profile for user %s (job description length: %d chars)", userID.String(), len(jobDesc))
 
-	tailoredProfile, err := h.tailoringService.TailorProfileToJobDescription(r.Context(), userID, input.JobDescription)
+	tailoredProfile, err := h.tailoringService.TailorProfileToJobDescription(r.Context(), userID, jobDesc)
 	if err != nil {
-		h.logger.Error("Failed to tailor profile: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		h.logger.Error("Failed to tailor profile for user %s: %v", userID.String(), err)
+		// Check for specific error types
+		if strings.Contains(err.Error(), "not found") {
+			h.writeError(w, "Profile not found. Please generate your profile first.", http.StatusNotFound)
+			return
+		}
+		h.writeError(w, "Failed to tailor profile. Please try again.", http.StatusInternalServerError)
 		return
 	}
+
+	h.logger.Info("Profile tailored successfully for user %s (match score: %.1f%%)", userID.String(), tailoredProfile.MatchScore)
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(tailoredProfile)
+}
+
+// writeError writes a JSON error response
+func (h *ProfileHandler) writeError(w http.ResponseWriter, message string, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	_ = json.NewEncoder(w).Encode(map[string]string{"error": message})
 }
 
 // toProfileResponse converts a domain profile to an API response

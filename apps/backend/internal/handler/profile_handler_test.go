@@ -315,9 +315,10 @@ func TestProfileHandler_Tailor_WhenTailoringProfile_ReturnsTailoredProfileData(t
 		RelevantSkills: []string{"Go", "PostgreSQL"},
 	}
 
-	mockTailoringService.On("TailorProfileToJobDescription", mock.Anything, userID, "Backend engineer with Go experience").Return(tailoredProfile, nil)
+	jobDescription := "We are looking for a Backend Engineer with strong Go experience to join our team. The ideal candidate has experience with microservices and PostgreSQL databases."
+	mockTailoringService.On("TailorProfileToJobDescription", mock.Anything, userID, jobDescription).Return(tailoredProfile, nil)
 
-	body := `{"jobDescription":"Backend engineer with Go experience"}`
+	body := `{"jobDescription":"` + jobDescription + `"}`
 	req := httptest.NewRequest(http.MethodPost, "/profile/tailor", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	ctx := middleware.SetUserID(req.Context(), userID)
