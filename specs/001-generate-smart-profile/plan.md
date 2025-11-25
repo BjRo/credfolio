@@ -7,7 +7,7 @@
 
 ## Summary
 
-The "Generate Smart Profile & Credibility" feature automates the creation of professional profiles by extracting data from reference letters using AI (OpenAI). It includes a "Credibility" section derived from employer sentiment and allows users to tailor their profiles and CVs (PDF) for specific job descriptions.
+The "Generate Smart Profile & Credibility" feature automates the creation of professional profiles by extracting data from reference letters using AI (OpenAI). It includes a "Credibility" section derived from employer sentiment and allows users to tailor their profiles and CVs for specific job descriptions.
 
 ## Technical Context
 
@@ -29,7 +29,6 @@ The "Generate Smart Profile & Credibility" feature automates the creation of pro
 - **Definition of Done**: Will run lint/test/fmt make commands mentioned in constitution.
 - **ADR**:
   - Need new ADR for GORM (as requested).
-  - Need new ADR for Maroto/PDF? (Maybe, "New libraries or tools").
   - Using OpenAPI (ADR-0005 complient).
 - **Context7**: Will use context7 for GORM/OpenAI generation.
 
@@ -64,10 +63,9 @@ apps/backend/
 └── cmd/server/
 
 apps/frontend/
-├── src/
-│   ├── app/
-│   │   └── profile/             # Pages
-│   ├── components/
+|-- app/
+│   └── profile/             # Pages
+├── components/
 │   │   └── profile/             # UI Components
 │   └── lib/
 │       └── api/                 # Generated API Client

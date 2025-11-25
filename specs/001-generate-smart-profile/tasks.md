@@ -20,7 +20,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 ## Path Conventions
 
 - **Monorepo**: `apps/backend/`, `apps/frontend/`
-- **Backend**: `apps/backend/internal/{domain,service,repository,handler}`, `apps/backend/pkg/{ai,pdf}`
+- **Backend**: `apps/backend/internal/{domain,service,repository,handler}`, `apps/backend/pkg/{ai,pdf,extraction}`
 - **Frontend**: `apps/frontend/app/profile`, `apps/frontend/components/profile`, `apps/frontend/lib/api`
 
 ---
@@ -56,7 +56,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - [ ] T016 Setup GORM AutoMigrate for all domain models in apps/backend/internal/repository/migrations.go
 - [ ] T017 [P] Create LLMProvider interface abstraction in apps/backend/internal/service/llm_provider.go
 - [ ] T018 [P] Implement OpenAIProvider struct satisfying LLMProvider interface in apps/backend/pkg/ai/openai_provider.go
-- [ ] T019 [P] Create PDF text extraction service using ledongthuc/pdf in apps/backend/pkg/pdf/extractor.go
+- [ ] T019 [P] Create text extraction service using in apps/backend/pkg/extraction/extractor.go
 - [ ] T020 [P] Create PDF generation service using maroto in apps/backend/pkg/pdf/generator.go
 - [ ] T021 Setup Chi router and middleware structure in apps/backend/cmd/server/main.go
 - [ ] T022 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go

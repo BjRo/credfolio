@@ -33,15 +33,14 @@
 **Rationale**: `maroto` is excellent for declarative layouts like CVs/Resumes. It simplifies grid-based designs compared to raw `fpdf`.
 **Selection**: **Maroto v2**.
 
-## 4. PDF Text Extraction
+## 4. Text Extraction
 
-**Decision**: Use **`github.com/ledongthuc/pdf`** for raw text extraction.
+**Decision**: Extract text from Markdown or txt files
 **Rationale**: Pure Go library, no CGO dependencies. We need to extract text to send it to the LLM for processing.
 **Flow**:
-1. User uploads PDF.
-2. Backend reads PDF stream.
-3. `ledongthuc/pdf` extracts raw text.
-4. Raw text is sent to OpenAI with a prompt to "Extract structured resume data".
+1. User uploads txt or markdown files.
+2. Backend reads document.
+3. Raw text is sent to OpenAI with a prompt to "Extract structured resume data".
 
 ## 5. OpenAPI Setup
 
@@ -65,4 +64,9 @@
 - [ ] `github.com/johnfercher/maroto/v2`
 - [ ] `github.com/ledongthuc/pdf`
 - [ ] `github.com/oapi-codegen/oapi-codegen/v2` (CLI tool)
+
+## 8. Take things step by step
+- Commit every finished task individually to the git branch
+- make sure to run `make test`, `make lint` and `make fmt` before and fix any errors
+
 
