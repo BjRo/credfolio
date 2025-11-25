@@ -7,7 +7,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 **Input**: Design documents from `/specs/001-generate-smart-profile/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: Follow the ADRs, add tests for every task. Make sure to run `make fmt` and that `make lint` and `make test` pass for every task.
+**Tests**: Unit tests are MANDATORY for all developments per the Unit-Testing-First principle. All code changes MUST include corresponding unit tests. Integration tests are optional and may be included when explicitly requested in the feature specification.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -22,6 +22,8 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - **Monorepo**: `apps/backend/`, `apps/frontend/`
 - **Backend**: `apps/backend/internal/{domain,service,repository,handler}`, `apps/backend/pkg/{ai,pdf,extraction}`
 - **Frontend**: `apps/frontend/app/profile`, `apps/frontend/components/profile`, `apps/frontend/lib/api`
+- **Backend Tests**: `apps/backend/internal/{domain,service,repository,handler}/..._test.go`
+- **Frontend Tests**: `apps/frontend/components/profile/*.test.tsx`, `apps/frontend/lib/api/*.test.ts`
 
 ---
 
@@ -45,24 +47,48 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T008 Setup PostgreSQL database connection using GORM in apps/backend/internal/repository/db.go
-- [ ] T009 Create base User model (mock/existing) in apps/backend/internal/domain/user.go
-- [ ] T010 [P] Create base Profile model in apps/backend/internal/domain/profile.go
-- [ ] T011 [P] Create base WorkExperience model in apps/backend/internal/domain/work_experience.go
-- [ ] T012 [P] Create base Skill model in apps/backend/internal/domain/skill.go
-- [ ] T013 [P] Create base ReferenceLetter model in apps/backend/internal/domain/reference_letter.go
-- [ ] T014 [P] Create base CredibilityHighlight model in apps/backend/internal/domain/credibility_highlight.go
-- [ ] T015 [P] Create base JobMatch model in apps/backend/internal/domain/job_match.go
-- [ ] T016 Setup GORM AutoMigrate for all domain models in apps/backend/internal/repository/migrations.go
-- [ ] T017 [P] Create LLMProvider interface abstraction in apps/backend/internal/service/llm_provider.go
-- [ ] T018 [P] Implement OpenAIProvider struct satisfying LLMProvider interface in apps/backend/pkg/ai/openai_provider.go
-- [ ] T019 [P] Create text extraction service using in apps/backend/pkg/extraction/extractor.go
-- [ ] T020 [P] Create PDF generation service using maroto in apps/backend/pkg/pdf/generator.go
-- [ ] T021 Setup Chi router and middleware structure in apps/backend/cmd/server/main.go
-- [ ] T022 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go
-- [ ] T023 Configure error handling and logging infrastructure in apps/backend/pkg/logger/logger.go
-- [ ] T024 Generate OpenAPI server stubs using oapi-codegen in apps/backend/api/generated/
-- [ ] T025 Generate TypeScript API client from OpenAPI spec in apps/frontend/lib/api/generated/
+### Unit Tests for Foundational Components (MANDATORY) ⚠️
+
+> **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
+
+- [ ] T008 [P] Unit test for User model validation in apps/backend/internal/domain/user_test.go
+- [ ] T009 [P] Unit test for Profile model validation in apps/backend/internal/domain/profile_test.go
+- [ ] T010 [P] Unit test for WorkExperience model validation in apps/backend/internal/domain/work_experience_test.go
+- [ ] T011 [P] Unit test for Skill model validation in apps/backend/internal/domain/skill_test.go
+- [ ] T012 [P] Unit test for ReferenceLetter model validation in apps/backend/internal/domain/reference_letter_test.go
+- [ ] T013 [P] Unit test for CredibilityHighlight model validation in apps/backend/internal/domain/credibility_highlight_test.go
+- [ ] T014 [P] Unit test for JobMatch model validation in apps/backend/internal/domain/job_match_test.go
+- [ ] T015 [P] Unit test for LLMProvider interface mock in apps/backend/internal/service/llm_provider_test.go
+- [ ] T016 [P] Unit test for OpenAIProvider when given valid prompt returns structured data in apps/backend/pkg/ai/openai_provider_test.go
+- [ ] T017 [P] Unit test for OpenAIProvider when API call fails returns error in apps/backend/pkg/ai/openai_provider_test.go
+- [ ] T018 [P] Unit test for text extractor when given txt file returns text content in apps/backend/pkg/extraction/extractor_test.go
+- [ ] T019 [P] Unit test for text extractor when given markdown file returns text content in apps/backend/pkg/extraction/extractor_test.go
+- [ ] T020 [P] Unit test for PDF generator when given profile data generates PDF bytes in apps/backend/pkg/pdf/generator_test.go
+- [ ] T021 [P] Unit test for config loader when given valid env vars loads configuration in apps/backend/pkg/config/config_test.go
+- [ ] T022 [P] Unit test for logger when logging info message writes to output in apps/backend/pkg/logger/logger_test.go
+- [ ] T023 [P] Unit test for auth middleware when request has no user injects mock user in apps/backend/internal/handler/middleware/auth_test.go
+
+### Implementation for Foundational Components
+
+- [ ] T024 Setup PostgreSQL database connection using GORM in apps/backend/internal/repository/db.go
+- [ ] T025 Create base User model (mock/existing) in apps/backend/internal/domain/user.go
+- [ ] T026 [P] Create base Profile model in apps/backend/internal/domain/profile.go
+- [ ] T027 [P] Create base WorkExperience model in apps/backend/internal/domain/work_experience.go
+- [ ] T028 [P] Create base Skill model in apps/backend/internal/domain/skill.go
+- [ ] T029 [P] Create base ReferenceLetter model in apps/backend/internal/domain/reference_letter.go
+- [ ] T030 [P] Create base CredibilityHighlight model in apps/backend/internal/domain/credibility_highlight.go
+- [ ] T031 [P] Create base JobMatch model in apps/backend/internal/domain/job_match.go
+- [ ] T032 Setup GORM AutoMigrate for all domain models in apps/backend/internal/repository/migrations.go
+- [ ] T033 [P] Create LLMProvider interface abstraction in apps/backend/internal/service/llm_provider.go
+- [ ] T034 [P] Implement OpenAIProvider struct satisfying LLMProvider interface in apps/backend/pkg/ai/openai_provider.go
+- [ ] T035 [P] Create text extraction service in apps/backend/pkg/extraction/extractor.go
+- [ ] T036 [P] Create PDF generation service using maroto in apps/backend/pkg/pdf/generator.go
+- [ ] T037 Setup Chi router and middleware structure in apps/backend/cmd/server/main.go
+- [ ] T038 Create mock authentication middleware (inject current user ID) in apps/backend/internal/handler/middleware/auth.go
+- [ ] T039 Configure error handling and logging infrastructure in apps/backend/pkg/logger/logger.go
+- [ ] T040 Setup environment configuration management in apps/backend/pkg/config/config.go
+- [ ] T041 Generate OpenAPI server stubs using oapi-codegen in apps/backend/api/generated/
+- [ ] T042 Generate TypeScript API client from OpenAPI spec in apps/frontend/lib/api/generated/
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -74,30 +100,54 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Independent Test**: Upload a sample reference letter and verify that the "Experience" and "Skills" sections are populated with correct data, and that "Credibility" section contains positive quotes or sentiment summaries.
 
+### Unit Tests for User Story 1 (MANDATORY) ⚠️
+
+> **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
+
+- [ ] T043 [P] [US1] Unit test for ProfileRepository when saving profile persists to database in apps/backend/internal/repository/profile_repository_test.go
+- [ ] T044 [P] [US1] Unit test for ProfileRepository when finding by user ID returns profile in apps/backend/internal/repository/profile_repository_test.go
+- [ ] T045 [P] [US1] Unit test for ReferenceLetterRepository when saving reference letter persists to database in apps/backend/internal/repository/reference_letter_repository_test.go
+- [ ] T046 [P] [US1] Unit test for ReferenceLetterRepository when finding by user ID returns letters in apps/backend/internal/repository/reference_letter_repository_test.go
+- [ ] T047 [P] [US1] Unit test for WorkExperienceRepository when saving work experience persists to database in apps/backend/internal/repository/work_experience_repository_test.go
+- [ ] T048 [P] [US1] Unit test for CredibilityHighlightRepository when saving highlight persists to database in apps/backend/internal/repository/credibility_highlight_repository_test.go
+- [ ] T049 [P] [US1] Unit test for ProfileService when generating profile from reference letter extracts structured data in apps/backend/internal/service/profile_service_test.go
+- [ ] T050 [P] [US1] Unit test for ProfileService when LLMProvider returns error propagates error in apps/backend/internal/service/profile_service_test.go
+- [ ] T051 [P] [US1] Unit test for ProfileService when extracting credibility finds positive sentiment quotes in apps/backend/internal/service/profile_service_test.go
+- [ ] T052 [P] [US1] Unit test for ProfileService when reference letter is invalid returns validation error in apps/backend/internal/service/profile_service_test.go
+- [ ] T053 [P] [US1] Unit test for ReferenceLetterHandler when uploading valid file returns reference letter ID in apps/backend/internal/handler/reference_letter_handler_test.go
+- [ ] T054 [P] [US1] Unit test for ReferenceLetterHandler when uploading invalid file type returns error in apps/backend/internal/handler/reference_letter_handler_test.go
+- [ ] T055 [P] [US1] Unit test for ProfileHandler when generating profile returns profile data in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T056 [P] [US1] Unit test for ReferenceLetterUpload component when file selected shows file name in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
+- [ ] T057 [P] [US1] Unit test for ReferenceLetterUpload component when upload fails displays error message in apps/frontend/components/profile/ReferenceLetterUpload.test.tsx
+- [ ] T058 [P] [US1] Unit test for GenerateProfileButton component when clicked triggers generation in apps/frontend/components/profile/GenerateProfileButton.test.tsx
+- [ ] T059 [P] [US1] Unit test for ProfileEditor component when editing field updates value in apps/frontend/components/profile/ProfileEditor.test.tsx
+- [ ] T060 [P] [US1] Unit test for API client when posting reference letter sends multipart form data in apps/frontend/lib/api/referenceLetters.test.ts
+- [ ] T061 [P] [US1] Unit test for API client when generating profile calls correct endpoint in apps/frontend/lib/api/profile.test.ts
+
 ### Implementation for User Story 1
 
-- [ ] T026 [P] [US1] Create Profile repository interface in apps/backend/internal/repository/profile_repository.go
-- [ ] T027 [P] [US1] Create ReferenceLetter repository interface in apps/backend/internal/repository/reference_letter_repository.go
-- [ ] T028 [P] [US1] Implement GormProfileRepository in apps/backend/internal/repository/gorm_profile_repository.go
-- [ ] T029 [P] [US1] Implement GormReferenceLetterRepository in apps/backend/internal/repository/gorm_reference_letter_repository.go
-- [ ] T030 [US1] Create ProfileService with GenerateProfileFromReferences method in apps/backend/internal/service/profile_service.go
-- [ ] T031 [US1] Implement AI extraction logic in ProfileService that calls LLMProvider to extract structured data (Company, Role, Dates, Skills, Achievements) in apps/backend/internal/service/profile_service.go
-- [ ] T032 [US1] Implement credibility extraction logic that extracts positive sentiment quotes from reference letters in apps/backend/internal/service/profile_service.go
-- [ ] T033 [US1] Create WorkExperience repository interface in apps/backend/internal/repository/work_experience_repository.go
-- [ ] T034 [US1] Implement GormWorkExperienceRepository in apps/backend/internal/repository/gorm_work_experience_repository.go
-- [ ] T035 [US1] Create CredibilityHighlight repository interface in apps/backend/internal/repository/credibility_highlight_repository.go
-- [ ] T036 [US1] Implement GormCredibilityHighlightRepository in apps/backend/internal/repository/gorm_credibility_highlight_repository.go
-- [ ] T037 [US1] Implement file upload handler for reference letters (multipart/form-data) in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T038 [US1] Implement POST /reference-letters endpoint handler in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T039 [US1] Implement POST /profile/generate endpoint handler that processes uploaded reference letters in apps/backend/internal/handler/profile_handler.go
-- [ ] T040 [US1] Add validation and error handling for file uploads and AI extraction in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T041 [US1] Add logging for profile generation operations in apps/backend/internal/service/profile_service.go
-- [ ] T042 [US1] Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx
-- [ ] T043 [US1] Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx
-- [ ] T044 [US1] Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts
-- [ ] T045 [US1] Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts
-- [ ] T046 [US1] Create profile generation page in apps/frontend/app/profile/generate/page.tsx
-- [ ] T047 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/components/profile/ProfileEditor.tsx
+- [ ] T062 [P] [US1] Create Profile repository interface in apps/backend/internal/repository/profile_repository.go
+- [ ] T063 [P] [US1] Create ReferenceLetter repository interface in apps/backend/internal/repository/reference_letter_repository.go
+- [ ] T064 [P] [US1] Create WorkExperience repository interface in apps/backend/internal/repository/work_experience_repository.go
+- [ ] T065 [P] [US1] Create CredibilityHighlight repository interface in apps/backend/internal/repository/credibility_highlight_repository.go
+- [ ] T066 [P] [US1] Implement GormProfileRepository in apps/backend/internal/repository/gorm_profile_repository.go
+- [ ] T067 [P] [US1] Implement GormReferenceLetterRepository in apps/backend/internal/repository/gorm_reference_letter_repository.go
+- [ ] T068 [P] [US1] Implement GormWorkExperienceRepository in apps/backend/internal/repository/gorm_work_experience_repository.go
+- [ ] T069 [P] [US1] Implement GormCredibilityHighlightRepository in apps/backend/internal/repository/gorm_credibility_highlight_repository.go
+- [ ] T070 [US1] Create ProfileService with GenerateProfileFromReferences method in apps/backend/internal/service/profile_service.go
+- [ ] T071 [US1] Implement AI extraction logic in ProfileService that calls LLMProvider to extract structured data (Company, Role, Dates, Skills, Achievements) in apps/backend/internal/service/profile_service.go
+- [ ] T072 [US1] Implement credibility extraction logic that extracts positive sentiment quotes from reference letters in apps/backend/internal/service/profile_service.go
+- [ ] T073 [US1] Implement file upload handler for reference letters (multipart/form-data) in apps/backend/internal/handler/reference_letter_handler.go
+- [ ] T074 [US1] Implement POST /reference-letters endpoint handler in apps/backend/internal/handler/reference_letter_handler.go
+- [ ] T075 [US1] Implement POST /profile/generate endpoint handler that processes uploaded reference letters in apps/backend/internal/handler/profile_handler.go
+- [ ] T076 [US1] Add validation and error handling for file uploads and AI extraction in apps/backend/internal/handler/reference_letter_handler.go
+- [ ] T077 [US1] Add logging for profile generation operations in apps/backend/internal/service/profile_service.go
+- [ ] T078 [US1] Create reference letter upload UI component in apps/frontend/components/profile/ReferenceLetterUpload.tsx
+- [ ] T079 [US1] Create profile generation trigger UI in apps/frontend/components/profile/GenerateProfileButton.tsx
+- [ ] T080 [US1] Create API client method for POST /reference-letters in apps/frontend/lib/api/referenceLetters.ts
+- [ ] T081 [US1] Create API client method for POST /profile/generate in apps/frontend/lib/api/profile.ts
+- [ ] T082 [US1] Create profile generation page in apps/frontend/app/profile/generate/page.tsx
+- [ ] T083 [US1] Implement profile data editing interface (edit/delete extracted information) in apps/frontend/components/profile/ProfileEditor.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently - users can upload reference letters, generate profiles, and edit extracted data.
 
@@ -109,17 +159,32 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Independent Test**: Navigate to the profile view after data population and verify standard sections (Experience, Skills) are augmented with "Employer Feedback" or "Credibility Highlights", and that skills/endorsements are aggregated across multiple reference letters.
 
+### Unit Tests for User Story 2 (MANDATORY) ⚠️
+
+> **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
+
+- [ ] T084 [P] [US2] Unit test for ProfileService when getting profile aggregates skills across experiences in apps/backend/internal/service/profile_service_test.go
+- [ ] T085 [P] [US2] Unit test for ProfileService when getting profile includes credibility highlights in apps/backend/internal/service/profile_service_test.go
+- [ ] T086 [P] [US2] Unit test for ProfileHandler when getting profile returns complete profile data in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T087 [P] [US2] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T088 [P] [US2] Unit test for ProfileView component when profile loaded displays all sections in apps/frontend/components/profile/ProfileView.test.tsx
+- [ ] T089 [P] [US2] Unit test for ProfileView component when loading shows loading state in apps/frontend/components/profile/ProfileView.test.tsx
+- [ ] T090 [P] [US2] Unit test for CredibilityHighlights component when given highlights displays quotes in apps/frontend/components/profile/CredibilityHighlights.test.tsx
+- [ ] T091 [P] [US2] Unit test for WorkExperienceCard component when given experience displays credibility highlights in apps/frontend/components/profile/WorkExperienceCard.test.tsx
+- [ ] T092 [P] [US2] Unit test for SkillsSection component when given skills displays aggregated list in apps/frontend/components/profile/SkillsSection.test.tsx
+- [ ] T093 [P] [US2] Unit test for API client when getting profile returns profile data in apps/frontend/lib/api/profile.test.ts
+
 ### Implementation for User Story 2
 
-- [ ] T048 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T049 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
-- [ ] T050 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
-- [ ] T051 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
-- [ ] T052 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
-- [ ] T053 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
-- [ ] T054 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
-- [ ] T055 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T056 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
+- [ ] T094 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [ ] T095 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
+- [ ] T096 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
+- [ ] T097 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
+- [ ] T098 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
+- [ ] T099 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
+- [ ] T100 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
+- [ ] T101 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
+- [ ] T102 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - users can generate profiles and view them with credibility highlights.
 
@@ -131,21 +196,38 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Independent Test**: Upload a Job Description and compare the standard profile vs. the tailored profile, verifying that skills/experiences matching JD keywords are reordered or highlighted, and that a Match Score or explanation is displayed.
 
+### Unit Tests for User Story 3 (MANDATORY) ⚠️
+
+> **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
+
+- [ ] T103 [P] [US3] Unit test for JobMatchRepository when saving job match persists to database in apps/backend/internal/repository/job_match_repository_test.go
+- [ ] T104 [P] [US3] Unit test for JobMatchRepository when finding by profile ID returns matches in apps/backend/internal/repository/job_match_repository_test.go
+- [ ] T105 [P] [US3] Unit test for TailoringService when tailoring profile ranks experiences by relevance in apps/backend/internal/service/tailoring_service_test.go
+- [ ] T106 [P] [US3] Unit test for TailoringService when job description is empty returns error in apps/backend/internal/service/tailoring_service_test.go
+- [ ] T107 [P] [US3] Unit test for TailoringService when calculating match score returns score between 0 and 1 in apps/backend/internal/service/tailoring_service_test.go
+- [ ] T108 [P] [US3] Unit test for TailoringService when LLMProvider fails propagates error in apps/backend/internal/service/tailoring_service_test.go
+- [ ] T109 [P] [US3] Unit test for ProfileHandler when tailoring profile returns tailored profile data in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T110 [P] [US3] Unit test for ProfileHandler when job description invalid returns validation error in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T111 [P] [US3] Unit test for JobDescriptionInput component when text entered updates value in apps/frontend/components/profile/JobDescriptionInput.test.tsx
+- [ ] T112 [P] [US3] Unit test for TailoredProfileView component when given tailored profile highlights matched content in apps/frontend/components/profile/TailoredProfileView.test.tsx
+- [ ] T113 [P] [US3] Unit test for MatchScore component when given score displays percentage in apps/frontend/components/profile/MatchScore.test.tsx
+- [ ] T114 [P] [US3] Unit test for API client when tailoring profile sends job description in apps/frontend/lib/api/profile.test.ts
+
 ### Implementation for User Story 3
 
-- [ ] T057 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
-- [ ] T058 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
-- [ ] T059 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
-- [ ] T060 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
-- [ ] T061 [US3] Implement match score calculation in TailoringService in apps/frontend/lib/api/profile.ts
-- [ ] T062 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T063 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
-- [ ] T064 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
-- [ ] T065 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
-- [ ] T066 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
-- [ ] T067 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
-- [ ] T068 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T069 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
+- [ ] T115 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
+- [ ] T116 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
+- [ ] T117 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
+- [ ] T118 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
+- [ ] T119 [US3] Implement match score calculation in TailoringService in apps/backend/internal/service/tailoring_service.go
+- [ ] T120 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [ ] T121 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
+- [ ] T122 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
+- [ ] T123 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
+- [ ] T124 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
+- [ ] T125 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
+- [ ] T126 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
+- [ ] T127 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1, 2, AND 3 should all work independently - users can generate profiles, view them, and tailor them to job descriptions.
 
@@ -157,18 +239,32 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Independent Test**: Generate a PDF file from a standard or tailored profile and verify the PDF contains all profile data in a formatted CV layout, with tailored content emphasized when applicable.
 
+### Unit Tests for User Story 4 (MANDATORY) ⚠️
+
+> **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
+
+- [ ] T128 [P] [US4] Unit test for CV generator when given profile data generates PDF with all sections in apps/backend/pkg/pdf/cv_generator_test.go
+- [ ] T129 [P] [US4] Unit test for CV generator when given tailored profile emphasizes matched content in apps/backend/pkg/pdf/cv_generator_test.go
+- [ ] T130 [P] [US4] Unit test for CV generator when profile is empty returns error in apps/backend/pkg/pdf/cv_generator_test.go
+- [ ] T131 [P] [US4] Unit test for ProfileHandler when downloading CV returns PDF bytes in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T132 [P] [US4] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T133 [P] [US4] Unit test for ProfileHandler when PDF generation fails returns error in apps/backend/internal/handler/profile_handler_test.go
+- [ ] T134 [P] [US4] Unit test for DownloadCVButton component when clicked triggers download in apps/frontend/components/profile/DownloadCVButton.test.tsx
+- [ ] T135 [P] [US4] Unit test for DownloadCVButton component when download fails displays error in apps/frontend/components/profile/DownloadCVButton.test.tsx
+- [ ] T136 [P] [US4] Unit test for API client when downloading CV returns blob data in apps/frontend/lib/api/profile.test.ts
+
 ### Implementation for User Story 4
 
-- [ ] T070 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T071 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T072 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T073 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T074 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T075 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
-- [ ] T076 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
-- [ ] T077 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T078 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T079 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
+- [ ] T137 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
+- [ ] T138 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
+- [ ] T139 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
+- [ ] T140 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [ ] T141 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
+- [ ] T142 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
+- [ ] T143 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
+- [ ] T144 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
+- [ ] T145 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
+- [ ] T146 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
 
 **Checkpoint**: All user stories should now be independently functional - users can generate profiles, view them with credibility, tailor them to jobs, and download CVs.
 
@@ -178,17 +274,18 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T080 [P] Update API documentation in apps/backend/api/openapi.yaml with complete request/response examples
-- [ ] T081 [P] Add comprehensive error messages and user feedback throughout frontend components
-- [ ] T082 Code cleanup and refactoring: Extract common patterns in service layer
-- [ ] T083 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
-- [ ] T084 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
-- [ ] T085 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
-- [ ] T086 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
-- [ ] T087 Run quickstart.md validation: Verify all setup steps work end-to-end
-- [ ] T088 [P] Add comprehensive logging for all API endpoints in apps/backend/internal/handler/
-- [ ] T089 Optimize database queries with proper indexing in apps/backend/internal/repository/
-- [ ] T090 Add rate limiting for AI API calls in apps/backend/internal/service/profile_service.go
+- [ ] T147 [P] Documentation updates in apps/backend/api/openapi.yaml with complete request/response examples
+- [ ] T148 [P] Add comprehensive error messages and user feedback throughout frontend components
+- [ ] T149 Code cleanup and refactoring: Extract common patterns in service layer
+- [ ] T150 Performance optimization: Cache AI responses where appropriate in apps/backend/internal/service/profile_service.go
+- [ ] T151 [P] Add loading states and progress indicators for AI operations in apps/frontend/components/profile/
+- [ ] T152 [P] Add input validation and sanitization for all user inputs in apps/backend/internal/handler/
+- [ ] T153 Security hardening: Validate file types and sizes for reference letter uploads in apps/backend/internal/handler/reference_letter_handler.go
+- [ ] T154 Run quickstart.md validation: Verify all setup steps work end-to-end
+- [ ] T155 [P] Add comprehensive logging for all API endpoints in apps/backend/internal/handler/
+- [ ] T156 Optimize database queries with proper indexing in apps/backend/internal/repository/
+- [ ] T157 Add rate limiting for AI API calls in apps/backend/internal/service/profile_service.go
+- [ ] T158 [P] Additional unit tests for edge cases in apps/backend/internal/service/ and apps/frontend/components/profile/
 
 ---
 
@@ -212,6 +309,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 ### Within Each User Story
 
+- Unit tests MUST be written FIRST and FAIL before implementation
 - Models before repositories
 - Repositories before services
 - Services before handlers/endpoints
@@ -224,6 +322,7 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 - All Setup tasks marked [P] can run in parallel
 - All Foundational tasks marked [P] can run in parallel (within Phase 2)
 - Once Foundational phase completes, User Stories 1 and 2 (both P1) can start in parallel (if team capacity allows)
+- All unit tests for a user story marked [P] can run in parallel
 - Models within a story marked [P] can run in parallel
 - Repository implementations marked [P] can run in parallel
 - Different user stories can be worked on in parallel by different team members (after foundational phase)
@@ -233,6 +332,12 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 ## Parallel Example: User Story 1
 
 ```bash
+# Launch all unit tests for User Story 1 together (MANDATORY):
+Task: "Unit test for ProfileRepository when saving profile persists to database in apps/backend/internal/repository/profile_repository_test.go"
+Task: "Unit test for ReferenceLetterRepository when saving reference letter persists to database in apps/backend/internal/repository/reference_letter_repository_test.go"
+Task: "Unit test for WorkExperienceRepository when saving work experience persists to database in apps/backend/internal/repository/work_experience_repository_test.go"
+Task: "Unit test for CredibilityHighlightRepository when saving highlight persists to database in apps/backend/internal/repository/credibility_highlight_repository_test.go"
+
 # Launch all repository interfaces together:
 Task: "Create Profile repository interface in apps/backend/internal/repository/profile_repository.go"
 Task: "Create ReferenceLetter repository interface in apps/backend/internal/repository/reference_letter_repository.go"
@@ -293,9 +398,13 @@ With multiple developers:
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
+- **Unit tests are MANDATORY** - write them FIRST before implementation
+- Follow AAA (Arrange-Act-Assert) style for all tests
+- Use descriptive test names: `context_whenTrigger_thenExpectation`
+- Stub external calls (HTTP, database) in tests - no real external dependencies
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
 - Performance goal: Profile generation < 60s
 - All file paths use absolute structure from monorepo root (apps/backend/, apps/frontend/)
-
+- Always run `make test`, `make lint`, and `make fmt` before committing

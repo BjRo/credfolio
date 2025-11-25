@@ -1,13 +1,13 @@
 <!--
 Sync Impact Report:
-Version change: 1.1.0 → 1.2.0 (MINOR: new principle added)
+Version change: 1.2.0 → 1.3.0 (MINOR: new principle added)
 Modified principles: N/A
-Added sections: Context7 API Verification principle
+Added sections: Unit-Testing-First principle
 Removed sections: N/A
 Templates requiring updates:
   ✅ plan-template.md - Constitution Check section aligns with all principles
   ✅ spec-template.md - No changes needed (user stories already align with DoD)
-  ✅ tasks-template.md - No changes needed (task structure aligns with DoD)
+  ✅ tasks-template.md - Updated to reflect mandatory unit tests requirement
   ⚠ pending: Manual review recommended for any custom command templates
 Follow-up TODOs:
   - TODO(RATIFICATION_DATE): Original adoption date unknown - needs historical research or project start date
@@ -30,16 +30,15 @@ ALWAYS RUN THE VERIFICATION TOOLS FROM THE PROJECT ROOT.
 **Mandatory Verification Checklist:**
 
 1. **Lint is clean** (no errors):
-   - Backend: run `make lint-backend`
-   - Frontend: run `make lint-frontend`
+   - run `make lint`
 
 2. **Tests pass**:
-   - Backend: run `make test-backend`
-   - Frontend: run `make test-frontend`
+   - run `make test`
 
 3. **Code is properly formatted**:
-   - Backend: run `make fmt-backend`
-   - Frontend: run `make fmt-frontend`
+   - run `make fmt`
+
+ALWAYS RUN THESE COMMAND FROM THE ROOT PROJECT DIRECTORY. NEVER FALL DOWN TO OTHER TOOLS. NEVER SKIP THESE. ALWAYS RUN THESE BEFORE FINISHING A TASK
 
 **Rationale**: Ensures code quality, consistency, and prevents regressions before code review. All PRs MUST pass these gates before submission. If any command fails, fix the reported issues before proceeding.
 
@@ -80,12 +79,28 @@ Append `use context7` to your request so the related MCP (Model Context Protocol
 
 **Rationale**: Incorrect API usage leads to bugs, test failures, and technical debt. Consulting official documentation via context7 ensures code correctness from the start, reduces debugging time, and maintains alignment with library best practices and current versions.
 
+### IV. Unit-Testing-First
+
+We adopt a unit-testing-first approach where unit tests guide our development process. This ensures fast feedback loops, high code quality, and maintainable test suites that don't leak implementation details.
+
+**Core Requirements:**
+
+- **Unit Tests Guide Development**: Unit tests drive the development process, not follow it.
+- **Mandatory Unit Tests**: All developments MUST be accompanied by unit tests (both in frontend and backend). No code is considered complete without corresponding unit tests.
+- **Preference for Unit Tests**: We favor unit tests over integration tests because they enable fast feedback loops and isolate behavior.
+- **AAA Style**: All tests MUST be written in AAA (Arrange-Act-Assert) style for clarity and consistency.
+- **Implementation Hiding**: Tests MUST be written to avoid leaking implementation details whenever possible. Tests should verify behavior, not internal structure.
+- **Naming Convention**: Test names MUST include context, trigger, and expectation (e.g., `test_UserService_whenEmailIsInvalid_returnsError`).
+- **No External Calls**: Tests MUST NOT call out to external systems via HTTP/HTTPS. External calls MUST be stubbed and simulated with test data.
+
+**Rationale**: Unit-testing-first development ensures code correctness from the start, enables rapid iteration with fast feedback, prevents regressions, and creates living documentation of system behavior. By avoiding external dependencies in tests, we maintain test speed and reliability while keeping tests focused on the unit under test.
+
 ## Governance
 
-This constitution supersedes all other development practices and guidelines. All PRs and code reviews MUST verify compliance with all principles, including Definition of Done, Architecture Decision Records, and Context7 API Verification requirements.
+This constitution supersedes all other development practices and guidelines. All PRs and code reviews MUST verify compliance with all principles, including Definition of Done, Architecture Decision Records, Context7 API Verification, and Unit-Testing-First requirements.
 
 **Amendment Procedure**: Amendments require documentation of rationale, version bump according to semantic versioning (MAJOR for backward-incompatible changes, MINOR for new principles/sections, PATCH for clarifications), and update of dependent templates.
 
 **Compliance Review**: The Constitution Check gate in implementation plans must verify adherence to all principles before proceeding with feature work.
 
-**Version**: 1.2.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2025-01-27
+**Version**: 1.3.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2025-01-27
