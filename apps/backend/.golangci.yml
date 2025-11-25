@@ -1,14 +1,36 @@
-version: 2
+version: "2"
+
 run:
-  go: "1.24"
-  timeout: 3m
+  timeout: 5m
+  tests: true
+
 linters:
   enable:
     - errcheck
     - govet
     - ineffassign
     - staticcheck
+    - unused
+    - misspell
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+formatters-settings:
+  goimports:
+    local-prefixes:
+      - github.com/credfolio
+
 issues:
   exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
 
-
+output:
+  formats:
+    colored-line-number:
+      path: stdout
+  print-issued-lines: true
+  print-linter-name: true
