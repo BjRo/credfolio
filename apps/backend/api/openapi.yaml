@@ -1,0 +1,576 @@
+openapi: 3.0.3
+info:
+  title: Credfolio API
+  version: 1.0.0
+  description: |
+    API for Smart Profile Generation and Credibility.
+
+    This API enables users to:
+    - Upload reference letters for AI-powered profile generation
+    - View and manage their professional profile with credibility highlights
+    - Tailor their profile to specific job descriptions
+    - Download their profile as a formatted PDF CV
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+tags:
+  - name: Profile
+    description: Profile management operations
+  - name: Reference Letters
+    description: Reference letter upload and management
+  - name: CV
+    description: CV generation and download
+
+paths:
+  /profile:
+    get:
+      tags:
+        - Profile
+      summary: Get current user's profile
+      description: Retrieves the authenticated user's professional profile including work experiences, skills, and credibility highlights.
+      operationId: getProfile
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                summary: "Experienced software engineer with 10+ years building scalable web applications"
+                workExperiences:
+                  - id: "550e8400-e29b-41d4-a716-446655440001"
+                    companyName: "Tech Corp"
+                    role: "Senior Software Engineer"
+                    startDate: "2020-01-15"
+                    endDate: "2023-06-30"
+                    description: "Led development of microservices architecture"
+                    credibilityHighlights:
+                      - quote: "John consistently delivered high-quality code ahead of schedule"
+                        sentiment: "POSITIVE"
+                skills:
+                  - "Go"
+                  - "TypeScript"
+                  - "PostgreSQL"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Profile
+      summary: Update profile
+      description: Updates the authenticated user's profile summary and other editable fields.
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+            example:
+              summary: "Updated professional summary highlighting new achievements"
+              workExperiences:
+                - companyName: "New Company"
+                  role: "Lead Developer"
+                  startDate: "2023-07-01"
+                  description: "Leading a team of 5 developers"
+              skills:
+                - "Go"
+                - "Kubernetes"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reference-letters:
+    post:
+      tags:
+        - Reference Letters
+      summary: Upload a reference letter
+      description: |
+        Upload a reference letter file for AI-powered text extraction and analysis.
+
+        Supported file formats:
+        - Plain text (.txt)
+        - Markdown (.md, .markdown)
+
+        Maximum file size: 5MB
+      operationId: uploadReferenceLetter
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Reference letter file (max 5MB, .txt or .md format)
+      responses:
+        '201':
+          description: Reference letter uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferenceLetter'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440002"
+                fileName: "reference_from_manager.txt"
+                uploadDate: "2024-01-15T10:30:00Z"
+                status: "PROCESSED"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          description: File too large (max 5MB)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /profile/generate:
+    post:
+      tags:
+        - Profile
+      summary: Generate profile from uploaded letters
+      description: |
+        Triggers AI-powered profile generation from all uploaded reference letters.
+
+        The AI analyzes the reference letters to extract:
+        - Professional summary
+        - Work experiences with descriptions
+        - Skills and competencies
+        - Credibility highlights (positive quotes from references)
+
+        This operation may take 10-30 seconds depending on the number of letters.
+      operationId: generateProfile
+      responses:
+        '200':
+          description: Profile generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: No reference letters found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "No reference letters found. Please upload at least one reference letter."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /profile/tailor:
+    post:
+      tags:
+        - Profile
+      summary: Create a tailored profile for a job description
+      description: |
+        Creates a job-specific version of the profile by analyzing the job description
+        and highlighting the most relevant experiences and skills.
+
+        The AI provides:
+        - Match score (0-100%)
+        - Tailored summary emphasizing relevant qualifications
+        - Ranked work experiences by relevance
+        - Highlighted skills that match the job requirements
+      operationId: tailorProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobDescription
+              properties:
+                jobDescription:
+                  type: string
+                  minLength: 50
+                  maxLength: 10000
+                  description: The full job description text (50-10000 characters)
+            example:
+              jobDescription: "We are looking for a Senior Backend Engineer with experience in Go, microservices architecture, and PostgreSQL. The ideal candidate has 5+ years of experience..."
+      responses:
+        '200':
+          description: Tailored profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TailoredProfile'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440003"
+                matchScore: 85.5
+                matchSummary: "Strong match - Your experience with Go and microservices directly aligns with this role"
+                tailoredExperiences:
+                  - id: "550e8400-e29b-41d4-a716-446655440001"
+                    companyName: "Tech Corp"
+                    role: "Senior Software Engineer"
+                    relevanceScore: 92.0
+                    highlightReason: "Direct experience with Go microservices"
+                relevantSkills:
+                  - "Go"
+                  - "PostgreSQL"
+                  - "Microservices"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Profile not found - generate profile first
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /profile/{profileId}/cv:
+    get:
+      tags:
+        - CV
+      summary: Download CV as PDF
+      description: |
+        Generates and downloads a formatted PDF CV from the profile.
+
+        Optional query parameter `jobMatchId` can be provided to download a tailored CV
+        that emphasizes content relevant to a specific job match.
+      operationId: downloadCV
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          description: The profile ID to generate CV for
+          schema:
+            type: string
+            format: uuid
+        - name: jobMatchId
+          in: query
+          required: false
+          description: Optional job match ID for tailored CV generation
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: PDF CV generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              description: Suggested filename for the download
+              schema:
+                type: string
+                example: 'attachment; filename="cv-john-doe.pdf"'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    Profile:
+      type: object
+      description: A user's professional profile containing work history, skills, and credibility highlights
+      required:
+        - id
+        - summary
+        - workExperiences
+        - skills
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the profile
+        summary:
+          type: string
+          description: Professional summary extracted from reference letters
+          maxLength: 2000
+        workExperiences:
+          type: array
+          description: List of work experiences with credibility highlights
+          items:
+            $ref: '#/components/schemas/WorkExperience'
+        skills:
+          type: array
+          description: List of skills extracted from reference letters
+          items:
+            type: string
+
+    ProfileInput:
+      type: object
+      description: Input data for updating a profile
+      properties:
+        summary:
+          type: string
+          description: Updated professional summary
+          maxLength: 2000
+        workExperiences:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkExperienceInput'
+        skills:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+
+    WorkExperience:
+      type: object
+      description: A work experience entry with associated credibility highlights
+      required:
+        - id
+        - companyName
+        - role
+        - startDate
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyName:
+          type: string
+          description: Name of the employer
+        role:
+          type: string
+          description: Job title or role
+        startDate:
+          type: string
+          format: date
+          description: Start date of employment (YYYY-MM-DD)
+        endDate:
+          type: string
+          format: date
+          description: End date of employment (YYYY-MM-DD), null if current
+        description:
+          type: string
+          description: Description of responsibilities and achievements
+        credibilityHighlights:
+          type: array
+          description: Positive quotes from reference letters about this experience
+          items:
+            $ref: '#/components/schemas/CredibilityHighlight'
+
+    WorkExperienceInput:
+      type: object
+      description: Input data for creating/updating a work experience
+      required:
+        - companyName
+        - role
+        - startDate
+      properties:
+        companyName:
+          type: string
+          maxLength: 200
+        role:
+          type: string
+          maxLength: 200
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        description:
+          type: string
+          maxLength: 2000
+
+    CredibilityHighlight:
+      type: object
+      description: A quote from a reference letter highlighting professional qualities
+      required:
+        - quote
+        - sentiment
+      properties:
+        quote:
+          type: string
+          description: The exact quote from the reference letter
+        sentiment:
+          type: string
+          enum: [POSITIVE, NEUTRAL]
+          description: Sentiment analysis of the quote
+
+    ReferenceLetter:
+      type: object
+      description: An uploaded reference letter
+      required:
+        - id
+        - fileName
+        - uploadDate
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+          description: Original filename of the uploaded file
+        uploadDate:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of upload
+        status:
+          type: string
+          enum: [PENDING, PROCESSED, ERROR]
+          description: Processing status of the reference letter
+
+    TailoredProfile:
+      type: object
+      description: A profile tailored to a specific job description
+      required:
+        - id
+        - matchScore
+        - matchSummary
+        - tailoredExperiences
+        - relevantSkills
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for this job match
+        matchScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Percentage match score (0-100)
+        matchSummary:
+          type: string
+          description: AI-generated summary explaining the match
+        tailoredExperiences:
+          type: array
+          description: Work experiences ranked by relevance to the job
+          items:
+            $ref: '#/components/schemas/TailoredExperience'
+        relevantSkills:
+          type: array
+          description: Skills that match the job requirements
+          items:
+            type: string
+
+    TailoredExperience:
+      type: object
+      description: A work experience with relevance scoring for a specific job
+      required:
+        - id
+        - companyName
+        - role
+        - relevanceScore
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyName:
+          type: string
+        role:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        description:
+          type: string
+        relevanceScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: How relevant this experience is to the job (0-100)
+        highlightReason:
+          type: string
+          description: AI explanation of why this experience is relevant
+
+    JobMatch:
+      type: object
+      description: Legacy job match response (use TailoredProfile instead)
+      properties:
+        id:
+          type: string
+          format: uuid
+        matchScore:
+          type: number
+        tailoredSummary:
+          type: string
+
+    Error:
+      type: object
+      description: Error response
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+        details:
+          type: object
+          description: Additional error details
+
+  responses:
+    BadRequest:
+      description: Invalid request - check request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid request body"
+            code: "INVALID_REQUEST"
+
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Unauthorized"
+            code: "UNAUTHORIZED"
+
+    NotFound:
+      description: Requested resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Profile not found"
+            code: "NOT_FOUND"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "An unexpected error occurred"
+            code: "INTERNAL_ERROR"
+
