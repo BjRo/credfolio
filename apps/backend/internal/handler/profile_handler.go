@@ -9,6 +9,7 @@ import (
 
 	"github.com/credfolio/apps/backend/internal/domain"
 	"github.com/credfolio/apps/backend/internal/handler/middleware"
+	"github.com/credfolio/apps/backend/internal/service"
 	"github.com/credfolio/apps/backend/pkg/logger"
 	"github.com/credfolio/apps/backend/pkg/pdf"
 	"github.com/google/uuid"
@@ -21,9 +22,13 @@ type ProfileServicer interface {
 	UpdateProfile(ctx context.Context, profile *domain.Profile) error
 }
 
+// TailoredProfileResponse is defined in service package, re-exported here for convenience
+type TailoredProfileResponse = service.TailoredProfileResponse
+type TailoredExperienceResponse = service.TailoredExperienceResponse
+
 // TailoringServicer defines the interface for tailoring service operations
 type TailoringServicer interface {
-	TailorProfileToJobDescription(ctx context.Context, userID uuid.UUID, jobDescription string) (*TailoredProfileResponse, error)
+	TailorProfileToJobDescription(ctx context.Context, userID uuid.UUID, jobDescription string) (*service.TailoredProfileResponse, error)
 }
 
 // ProfileHandler handles profile HTTP requests
@@ -75,26 +80,6 @@ type CredibilityHighlightResponse struct {
 	Sentiment string `json:"sentiment"`
 }
 
-// TailoredProfileResponse represents the API response for a tailored profile
-type TailoredProfileResponse struct {
-	ID                  string                       `json:"id"`
-	MatchScore          float64                      `json:"matchScore"`
-	MatchSummary        string                       `json:"matchSummary"`
-	TailoredExperiences []TailoredExperienceResponse `json:"tailoredExperiences"`
-	RelevantSkills      []string                     `json:"relevantSkills"`
-}
-
-// TailoredExperienceResponse represents a tailored work experience in the API response
-type TailoredExperienceResponse struct {
-	ID              string  `json:"id"`
-	CompanyName     string  `json:"companyName"`
-	Role            string  `json:"role"`
-	StartDate       string  `json:"startDate"`
-	EndDate         string  `json:"endDate,omitempty"`
-	Description     string  `json:"description"`
-	RelevanceScore  float64 `json:"relevanceScore"`
-	HighlightReason string  `json:"highlightReason,omitempty"`
-}
 
 // TailorRequest represents the request body for tailoring a profile
 type TailorRequest struct {

@@ -12,6 +12,7 @@ type Config struct {
 	OpenAIAPIKey string
 	Port         string
 	Environment  string
+	UploadPath   string
 }
 
 // Load loads configuration from environment variables
@@ -24,6 +25,7 @@ func Load() (*Config, error) {
 		OpenAIAPIKey: getEnv("OPENAI_API_KEY", ""),
 		Port:         getEnv("PORT", "8080"),
 		Environment:  getEnv("ENVIRONMENT", "development"),
+		UploadPath:   getEnv("UPLOAD_PATH", "./uploads"),
 	}
 
 	return cfg, nil

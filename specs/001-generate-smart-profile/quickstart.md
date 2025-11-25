@@ -29,7 +29,7 @@ POSTGRES_DB=credfolio
 Create `apps/backend/.env` for the backend:
 
 ```ini
-DATABASE_URL="host=localhost user=postgres password=postgres dbname=credfolio port=5432 sslmode=disable"
+DATABASE_URL="host=localhost user=postgres password=postgres dbname=credfolio port=55432 sslmode=disable"
 OPENAI_API_KEY="sk-your-api-key-here"
 PORT=8080
 ```

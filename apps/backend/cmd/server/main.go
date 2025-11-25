@@ -8,8 +8,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/credfolio/apps/backend/internal/handler"
 	"github.com/credfolio/apps/backend/internal/handler/middleware"
 	"github.com/credfolio/apps/backend/internal/repository"
+	"github.com/credfolio/apps/backend/internal/service"
+	"github.com/credfolio/apps/backend/pkg/ai"
 	"github.com/credfolio/apps/backend/pkg/config"
 	"github.com/credfolio/apps/backend/pkg/logger"
 	"github.com/go-chi/chi/v5"
@@ -50,6 +53,35 @@ func main() {
 	}
 	l.Info("Database migrations completed")
 
+	// Initialize repositories
+	gormDB := db.GetDB()
+	profileRepo := repository.NewGormProfileRepository(gormDB)
+	referenceLetterRepo := repository.NewGormReferenceLetterRepository(gormDB)
+	workExperienceRepo := repository.NewGormWorkExperienceRepository(gormDB)
+	highlightRepo := repository.NewGormCredibilityHighlightRepository(gormDB)
+	jobMatchRepo := repository.NewGormJobMatchRepository(gormDB)
+
+	// Initialize LLM provider
+	llmProvider := ai.NewOpenAIProvider(cfg.OpenAIAPIKey)
+
+	// Initialize services
+	profileService := service.NewProfileService(
+		profileRepo,
+		referenceLetterRepo,
+		workExperienceRepo,
+		highlightRepo,
+		llmProvider,
+	)
+	tailoringService := service.NewTailoringServiceAdapter(
+		profileRepo,
+		jobMatchRepo,
+		llmProvider,
+	)
+
+	// Initialize handlers
+	profileHandler := handler.NewProfileHandlerWithTailoring(profileService, tailoringService)
+	referenceLetterHandler := handler.NewReferenceLetterHandler(referenceLetterRepo, cfg.UploadPath)
+
 	// Create router
 	r := chi.NewRouter()
 
@@ -79,35 +111,21 @@ func main() {
 		_, _ = w.Write([]byte("OK"))
 	})
 
-	// API routes will be added here by the handlers
+	// API routes
 	r.Route("/api/v1", func(r chi.Router) {
 		// Profile routes
 		r.Route("/profile", func(r chi.Router) {
-			// These will be implemented in Phase 3
-			r.Get("/", func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(http.StatusNotImplemented)
-				_, _ = w.Write([]byte(`{"error": "Not implemented yet"}`))
-			})
-			r.Post("/generate", func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(http.StatusNotImplemented)
-				_, _ = w.Write([]byte(`{"error": "Not implemented yet"}`))
-			})
-			r.Post("/tailor", func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(http.StatusNotImplemented)
-				_, _ = w.Write([]byte(`{"error": "Not implemented yet"}`))
-			})
-			r.Get("/{profileId}/cv", func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(http.StatusNotImplemented)
-				_, _ = w.Write([]byte(`{"error": "Not implemented yet"}`))
-			})
+			r.Get("/", profileHandler.Get)
+			r.Put("/", profileHandler.Update)
+			r.Post("/generate", profileHandler.Generate)
+			r.Post("/tailor", profileHandler.Tailor)
+			r.Get("/{profileId}/cv", profileHandler.DownloadCV)
 		})
 
 		// Reference letter routes
 		r.Route("/reference-letters", func(r chi.Router) {
-			r.Post("/", func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(http.StatusNotImplemented)
-				_, _ = w.Write([]byte(`{"error": "Not implemented yet"}`))
-			})
+			r.Post("/", referenceLetterHandler.Upload)
+			r.Get("/", referenceLetterHandler.List)
 		})
 	})
 

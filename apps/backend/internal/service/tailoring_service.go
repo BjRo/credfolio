@@ -173,3 +173,78 @@ func (s *TailoringService) GetTailoredProfilesByUser(ctx context.Context, userID
 
 	return s.jobMatchRepo.FindByProfileID(ctx, profile.ID)
 }
+
+// TailoredExperienceResponse represents a tailored work experience in the API response
+type TailoredExperienceResponse struct {
+	ID              string  `json:"id"`
+	CompanyName     string  `json:"companyName"`
+	Role            string  `json:"role"`
+	StartDate       string  `json:"startDate"`
+	EndDate         string  `json:"endDate,omitempty"`
+	Description     string  `json:"description"`
+	RelevanceScore  float64 `json:"relevanceScore"`
+	HighlightReason string  `json:"highlightReason,omitempty"`
+}
+
+// TailoredProfileResponse represents the API response for a tailored profile
+type TailoredProfileResponse struct {
+	ID                  string                       `json:"id"`
+	MatchScore          float64                      `json:"matchScore"`
+	MatchSummary        string                       `json:"matchSummary"`
+	TailoredExperiences []TailoredExperienceResponse `json:"tailoredExperiences"`
+	RelevantSkills      []string                     `json:"relevantSkills"`
+}
+
+// TailoringServiceAdapter wraps TailoringService to convert response types
+type TailoringServiceAdapter struct {
+	*TailoringService
+}
+
+// NewTailoringServiceAdapter creates a new adapter
+func NewTailoringServiceAdapter(
+	profileRepo repository.ProfileRepository,
+	jobMatchRepo repository.JobMatchRepository,
+	llm LLMProvider,
+) *TailoringServiceAdapter {
+	return &TailoringServiceAdapter{
+		TailoringService: NewTailoringService(profileRepo, jobMatchRepo, llm),
+	}
+}
+
+// TailorProfileToJobDescription adapts the response to the handler's expected type
+func (a *TailoringServiceAdapter) TailorProfileToJobDescription(
+	ctx context.Context,
+	userID uuid.UUID,
+	jobDescription string,
+) (*TailoredProfileResponse, error) {
+	result, err := a.TailoringService.TailorProfileToJobDescription(ctx, userID, jobDescription)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to response type
+	experiences := make([]TailoredExperienceResponse, 0, len(result.TailoredExperiences))
+	for _, exp := range result.TailoredExperiences {
+		expResp := TailoredExperienceResponse{
+			ID:              exp.Experience.ID.String(),
+			CompanyName:     exp.Experience.CompanyName,
+			Role:            exp.Experience.Role,
+			StartDate:       exp.Experience.StartDate.Format("2006-01-02"),
+			Description:     exp.Experience.Description,
+			RelevanceScore:  exp.RelevanceScore,
+			HighlightReason: exp.HighlightReason,
+		}
+		if exp.Experience.EndDate != nil {
+			expResp.EndDate = exp.Experience.EndDate.Format("2006-01-02")
+		}
+		experiences = append(experiences, expResp)
+	}
+
+	return &TailoredProfileResponse{
+		ID:                  result.ID.String(),
+		MatchScore:          result.MatchScore,
+		MatchSummary:        result.MatchSummary,
+		TailoredExperiences: experiences,
+		RelevantSkills:      result.RelevantSkills,
+	}, nil
+}
