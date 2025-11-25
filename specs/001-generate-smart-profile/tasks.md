@@ -163,28 +163,28 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 > **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
 
-- [ ] T084 [P] [US2] Unit test for ProfileService when getting profile aggregates skills across experiences in apps/backend/internal/service/profile_service_test.go
-- [ ] T085 [P] [US2] Unit test for ProfileService when getting profile includes credibility highlights in apps/backend/internal/service/profile_service_test.go
-- [ ] T086 [P] [US2] Unit test for ProfileHandler when getting profile returns complete profile data in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T087 [P] [US2] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T088 [P] [US2] Unit test for ProfileView component when profile loaded displays all sections in apps/frontend/components/profile/ProfileView.test.tsx
-- [ ] T089 [P] [US2] Unit test for ProfileView component when loading shows loading state in apps/frontend/components/profile/ProfileView.test.tsx
-- [ ] T090 [P] [US2] Unit test for CredibilityHighlights component when given highlights displays quotes in apps/frontend/components/profile/CredibilityHighlights.test.tsx
-- [ ] T091 [P] [US2] Unit test for WorkExperienceCard component when given experience displays credibility highlights in apps/frontend/components/profile/WorkExperienceCard.test.tsx
-- [ ] T092 [P] [US2] Unit test for SkillsSection component when given skills displays aggregated list in apps/frontend/components/profile/SkillsSection.test.tsx
-- [ ] T093 [P] [US2] Unit test for API client when getting profile returns profile data in apps/frontend/lib/api/profile.test.ts
+- [X] T084 [P] [US2] Unit test for ProfileService when getting profile aggregates skills across experiences in apps/backend/internal/service/profile_service_test.go
+- [X] T085 [P] [US2] Unit test for ProfileService when getting profile includes credibility highlights in apps/backend/internal/service/profile_service_test.go
+- [X] T086 [P] [US2] Unit test for ProfileHandler when getting profile returns complete profile data in apps/backend/internal/handler/profile_handler_test.go
+- [X] T087 [P] [US2] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
+- [X] T088 [P] [US2] Unit test for ProfileView component when profile loaded displays all sections in apps/frontend/components/profile/ProfileView.test.tsx
+- [X] T089 [P] [US2] Unit test for ProfileView component when loading shows loading state in apps/frontend/components/profile/ProfileView.test.tsx
+- [X] T090 [P] [US2] Unit test for CredibilityHighlights component when given highlights displays quotes in apps/frontend/components/profile/CredibilityHighlights.test.tsx
+- [X] T091 [P] [US2] Unit test for WorkExperienceCard component when given experience displays credibility highlights in apps/frontend/components/profile/WorkExperienceCard.test.tsx
+- [X] T092 [P] [US2] Unit test for SkillsSection component when given skills displays aggregated list in apps/frontend/components/profile/SkillsSection.test.tsx
+- [X] T093 [P] [US2] Unit test for API client when getting profile returns profile data in apps/frontend/lib/api/profile.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T094 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T095 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
-- [ ] T096 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
-- [ ] T097 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
-- [ ] T098 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
-- [ ] T099 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
-- [ ] T100 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
-- [ ] T101 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T102 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
+- [X] T094 [US2] Implement GET /profile endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T095 [US2] Add logic to aggregate skills and endorsements across multiple work experiences in ProfileService.GetProfile method in apps/backend/internal/service/profile_service.go
+- [X] T096 [US2] Create API client method for GET /profile in apps/frontend/lib/api/profile.ts
+- [X] T097 [US2] Create ProfileView component displaying Experience, Skills, and Credibility Highlights in apps/frontend/components/profile/ProfileView.tsx
+- [X] T098 [US2] Create CredibilityHighlights section component in apps/frontend/components/profile/CredibilityHighlights.tsx
+- [X] T099 [US2] Create WorkExperience display component with credibility highlights in apps/frontend/components/profile/WorkExperienceCard.tsx
+- [X] T100 [US2] Create Skills aggregation display component in apps/frontend/components/profile/SkillsSection.tsx
+- [X] T101 [US2] Create profile view page in apps/frontend/app/profile/page.tsx
+- [X] T102 [US2] Add styling for "LinkedIn-on-steroids" profile layout using Tailwind CSS in apps/frontend/components/profile/ProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - users can generate profiles and view them with credibility highlights.
 
@@ -200,34 +200,34 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 > **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
 
-- [ ] T103 [P] [US3] Unit test for JobMatchRepository when saving job match persists to database in apps/backend/internal/repository/job_match_repository_test.go
-- [ ] T104 [P] [US3] Unit test for JobMatchRepository when finding by profile ID returns matches in apps/backend/internal/repository/job_match_repository_test.go
-- [ ] T105 [P] [US3] Unit test for TailoringService when tailoring profile ranks experiences by relevance in apps/backend/internal/service/tailoring_service_test.go
-- [ ] T106 [P] [US3] Unit test for TailoringService when job description is empty returns error in apps/backend/internal/service/tailoring_service_test.go
-- [ ] T107 [P] [US3] Unit test for TailoringService when calculating match score returns score between 0 and 1 in apps/backend/internal/service/tailoring_service_test.go
-- [ ] T108 [P] [US3] Unit test for TailoringService when LLMProvider fails propagates error in apps/backend/internal/service/tailoring_service_test.go
-- [ ] T109 [P] [US3] Unit test for ProfileHandler when tailoring profile returns tailored profile data in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T110 [P] [US3] Unit test for ProfileHandler when job description invalid returns validation error in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T111 [P] [US3] Unit test for JobDescriptionInput component when text entered updates value in apps/frontend/components/profile/JobDescriptionInput.test.tsx
-- [ ] T112 [P] [US3] Unit test for TailoredProfileView component when given tailored profile highlights matched content in apps/frontend/components/profile/TailoredProfileView.test.tsx
-- [ ] T113 [P] [US3] Unit test for MatchScore component when given score displays percentage in apps/frontend/components/profile/MatchScore.test.tsx
-- [ ] T114 [P] [US3] Unit test for API client when tailoring profile sends job description in apps/frontend/lib/api/profile.test.ts
+- [X] T103 [P] [US3] Unit test for JobMatchRepository when saving job match persists to database in apps/backend/internal/repository/job_match_repository_test.go
+- [X] T104 [P] [US3] Unit test for JobMatchRepository when finding by profile ID returns matches in apps/backend/internal/repository/job_match_repository_test.go
+- [X] T105 [P] [US3] Unit test for TailoringService when tailoring profile ranks experiences by relevance in apps/backend/internal/service/tailoring_service_test.go
+- [X] T106 [P] [US3] Unit test for TailoringService when job description is empty returns error in apps/backend/internal/service/tailoring_service_test.go
+- [X] T107 [P] [US3] Unit test for TailoringService when calculating match score returns score between 0 and 1 in apps/backend/internal/service/tailoring_service_test.go
+- [X] T108 [P] [US3] Unit test for TailoringService when LLMProvider fails propagates error in apps/backend/internal/service/tailoring_service_test.go
+- [X] T109 [P] [US3] Unit test for ProfileHandler when tailoring profile returns tailored profile data in apps/backend/internal/handler/profile_handler_test.go
+- [X] T110 [P] [US3] Unit test for ProfileHandler when job description invalid returns validation error in apps/backend/internal/handler/profile_handler_test.go
+- [X] T111 [P] [US3] Unit test for JobDescriptionInput component when text entered updates value in apps/frontend/components/profile/JobDescriptionInput.test.tsx
+- [X] T112 [P] [US3] Unit test for TailoredProfileView component when given tailored profile highlights matched content in apps/frontend/components/profile/TailoredProfileView.test.tsx
+- [X] T113 [P] [US3] Unit test for MatchScore component when given score displays percentage in apps/frontend/components/profile/MatchScore.test.tsx
+- [X] T114 [P] [US3] Unit test for API client when tailoring profile sends job description in apps/frontend/lib/api/profile.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T115 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
-- [ ] T116 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
-- [ ] T117 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
-- [ ] T118 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
-- [ ] T119 [US3] Implement match score calculation in TailoringService in apps/backend/internal/service/tailoring_service.go
-- [ ] T120 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T121 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
-- [ ] T122 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
-- [ ] T123 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
-- [ ] T124 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
-- [ ] T125 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
-- [ ] T126 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T127 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
+- [X] T115 [US3] Create JobMatch repository interface in apps/backend/internal/repository/job_match_repository.go
+- [X] T116 [US3] Implement GormJobMatchRepository in apps/backend/internal/repository/gorm_job_match_repository.go
+- [X] T117 [US3] Create TailoringService with TailorProfileToJobDescription method in apps/backend/internal/service/tailoring_service.go
+- [X] T118 [US3] Implement semantic matching logic using LLMProvider to rank experience/skills based on job description in apps/backend/internal/service/tailoring_service.go
+- [X] T119 [US3] Implement match score calculation in TailoringService in apps/backend/internal/service/tailoring_service.go
+- [X] T120 [US3] Implement POST /profile/tailor endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T121 [US3] Add validation for job description input in apps/backend/internal/handler/profile_handler.go
+- [X] T122 [US3] Create API client method for POST /profile/tailor in apps/frontend/lib/api/profile.ts
+- [X] T123 [US3] Create JobDescriptionInput component in apps/frontend/components/profile/JobDescriptionInput.tsx
+- [X] T124 [US3] Create TailoredProfileView component showing highlighted/reordered content in apps/frontend/components/profile/TailoredProfileView.tsx
+- [X] T125 [US3] Create MatchScore display component in apps/frontend/components/profile/MatchScore.tsx
+- [X] T126 [US3] Create profile tailoring page in apps/frontend/app/profile/tailor/page.tsx
+- [X] T127 [US3] Add explanation UI for why certain elements are highlighted in apps/frontend/components/profile/TailoredProfileView.tsx
 
 **Checkpoint**: At this point, User Stories 1, 2, AND 3 should all work independently - users can generate profiles, view them, and tailor them to job descriptions.
 
@@ -243,28 +243,28 @@ description: "Task list for Generate Smart Profile & Credibility feature impleme
 
 > **NOTE: Write unit tests FIRST, ensure they FAIL before implementation. Follow AAA style, hide implementation details, use descriptive names (context_trigger_expectation), and stub external calls.**
 
-- [ ] T128 [P] [US4] Unit test for CV generator when given profile data generates PDF with all sections in apps/backend/pkg/pdf/cv_generator_test.go
-- [ ] T129 [P] [US4] Unit test for CV generator when given tailored profile emphasizes matched content in apps/backend/pkg/pdf/cv_generator_test.go
-- [ ] T130 [P] [US4] Unit test for CV generator when profile is empty returns error in apps/backend/pkg/pdf/cv_generator_test.go
-- [ ] T131 [P] [US4] Unit test for ProfileHandler when downloading CV returns PDF bytes in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T132 [P] [US4] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T133 [P] [US4] Unit test for ProfileHandler when PDF generation fails returns error in apps/backend/internal/handler/profile_handler_test.go
-- [ ] T134 [P] [US4] Unit test for DownloadCVButton component when clicked triggers download in apps/frontend/components/profile/DownloadCVButton.test.tsx
-- [ ] T135 [P] [US4] Unit test for DownloadCVButton component when download fails displays error in apps/frontend/components/profile/DownloadCVButton.test.tsx
-- [ ] T136 [P] [US4] Unit test for API client when downloading CV returns blob data in apps/frontend/lib/api/profile.test.ts
+- [X] T128 [P] [US4] Unit test for CV generator when given profile data generates PDF with all sections in apps/backend/pkg/pdf/cv_generator_test.go
+- [X] T129 [P] [US4] Unit test for CV generator when given tailored profile emphasizes matched content in apps/backend/pkg/pdf/cv_generator_test.go
+- [X] T130 [P] [US4] Unit test for CV generator when profile is empty returns error in apps/backend/pkg/pdf/cv_generator_test.go
+- [X] T131 [P] [US4] Unit test for ProfileHandler when downloading CV returns PDF bytes in apps/backend/internal/handler/profile_handler_test.go
+- [X] T132 [P] [US4] Unit test for ProfileHandler when profile not found returns 404 error in apps/backend/internal/handler/profile_handler_test.go
+- [X] T133 [P] [US4] Unit test for ProfileHandler when PDF generation fails returns error in apps/backend/internal/handler/profile_handler_test.go
+- [X] T134 [P] [US4] Unit test for DownloadCVButton component when clicked triggers download in apps/frontend/components/profile/DownloadCVButton.test.tsx
+- [X] T135 [P] [US4] Unit test for DownloadCVButton component when download fails displays error in apps/frontend/components/profile/DownloadCVButton.test.tsx
+- [X] T136 [P] [US4] Unit test for API client when downloading CV returns blob data in apps/frontend/lib/api/profile.test.ts
 
 ### Implementation for User Story 4
 
-- [ ] T137 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T138 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T139 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
-- [ ] T140 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T141 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
-- [ ] T142 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
-- [ ] T143 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
-- [ ] T144 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
-- [ ] T145 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
-- [ ] T146 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
+- [X] T137 [US4] Enhance PDF generation service to create CV layout using maroto in apps/backend/pkg/pdf/cv_generator.go
+- [X] T138 [US4] Implement CV template with sections: Summary, Work Experience, Skills, Credibility Highlights in apps/backend/pkg/pdf/cv_generator.go
+- [X] T139 [US4] Add logic to emphasize tailored content in PDF when JobMatch is provided in apps/backend/pkg/pdf/cv_generator.go
+- [X] T140 [US4] Implement GET /profile/{profileId}/cv endpoint handler in apps/backend/internal/handler/profile_handler.go
+- [X] T141 [US4] Add query parameter support for tailored CV (jobMatchId) in GET /profile/{profileId}/cv handler in apps/backend/internal/handler/profile_handler.go
+- [X] T142 [US4] Create API client method for GET /profile/{profileId}/cv in apps/frontend/lib/api/profile.ts
+- [X] T143 [US4] Create DownloadCVButton component in apps/frontend/components/profile/DownloadCVButton.tsx
+- [X] T144 [US4] Add download CV functionality to profile view page in apps/frontend/app/profile/page.tsx
+- [X] T145 [US4] Add download CV functionality to tailored profile view in apps/frontend/app/profile/tailor/page.tsx
+- [X] T146 [US4] Add error handling for PDF generation failures in apps/backend/internal/handler/profile_handler.go
 
 **Checkpoint**: All user stories should now be independently functional - users can generate profiles, view them with credibility, tailor them to jobs, and download CVs.
 

@@ -56,4 +56,10 @@ type LLMProvider interface {
 
 	// ExtractCredibilityHighlights extracts positive sentiment quotes from reference text
 	ExtractCredibilityHighlights(ctx context.Context, referenceText string) ([]HighlightData, error)
+
+	// CalculateRelevance calculates the relevance score between text and a reference
+	CalculateRelevance(ctx context.Context, text string, reference string) (float64, error)
+
+	// GenerateText generates text based on a prompt
+	GenerateText(ctx context.Context, prompt string) (string, error)
 }

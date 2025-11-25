@@ -174,5 +174,88 @@ Reference letter:
 	return result.Highlights, nil
 }
 
+// CalculateRelevance calculates the relevance score between text and a reference
+func (p *OpenAIProvider) CalculateRelevance(ctx context.Context, text string, reference string) (float64, error) {
+	if text == "" || reference == "" {
+		return 0, errors.New("both text and reference are required")
+	}
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	prompt := fmt.Sprintf(`Rate the relevance of this text to the job description on a scale of 0 to 1.
+Return a JSON object with a single field "score" containing a float between 0 and 1.
+
+Text to evaluate:
+%s
+
+Job Description:
+%s`, text, reference)
+
+	resp, err := p.client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Model: p.model,
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage("You are evaluating how relevant work experience is to a job description. Return valid JSON with a 'score' field."),
+			openai.UserMessage(prompt),
+		},
+		ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{
+			OfJSONObject: &openai.ResponseFormatJSONObjectParam{},
+		},
+	})
+	if err != nil {
+		return 0, fmt.Errorf("openai api error: %w", err)
+	}
+
+	if len(resp.Choices) == 0 {
+		return 0, errors.New("no response from OpenAI")
+	}
+
+	var result struct {
+		Score float64 `json:"score"`
+	}
+	if err := json.Unmarshal([]byte(resp.Choices[0].Message.Content), &result); err != nil {
+		return 0, fmt.Errorf("failed to parse response: %w", err)
+	}
+
+	// Ensure score is between 0 and 1
+	if result.Score < 0 {
+		result.Score = 0
+	}
+	if result.Score > 1 {
+		result.Score = 1
+	}
+
+	return result.Score, nil
+}
+
+// GenerateText generates text based on a prompt
+func (p *OpenAIProvider) GenerateText(ctx context.Context, prompt string) (string, error) {
+	if prompt == "" {
+		return "", errors.New("prompt is required")
+	}
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	resp, err := p.client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Model: p.model,
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage("You are a helpful assistant that generates clear, concise text."),
+			openai.UserMessage(prompt),
+		},
+	})
+	if err != nil {
+		return "", fmt.Errorf("openai api error: %w", err)
+	}
+
+	if len(resp.Choices) == 0 {
+		return "", errors.New("no response from OpenAI")
+	}
+
+	return resp.Choices[0].Message.Content, nil
+}
+
 // Ensure OpenAIProvider implements LLMProvider
 var _ service.LLMProvider = (*OpenAIProvider)(nil)

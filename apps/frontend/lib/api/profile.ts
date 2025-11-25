@@ -23,10 +23,23 @@ export interface Profile {
 	skills: string[];
 }
 
-export interface JobMatch {
+export interface TailoredExperience {
+	id: string;
+	companyName: string;
+	role: string;
+	startDate: string;
+	endDate?: string;
+	description: string;
+	relevanceScore: number;
+	highlightReason?: string;
+}
+
+export interface TailoredProfile {
 	id: string;
 	matchScore: number;
-	tailoredSummary: string;
+	matchSummary: string;
+	tailoredExperiences: TailoredExperience[];
+	relevantSkills: string[];
 }
 
 /**
@@ -90,7 +103,9 @@ export async function updateProfile(data: {
 /**
  * Tailor profile to a job description
  */
-export async function tailorProfile(jobDescription: string): Promise<JobMatch> {
+export async function tailorProfile(
+	jobDescription: string,
+): Promise<TailoredProfile> {
 	const response = await fetch(`${API_BASE_URL}/profile/tailor`, {
 		method: "POST",
 		headers: {
@@ -110,8 +125,16 @@ export async function tailorProfile(jobDescription: string): Promise<JobMatch> {
 /**
  * Download CV as PDF
  */
-export async function downloadCV(profileId: string): Promise<Blob> {
-	const response = await fetch(`${API_BASE_URL}/profile/${profileId}/cv`, {
+export async function downloadCV(
+	profileId: string,
+	tailoredId?: string,
+): Promise<Blob> {
+	let url = `${API_BASE_URL}/profile/${profileId}/cv`;
+	if (tailoredId) {
+		url += `?jobMatchId=${tailoredId}`;
+	}
+
+	const response = await fetch(url, {
 		method: "GET",
 		credentials: "include",
 	});
