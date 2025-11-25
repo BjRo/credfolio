@@ -1,13 +1,13 @@
 <!--
 Sync Impact Report:
-Version change: 1.2.0 → 1.3.0 (MINOR: new principle added)
+Version change: 1.3.0 → 1.4.0 (MINOR: new principle added)
 Modified principles: N/A
-Added sections: Unit-Testing-First principle
+Added sections: Structured Outputs and Personas in LLM Prompts principle
 Removed sections: N/A
 Templates requiring updates:
   ✅ plan-template.md - Constitution Check section aligns with all principles
   ✅ spec-template.md - No changes needed (user stories already align with DoD)
-  ✅ tasks-template.md - Updated to reflect mandatory unit tests requirement
+  ✅ tasks-template.md - No changes needed (principle applies to LLM interaction, not task structure)
   ⚠ pending: Manual review recommended for any custom command templates
 Follow-up TODOs:
   - TODO(RATIFICATION_DATE): Original adoption date unknown - needs historical research or project start date
@@ -95,12 +95,29 @@ We adopt a unit-testing-first approach where unit tests guide our development pr
 
 **Rationale**: Unit-testing-first development ensures code correctness from the start, enables rapid iteration with fast feedback, prevents regressions, and creates living documentation of system behavior. By avoiding external dependencies in tests, we maintain test speed and reliability while keeping tests focused on the unit under test.
 
+### V. Structured Outputs and Personas in LLM Prompts
+
+When interacting with Large Language Models (LLMs) for code generation, analysis, or development assistance, we MUST use structured outputs and personas to improve the quality and consistency of results.
+
+**Core Requirements:**
+
+- **Structured Outputs**: LLM prompts MUST request structured outputs (e.g., JSON schemas, specific formats, or well-defined response structures) when the response needs to be parsed, validated, or used programmatically. This ensures predictable, machine-readable results.
+- **Personas**: LLM prompts MUST include appropriate personas or role definitions that guide the model's behavior and expertise level. Personas help the model adopt the right perspective, knowledge domain, and communication style for the task.
+- **Context-Specific Personas**: Personas MUST be tailored to the specific task (e.g., "senior backend engineer" for API design, "security expert" for vulnerability analysis, "code reviewer" for review tasks).
+- **Structured Prompt Design**: Prompts MUST be organized with clear sections: context, role/persona, task description, expected output format, and constraints.
+
+**When to Apply:**
+
+- Any LLM interaction where structured, consistent output is needed
+
+**Rationale**: Structured outputs reduce parsing errors, enable automated validation, and ensure consistent response formats across interactions. Personas improve the relevance and quality of LLM responses by providing appropriate context, expertise level, and behavioral guidance. Together, these techniques significantly improve the reliability and usefulness of LLM-assisted development.
+
 ## Governance
 
-This constitution supersedes all other development practices and guidelines. All PRs and code reviews MUST verify compliance with all principles, including Definition of Done, Architecture Decision Records, Context7 API Verification, and Unit-Testing-First requirements.
+This constitution supersedes all other development practices and guidelines. All PRs and code reviews MUST verify compliance with all principles, including Definition of Done, Architecture Decision Records, Context7 API Verification, Unit-Testing-First, and Structured Outputs and Personas in LLM Prompts requirements.
 
 **Amendment Procedure**: Amendments require documentation of rationale, version bump according to semantic versioning (MAJOR for backward-incompatible changes, MINOR for new principles/sections, PATCH for clarifications), and update of dependent templates.
 
 **Compliance Review**: The Constitution Check gate in implementation plans must verify adherence to all principles before proceeding with feature work.
 
-**Version**: 1.3.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2025-01-27
+**Version**: 1.4.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2025-01-27
