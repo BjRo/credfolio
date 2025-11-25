@@ -80,7 +80,6 @@ type CredibilityHighlightResponse struct {
 	Sentiment string `json:"sentiment"`
 }
 
-
 // TailorRequest represents the request body for tailoring a profile
 type TailorRequest struct {
 	JobDescription string `json:"jobDescription"`
